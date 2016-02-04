@@ -1,3 +1,5 @@
+import utility
+
 '''Base Block definition'''
 class Block:
 
@@ -6,9 +8,10 @@ class Block:
 		parser_dict['default': Block.parse]
 
 	@classmethod
-	def parse(cls, text):
+	def parse(cls, text, parent_block):
 		pass
 
-	def __init__(self, content):
-		self.content = content
-
+	def __init__(self, content, parent_block):
+		self.parent_block = parent_block
+		self.id = parent_block.id + '-'+ utility.get_random_string(3)
+		self.leafs = children_blocks
