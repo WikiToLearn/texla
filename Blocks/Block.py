@@ -15,3 +15,5 @@ class Block:
 		self.parent_block = parent_block
 		self.id = parent_block.id + '-' + utility.get_random_string(3)
 		self.leafs = children_blocks
+
+
