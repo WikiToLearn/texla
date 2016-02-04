@@ -1,6 +1,5 @@
 import os
 
-
 class Parser:
 
 	def __init__(self, tex):
@@ -10,19 +9,19 @@ class Parser:
 	def parse(self,tex):
 		###TODO:preparsing
 
-		#Getting content of \begin{document}
-		r_doc = re.compile(r"\\begin(?P<options>\[.*?\])?{document}(?P<content>.*?)\\end{document}",
-				re.DOTALL)
-		m_doc = r_doc.search(tex)
+		#Getting content of 
+		m_doc = regexes.r_doc.search(tex)
 		#getting content
 		content = m_doc.groups("content")
+		options = m_doc.groups("options")
 		#creating root block
 		self.root_block = documentBlock()
 		#beginning of parsing 
 		self.parser_cycle(self.root_block,content)
 
 	def parser_cycle(self, block, tex):
-		#first of all we search for section
+		#first of all we search for sectioning
+
 
 
 
