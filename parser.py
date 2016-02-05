@@ -24,13 +24,13 @@ class Parser:
 
 
 
+	def import_block_modules(self):
+		self.parser_hooks={}
+		for module in os.listdir("Blocks"):
+			__import__(module)
+			if hasattr(module,"parser_functions"):
+				for key,value  in module.parser_functions.items():
+					self.parser_functions[key] = value
 
 
 
-def import_block_modules():
-	for module in os.listdir("Blocks"):
-		__import__(module)
-		if hasattr(module,"register"):
-			module.register()
-
-import_block_modules()

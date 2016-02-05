@@ -4,14 +4,16 @@
 class SectionBlock(Block):
 
 	@staticmethod
-	def register(parser_dict):
-		parser_dict['part']= SectionBlock
-		parser_dict['chapter']= SectionBlock
-		parser_dict['section']= SectionBlock
-		parser_dict['subsection']= SectionBlock
-		parser_dict['subsubsection']= SectionBlock
-		parser_dict['paragraph']= SectionBlock
-		parser_dict['subparagraph']= SectionBlock
+	def parser_hooks():
+		pdict = {}
+		pdict['part']= SectionBlock.parse
+		pdict['chapter']= SectionBlock.parse
+		pdict['section']= SectionBlock.parse
+		pdict['subsection']= SectionBlock.parse
+		pdict['subsubsection']= SectionBlock.parse
+		pdict['paragraph']= SectionBlock.parse
+		pdict['subparagraph']= SectionBlock.parse
+		return pdict
 
 	@classmethod
 	def parse(cls,text, parent_block):

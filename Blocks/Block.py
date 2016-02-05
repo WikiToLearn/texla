@@ -4,8 +4,9 @@ import utility
 class Block:
 
 	@staticmethod
-	def register(parser_dict):
-		parser_dict['default': Block.parse]
+	def parser_hooks():
+		pdict = {'default':Block.parse}
+		return pdict
 
 	@classmethod
 	def parse(cls, text, parent_block):
