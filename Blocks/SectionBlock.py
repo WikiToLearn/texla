@@ -16,12 +16,12 @@ class SectionBlock(Block):
 		return pdict
 
 	@classmethod
-	def parse(cls,text, parent_block):
+	def parse(cls,tex, parent_block):
 		pass
 
 	def __init__(self, parent_block, level, title, options={}):
 		super().__init__(parent_block)
 	
-		self.level = level
+		self.section_level = level
 		self.title = title
 

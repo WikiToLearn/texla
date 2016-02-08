@@ -9,12 +9,17 @@ class Block:
 		return pdict
 
 	@classmethod
-	def parse(cls, text, parent_block):
+	def parse(cls, tex, parent_block):
 		pass
 
 	def __init__(self, parent_block):
 		self.parent_block = parent_block
 		self.id = parent_block.id + '-' + utility.get_random_string(3)
-		self.leafs = children_blocks
+		self.children_blocks = children_blocks
+		#section level
+		#by default the level is the same of parent block
+		self.section_level = self.parent_block.section_level 
 
 
+	def add_children_block(self, block):
+		self.children_blocks.append(block)
