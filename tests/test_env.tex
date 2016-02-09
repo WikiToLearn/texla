@@ -1,0 +1,39 @@
+La non-degenerazione è una condizione fondamentale. Infatti se ci troviamo in uno stato degenere dell'hamiltoniana, in genere lo stato è combinazione lineare di autostati della parità: non possiede quindi parità definita. In tal caso la media di una coordinata su quello stato non è necessariamente $0$.
+Ad esempio se ci troviamo sull'autostato dell'hamiltoniana:
+\begin{equation}
+\ket{\psi} = \alpha \ket{\psi_+}+\beta\ket{\psi_-}
+\end{equation}
+dove $\ket{\psi_\pm}$ sono autostati della parità.
+\begin{equation}
+\avg{\alpha\psi_++\beta\psi_-}{z} = \alpha^*\beta \melem{\psi_+}{z}{\psi_-}+ \alpha\beta^*\melem{\psi_-}{z}{\psi_+}
+\end{equation}
+La media non va più a 0. Questo accade in alcune molecole in cui si hanno stati degeneri ma con parità opposta.
+
+\subsubsection{Secondo ordine}
+La correzione al secondo ordine si calcola con la formula \vref{eq:Correzione al secondo ordine}.
+\begin{equation}\label{eq:pert_2_stark}
+E_{100}^{(2)} = e^2\xi^2 \left\{ \sum_{n,l,m} \frac{|\melem{\phi_{nlm}}{z}{\phi_{100}}|^2}{E_1^{(0)}-E_n^{(0)}} + \sum_{k} \frac{|\melem{\phi_k}{z}{\phi_{100}}|^2}{E_1^{(0)}-\hbar^2k^2/2m}\right\}
+\end{equation}
+Il secondo termire della somma è riferito agli stato non legati dell'atomo dei idrogeno, che vanno inseriti per considerare tutto lo spazio degli stati dell'elettrone. Il problema è difficile da risolvere analiticamente, ma possiamo trovare un limite superiore della perturbazione. Scriviamo più genericamente la formula \ref{eq:pert_2_stark} utilizzando generici autostati di energia $E$, continua o discreta, $\ket{\phi_E}$:
+\begin{equation}
+E_{100}^{(2)} = e^2\xi^2 \sum_{E \neq E_1^{(0)} } \frac{|\melem{\phi_{100}}{z}{\phi_E}|^2}{E_1^{(0)}-E}
+\end{equation}
+Sappiamo che $E_1^{(0)}$ è l'energia più bassa perchè è quella del livello fondamentale. 
+Quindi 
+\begin{equation}
+E-E_1^{(0)} \ge E_2^{(0)}- E_1^{(0)} \quad \rightarrow \quad \frac{1}{E-E_1^{(0)}} \le \frac{1}{E_2^{(0)}-E_1^{(0)}}
+\end{equation}
+Possiamo utilizzare questa disuglianza sulla somma totale:
+\begin{equation}
+-E_{100}^2 \le e^2\xi^2 \frac{1}{E_2^{(0)}-E_1^{(0)}} \sum_E \melem{\phi_{100}}{z}{\phi_E}\melem{\phi_E}{z}{\phi_{100}}
+\end{equation}
+Nella somma possiamo anche includere $E=E_1^{(0)}$ poichè il denominatore ora non diverge più e $\avg{\phi_{100}}{z}=0$.
+Usiamo ora la relazione di completezza per i vettori $\ket{\phi_E}$. quindi 
+\begin{equation}
+\sum_E \melem{\phi_{100}}{z}{\phi_E}\melem{\phi_E}{z}{\phi_{100}} = \avg{\phi_{100}}{z^2} 
+\end{equation}
+Possiamo calcolare facilmente questo valore medio:
+\begin{align}
+\avg{\phi_{100}}{z^2} &= \avg{\phi_{100}}{x^2} = \avg{\phi_{100}}{y^2} \nonumber \\
+\rightarrow\;&= \frac{1}{3}\avg{\phi_{100}}{r^2}
+\end{align}
