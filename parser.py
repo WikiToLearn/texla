@@ -40,7 +40,7 @@ This parser function search for sections splitting inside tex.
 The level of sections searched is indicated by level.
 The function calls the parser_hooks of every section block.
 '''
-    def parser_sections(self, parent_block, tex, level):
+    def parse_sections(self, parent_block, tex, level):
     	#check if the level is greater than subparagraph
     	if (level+1) < (len(utility.section_level)-1):
     		level_key = utility.section_level[level+1]
@@ -61,6 +61,33 @@ The function calls the parser_hooks of every section block.
     			#adding new_block to the parent block
     			parent_block.add_children_block(new_block)
 
+
+    def parse_environments(self, parent_block, tex, options):
+    	#first of all
+
+    
+	def environments_tokenizer(tex):
+    	#list of tuple for results ('type_of_env', content)
+    	env_list= []
+    	#we search for the first enviroment
+    	re_env1 = re.compile(r'\\begin\{(?P<env>.*?)\}')
+    	match = re_env1.search(tex)
+    	if not match == None:
+    		#we save the first part without 
+    		env_list.append(('tex',tex[0:match.start()]))
+    		#the remaing part with the first matched is analized
+    		tex = tex[match.start():]
+    		env = match.group('env')
+    		#now we extract the env greedy
+    		s,e,content = utility.get_environment_greedy(tex,env)
+    		env_list.append((env, content))
+    		#now we iterate the process for remaining tex
+    		left_tex = tex[e:]
+    		#returning the ordered list of matches
+    		after_env_list = self.environments_tokenizer(left_tex)
+    		if not after_env_list==None:
+    			env_list = env_list + after_env_list
+    		return env_list
 
 
 
