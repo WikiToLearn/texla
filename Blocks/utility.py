@@ -3,14 +3,14 @@ import re
 import collections
 
 section_level = {
-	'root': -1,
-	'part': 0,
-	'chapter': 1,
-	'section': 2,
-	'subsection': 3,
-	'subsubsection': 4,
-	'paragraph': 5,
-	'subparagraph': 6
+   -1 : 'root',
+	0 : 'part',
+	1 : 'chapter',
+	2 : 'section',
+	3 : 'subsection',
+	4 : 'subsubsection',
+	5 : 'paragraph',
+	6 : 'subparagraph'
 }
 
 def get_random_string(N):

@@ -18,30 +18,31 @@ class Parser:
 		#creating root block
 		self.root_block = documentBlock()
 		#beginning of parsing 
-		self.parser_cycle(self.root_block,content)
+        options = {'parse_sections':True,
+                   'parse_environments':True,
+                   'sec_level':0}
+		self.parser_cycle(self.root_block,content,options)
 
 
 	'''
-	A parser cycle needs a prent block, the tex to parser and
+	A parser cycle needs a parent block, the tex to parser and
 	a dictionary of options.
 	options contains:
 	-parse_sections: say if the parser has to call parser_sections()
-	-next_sec_level: this parameter says to parser_sections()
+	-sec_level: this parameter says to parser_sections()
 		what level of sections has to be splitted
-
+    -parse_envs: say if the parser has to call parser_enviroments()
 	'''
 	def parser_cycle(self, tex, parent_block, options):
 		#first of all we search for sectioning if enables
-        if options['parser_sections']:
+        if options['parse_sections']:
             self.parse_sections(tex, parent_block, options)
         #then we parse environments
-        if options['parser_envs']:
+        if options['parse_envs']:
             self.parse_environments(tex, parent_block, options)
         #then we parse maths and commands
         self.parse_math(tex, parent_block, options)
         self.parse_commands(tex, parent_block, options)
-
-
 
 
 	'''
@@ -61,8 +62,9 @@ class Parser:
     		outside_sec = toks.pop(0)
     		#this tex has to be parser but with a sectioning
     	    #level greater than one
-    		self.parser_cycle(outside_sec, parent_block, 
-    					options['sec_level']+=1)
+            new_options = options.copy()
+            new_options['sec_level']+=1
+    		self.parser_cycle(outside_sec, parent_block, new_options)
     		#now the sections found are processed
     		for tok in toks:
     			#readding splitted command
@@ -87,7 +89,7 @@ class Parser:
     			#we make sure that the section check is disabled
     			#because sectioning is parsed before environments
     			new_options = options.copy()
-    			new_options['parse_sections']=False
+    			new_options['parse_sections'] = False
     			self.parser_cycle(e[1], parent_block, new_options)
     		else:
     			env = e[0]
@@ -122,7 +124,7 @@ class Parser:
     		left_tex = tex[e:]
     		#returning the ordered list of matches
     		after_env_list = self.environments_tokenizer(left_tex)
-    		if not after_env_list==None:
+    		if not after_env_list == None:
     			env_list = env_list + after_env_list
     		return env_list
 
