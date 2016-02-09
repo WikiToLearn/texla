@@ -32,8 +32,15 @@ class Parser:
 	'''
 	def parser_cycle(self, tex, parent_block, options):
 		#first of all we search for sectioning if enables
-        if options['parser_sections']==True:
+        if options['parser_sections']:
             self.parse_sections(tex, parent_block, options)
+        #then we parse environments
+        if options['parser_envs']:
+            self.parse_environments(tex, parent_block, options)
+        #then we parse maths and commands
+        self.parse_math(tex, parent_block, options)
+        self.parse_commands(tex, parent_block, options)
+
 
 
 
