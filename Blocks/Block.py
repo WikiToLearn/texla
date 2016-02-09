@@ -1,12 +1,13 @@
 import utility
 
+
+def parser_hooks():
+	pdict = {'default': Block.parse}
+	return pdict
+
+
 '''Base Block definition'''
 class Block:
-
-	@staticmethod
-	def parser_hooks():
-		pdict = {'default':Block.parse}
-		return pdict
 
 	@classmethod
 	def parse(cls, tex, parent_block):
