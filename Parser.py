@@ -96,7 +96,7 @@ class Parser:
     It return a list of tuples like:
     [ ('text','abcde..) , ('itemize','\\begin{itemize}..\\end{itemize}' ,..)]
     '''
-	def environments_tokenizer(tex):
+	def environments_tokenizer(self, tex):
     	#list of tuple for results ('type_of_env', content)
     	env_list= []
     	#we search for the first enviroment
@@ -121,7 +121,71 @@ class Parser:
 
 
 
+    def parse_commands(self, parent_block, tex):
+    	pass
 
+
+    '''
+    This function parse math out of the tex. It splits tex in 
+    math and text tokens. Text is further analyzed by a new 
+    parser_cycle, the math tokens are processed by parser_hooks.
+    '''
+    def parse_math(self, parent_block, tex):
+    	#first of all we section the tex in a list
+    	#of tuples with (type, content).
+    	toks = self.math_tokenizer(tex)
+    	#now we can further analyze text tokens
+    	#and elaborate with parser_hooks the math founded
+    	for e in toks:
+    		if e[0] == 'text':
+    			#we can disable the section check because
+    			#sectioning is parser before math
+    			new_options = options.copy()
+    			new_options['parse_sections']=False
+    			self.parser_cycle(parent_block,e[1], new_options)
+    		else:
+    			env = e[0]
+    			#we can call the parser hooks
+    			new_block = self.parser_hooks[env](e[1],parent_block)
+    			#adding new_block to the parent block
+    			parent_block.add_children_block(new_block)
+
+
+    '''
+    This function split the tex inside a list of tuples with
+    (type, content). The type could be text, display_math, inline_math.
+    The function is able to extract math inside \(...\) $...$ (inline) and
+    inside \[...\] $$...$$ (display).
+    '''
+    def math_tokenizer(self,tex):
+    	inline_re = re.compile(r'(?<![\$])\$([^$]+)\$(?!\$)', re.DOTALL)
+    	display_re = re.compile(r'(?<![\$])\$\$([^$]+)\$\$(?!\$)', re.DOTALL)
+    	inline_re2 = re.compile(r'\\\((.*?)\\\)',re.DOTALL)
+    	display_re2 = re.compile(r'\\\[(.*?)\\\]', re.DOTALL)
+    	#first of all we match a save the pos
+    	pos = {}
+    	for mi in inline_re.finditer(tex):
+    		pos[mi.start()] = ('inline_math',mi)
+    	for md in display_re.finditer(tex):
+    		pos[md.start()] = ('display_math',md)
+    	for mi2 in inline_re2.finditer(tex):
+    		pos[mi2.start()] = ('inline_math',mi2)
+    	for md2 in display_re2.finditer(tex):
+    		pos[md2.start()] = ('display_math',md2)
+    	#now we sort the dictionary
+    	tokens = []
+    	last_tex_index = 0
+    	for start in sorted(pos.keys()):
+    		end = pos[start][1].end()
+    		typ = pos[start][0]
+    		content = pos[start][1].group()
+    		previous_tex = tex[last_tex_index : start]
+    		tokens.append(('text', previous_tex))
+    		#the last_tex_index is moved forward
+    		last_tex_index = end
+    		#the match is saved
+    		tokens.append((typ, content))
+    	return tokens
 
 
 
