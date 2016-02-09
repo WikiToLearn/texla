@@ -121,7 +121,7 @@ class Parser:
     math and text tokens. Text is further analyzed by a new 
     parser_cycle, the math tokens are processed by parser_hooks.
     '''
-    def parse_math(self, parent_block, tex):
+    def parse_math(self, parent_block, tex, options):
     	#first of all we section the tex in a list
     	#of tuples with (type, content).
     	toks = self.math_tokenizer(tex)
@@ -176,10 +176,26 @@ class Parser:
     	return tokens
 
 
-
-    def parse_commands(self, parent_block, tex):
-        re_cmd = re.compile(r"\\([a-zA-Z\\']+?)(?=\s|\{)", re.DOTALL)
-    	
+    ''' 
+    This function parse single latex commands. Sectioning,environments
+    and math are already parsed. The function find the first command and 
+    call the proper parser_hook. The hook elaborate the command and returns
+    the tex left to parse. Then the fuction is called recursively.
+    '''
+    def parse_commands(self, parent_block, tex, options):
+        re_cmd = re.compile(r"\\(?P<cmd>[a-zA-Z\\']+?)(?=\s|\{)", re.DOTALL)
+        match = re_cmd.search(tex)
+        if match!=None:
+            text = tex[:match.start()]
+            #The text here is completely parsed.
+            #We have to create a text block
+            self.parser_hooks['text'](text, parent_block)
+            #the matched command is parser by the parser_hook
+            #and the remaining tex is returned
+            tex_left = self.parser_hooks[match.group('cmd')](tex[match.start():],
+                        parent_block)
+            #the left tex is parsed again
+    	    self.parse_commands(parent_block, tex_left, options)
     	
 
 
