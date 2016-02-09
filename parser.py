@@ -4,7 +4,7 @@ import re
 class Parser:
 
 	def __init__(self):
-		pass
+		self.import_block_modules()
 
 
 	def parse(self,tex):
@@ -21,25 +21,24 @@ class Parser:
 		self.parser_cycle(self.root_block,content)
 
 
-'''
-A parser cycle needs a prent block, the tex to parser and
-a dictionary of options.
-options contains:
--parser_sections: say if the parser has to call parser_sections()
--next_sec_level: this parameter says to parser_sections()
-	what level of sections has to be splitted
+	'''
+	A parser cycle needs a prent block, the tex to parser and
+	a dictionary of options.
+	options contains:
+	-parse_sections: say if the parser has to call parser_sections()
+	-next_sec_level: this parameter says to parser_sections()
+		what level of sections has to be splitted
 
-
-'''
+	'''
 	def parser_cycle(self, parent_block, tex, options):
 		#first of all we search for sectioning
 
 
-'''
-This parser function search for sections splitting inside tex.
-The level of sections searched is indicated by level.
-The function calls the parser_hooks of every section block.
-'''
+	'''
+	This parser function search for sections splitting inside tex.
+	The level of sections searched is indicated by level.
+	The function calls the parser_hooks of every section block.
+	'''
     def parse_sections(self, parent_block, tex, level):
     	#check if the level is greater than subparagraph
     	if (level+1) < (len(utility.section_level)-1):
@@ -62,10 +61,41 @@ The function calls the parser_hooks of every section block.
     			parent_block.add_children_block(new_block)
 
 
+   '''
+   This parser function parse the environments in a given tex.
+   It uses environments_tokenizer to split tex inside text and env items.
+   Then, text is send to another parser_cycle for further parsing.
+   Envirnments block are processed by dedicated parser_hooks
+   '''
     def parse_environments(self, parent_block, tex, options):
-    	#first of all
+    	#first of all we get all the environment at first 
+    	#level in the tex.
+    	env_list = self.environments_tokenizer(tex)
+    	#now we can further analyze text tokens
+    	#and elaborate with parser_hooks the environment founded
+    	for e in env_list:
+    		if e[0] == 'text':
+    			#we can disable the section check because
+    			#sectioning is parser before environments
+    			new_options = options.copy()
+    			new_options['parse_sections']=False
+    			self.parser_cycle(parent_block,e[1], new_options)
+    		else:
+    			env = e[0]
+    			#we can call the parser hooks
+    			new_block = self.parser_hooks[env](e[1],parent_block)
+    			#adding new_block to the parent block
+    			parent_block.add_children_block(new_block)
 
     
+    '''
+    This function split the given tex in text parts and environments.
+    Only the first level of environments is searched: the function don't 
+    go inside nested environments, the parser_cycle will manage this.
+
+    It return a list of tuples like:
+    [ ('text','abcde..) , ('itemize','\\begin{itemize}..\\end{itemize}' ,..)]
+    '''
 	def environments_tokenizer(tex):
     	#list of tuple for results ('type_of_env', content)
     	env_list= []
@@ -74,7 +104,7 @@ The function calls the parser_hooks of every section block.
     	match = re_env1.search(tex)
     	if not match == None:
     		#we save the first part without 
-    		env_list.append(('tex',tex[0:match.start()]))
+    		env_list.append(('text',tex[0:match.start()]))
     		#the remaing part with the first matched is analized
     		tex = tex[match.start():]
     		env = match.group('env')

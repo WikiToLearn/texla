@@ -20,6 +20,9 @@ class Block:
 		#by default the level is the same of parent block
 		self.section_level = self.parent_block.section_level 
 
-
+	'''
+	IMPORTANT: this function is called by the parser!! Don't call
+	it explicitally in the Block class or derivates.
+	'''
 	def add_children_block(self, block):
 		self.children_blocks.append(block)
