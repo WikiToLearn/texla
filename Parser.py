@@ -30,8 +30,11 @@ class Parser:
 		what level of sections has to be splitted
 
 	'''
-	def parser_cycle(self, parent_block, tex, options):
-		#first of all we search for sectioning
+	def parser_cycle(self, tex, parent_block, options):
+		#first of all we search for sectioning if enables
+        if options['parser_sections']==True:
+            self.parse_sections(tex, parent_block, options)
+
 
 
 	'''
@@ -39,7 +42,8 @@ class Parser:
 	The level of sections searched is indicated by level.
 	The function calls the parser_hooks of every section block.
 	'''
-    def parse_sections(self, parent_block, tex, level):
+    def parse_sections(self, tex, parent_block, options):
+        level = options['sec_level']
     	#check if the level is greater than subparagraph
     	if (level+1) < (len(utility.section_level)-1):
     		level_key = utility.section_level[level+1]
@@ -50,8 +54,8 @@ class Parser:
     		outside_sec = toks.pop(0)
     		#this tex has to be parser but with a sectioning
     	    #level greater than one
-    		self.parser_cycle(parent_block,outside_sec, 
-    					options['next_sec_level']+=1)
+    		self.parser_cycle(outside_sec, parent_block, 
+    					options['sec_level']+=1)
     		#now the sections found are processed
     		for tok in toks:
     			#readding splitted command
@@ -65,7 +69,7 @@ class Parser:
    Then, text is send to another parser_cycle for further parsing.
    Envirnments block are processed by dedicated parser_hooks
    '''
-    def parse_environments(self, parent_block, tex, options):
+    def parse_environments(self, tex, parent_block, options):
     	#first of all we get all the environment at first 
     	#level in the tex.
     	env_list = self.environments_tokenizer(tex)
@@ -73,11 +77,11 @@ class Parser:
     	#and elaborate with parser_hooks the environment founded
     	for e in env_list:
     		if e[0] == 'text':
-    			#we can disable the section check because
-    			#sectioning is parser before environments
+    			#we make sure that the section check is disabled
+    			#because sectioning is parsed before environments
     			new_options = options.copy()
     			new_options['parse_sections']=False
-    			self.parser_cycle(parent_block,e[1], new_options)
+    			self.parser_cycle(e[1], parent_block, new_options)
     		else:
     			env = e[0]
     			#we can call the parser hooks
@@ -121,7 +125,7 @@ class Parser:
     math and text tokens. Text is further analyzed by a new 
     parser_cycle, the math tokens are processed by parser_hooks.
     '''
-    def parse_math(self, parent_block, tex, options):
+    def parse_math(self, tex, parent_block, options):
     	#first of all we section the tex in a list
     	#of tuples with (type, content).
     	toks = self.math_tokenizer(tex)
@@ -129,11 +133,12 @@ class Parser:
     	#and elaborate with parser_hooks the math founded
     	for e in toks:
     		if e[0] == 'text':
-    			#we can disable the section check because
-    			#sectioning is parser before math
+    			#we make sure that the section and env check is disabled
+                #because sectioning and envs are parsed before math
     			new_options = options.copy()
-    			new_options['parse_sections']=False
-    			self.parser_cycle(parent_block,e[1], new_options)
+    			new_options['parse_sections'] = False
+                new_options['parse_envs'] = False
+    			self.parser_cycle(e[1], parent_block, new_options)
     		else:
     			env = e[0]
     			#we can call the parser hooks
@@ -182,7 +187,7 @@ class Parser:
     call the proper parser_hook. The hook elaborate the command and returns
     the tex left to parse. Then the fuction is called recursively.
     '''
-    def parse_commands(self, parent_block, tex, options):
+    def parse_commands(self, tex, parent_block, options):
         re_cmd = re.compile(r"\\(?P<cmd>[a-zA-Z\\']+?)(?=\s|\{)", re.DOTALL)
         match = re_cmd.search(tex)
         if match!=None:
@@ -195,10 +200,15 @@ class Parser:
             tex_left = self.parser_hooks[match.group('cmd')](tex[match.start():],
                         parent_block)
             #the left tex is parsed again
-    	    self.parse_commands(parent_block, tex_left, options)
+    	    self.parse_commands(tex_left, parent_block, options)
     	
 
-
+    '''
+    This functions imports all the Blocks modules.
+    Each module has a parser_hooks() functions that returns a dictionary
+    of hooks with handling functions. This dictionary is inserted in 
+    the self.parser_hooks dictionary
+    '''
 	def import_block_modules(self):
 		self.parser_hooks={}
 		for module in os.listdir("Blocks"):

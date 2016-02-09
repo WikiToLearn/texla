@@ -1,5 +1,33 @@
-Prova Prova
-$$x=y $$ 
-ciao
-\[y=e\] boh perchè $x$
-è \(inline\)
+Nell'interpretazione di de Broglie l'impulso di una particella \`{e} dato da $\vec{p}=\hbar\vec{k}$ e ad un numero
+d'onda definito (come nel caso delle onde monocromatiche) corrisponde un momento definito. In un pacchetto d'onda non
+si ha invece una sola onda monocromatica, ma una sovrapposizione: risulta pertanto naturale associare  il termine
+$\varphi(\vec{k},t)$, che pesa il contributo delle onde che costituiscono il pacchetto, alla probabilit\`{a} di
+trovare una particella di impulso $\vec{p}=\hbar\vec{k}$. Di conseguenza, nell'interpretazione probabilistica si ha:
+\[
+\mathcal{P}(\vec{p},t) = \frac{1}{N^2} \sqmodul{\varphi(\vec{k})}
+\]
+Il teorema di Parseval garantisce che la norma delle due distribuzioni di probabilit\`{a} \`{e} la stessa e quindi la
+costante di normalizzazione \`{e} unica. Da notare inoltre che la funzione $\varphi(\vec{k})$ \`{e} completamente
+determinata dalla $\psi(\vec{x})$, quindi la funzione d'onda fornisce sia la probabilit\`{a} della posizione che
+dell'impulso. La funzione d'onda $\psi(\vec{x})$ permette quindi di determinare completamente lo stato dinamico del
+sistema, fornendo sia la posizione che l'evoluzione nello spazio delle fasi. Si noti che mentre nel calcolo della
+probabilit\`{a} della posizione il fattore di fase \`{e} ininfluente, questo non \`{e} vero per la probabilit\`{a}
+dell'impulso:
+\[
+\sqmodul{\psi(\vec{x})} = \sqmodul{\psi(\vec{x})e^{i\alpha(\vec{x})}} \quad\text{ma}\quad
+\sqmodul{\mathcal{F}[\psi(\vec{x})]} \neq \sqmodul{\mathcal{F}[\psi(\vec{x})e^{i\alpha(\vec{x})}]}
+\]
+dunque si pu\`{o} dire che \emph{il modulo della funzione d'onda \`{e} legato alla posizione, la fase all'impulso}.
+
+Si considerino ora le due relazioni sulla trasformata di Fourier:
+\[
+\varphi(\vec{k}) = \frac{1}{(2\pi)^{3/2}} \int_{-\infty}^{+\infty} \psi(\vec{x})e^{-i\vec{k}\cdot\vec{x}}\;d\vec{x}
+\qquad\qquad \psi(\vec{x}) = \frac{1}{(2\pi)^{3/2}} \int_{-\infty}^{+\infty}
+\varphi(\vec{k})e^{i\vec{k}\cdot\vec{x}}\;d\vec{k}
+\]
+questo significa che nella definizione della $\psi(\vec{x})$ si pu\`{o} sostituire la $\varphi(\vec{k})$ con la sua
+definizione in termini di trasformata di Fourier. Considerando per semplicit\`{a} di notazione il caso unidimensionale:
+\[
+\psi(x) = \frac{1}{2\pi} \int_{-\infty}^{+\infty} \int_{-\infty}^{+\infty} \psi(y)e^{iky} dy\; e^{-ikx} dk = \frac{1}{2\pi}
+\int_{-\infty}^{+\infty} \psi(y)\left[\int_{-\infty}^{+\infty} e^{ik(y-x)} dk\right] dy
+\]

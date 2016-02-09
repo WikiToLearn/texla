@@ -22,8 +22,8 @@ class Block:
 		self.section_level = self.parent_block.section_level 
 
 	'''
-	IMPORTANT: this function is called by the parser!! Don't call
-	it explicitally in the Block class or derivates.
+	IMPORTANT: this function is called by the self.parse fuction.
+	It MUST NOT be called from outside, expecially the parser
 	'''
 	def add_children_block(self, block):
 		self.children_blocks.append(block)
