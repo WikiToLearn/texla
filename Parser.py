@@ -56,10 +56,8 @@ class Parser:
     		for tok in toks:
     			#readding splitted command
     			tok = '\\'+ level_key +tok
-    			new_block = self.parser_hooks[level_key](tok, parent_block)
-    			#adding new_block to the parent block
-    			parent_block.add_children_block(new_block)
-
+    			self.parser_hooks[level_key](tok, parent_block)
+    			
 
    '''
    This parser function parse the environments in a given tex.
@@ -83,9 +81,7 @@ class Parser:
     		else:
     			env = e[0]
     			#we can call the parser hooks
-    			new_block = self.parser_hooks[env](e[1],parent_block)
-    			#adding new_block to the parent block
-    			parent_block.add_children_block(new_block)
+    			self.parser_hooks[env](e[1],parent_block)
 
     
     '''
@@ -120,11 +116,6 @@ class Parser:
     		return env_list
 
 
-
-    def parse_commands(self, parent_block, tex):
-    	pass
-
-
     '''
     This function parse math out of the tex. It splits tex in 
     math and text tokens. Text is further analyzed by a new 
@@ -146,10 +137,7 @@ class Parser:
     		else:
     			env = e[0]
     			#we can call the parser hooks
-    			new_block = self.parser_hooks[env](e[1],parent_block)
-    			#adding new_block to the parent block
-    			parent_block.add_children_block(new_block)
-
+    			self.parser_hooks[env](e[1],parent_block)
 
     '''
     This function split the tex inside a list of tuples with
@@ -188,6 +176,11 @@ class Parser:
     	return tokens
 
 
+
+    def parse_commands(self, parent_block, tex):
+        re_cmd = re.compile(r"\\([a-zA-Z\\']+?)(?=\s|\{)", re.DOTALL)
+    	
+    	
 
 
 	def import_block_modules(self):
