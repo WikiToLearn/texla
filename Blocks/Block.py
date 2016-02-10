@@ -10,7 +10,7 @@ def parser_hooks():
 class Block:
 
 	@classmethod
-	def parse(cls, tex, parent_block):
+	def parse(cls, tex, parent_block, options={}):
 		pass
 
 	def __init__(self, parent_block):

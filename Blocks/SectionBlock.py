@@ -15,10 +15,20 @@ def parser_hooks():
 class SectionBlock(Block):
 
 	@classmethod
-	def parse(cls,tex, parent_block):
+	def parse(cls,tex, parent_block, options):
+		sec_level = options['sec_level']
+		level_key = options['level_key'] 
+		#we have to parse the section
+		#first of all we can create the new block
+		sec = SectionBlock()
 		pass
 
-	def __init__(self, parent_block, level, title, options={}):
+	@staticmethod
+	def parser_args(tex):
+		
+
+
+	def __init__(self, title, parent_block, level, options={}):
 		super().__init__(parent_block)
 	
 		self.section_level = level
