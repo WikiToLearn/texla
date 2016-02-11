@@ -40,6 +40,11 @@ class Parser:
 
     It returns a liste of tuples with the blocks parser, like:
     [('math',math_block ), ('emph', emph_block),..]
+
+    The caller of the parser will manage to add the blocks to 
+    the parent_block. The parend_block is passed as parameter 
+    because it could contains useful informations for the parsing.
+
 	'''
 	def parser_cycle(self, tex, parent_block, options):
         #list for result

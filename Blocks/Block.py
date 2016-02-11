@@ -9,15 +9,26 @@ def parser_hooks():
 '''Base Block definition'''
 class Block:
 
-	@classmethod
-	def parse(cls, tex, parent_block, options={}):
+	@staticmethod
+	def parse(parser, tex, parent_block, options={}):
 		pass
 
+	'''
+	Base constructor for Block. 
+	It saves the parent_block and create the new id 
+	for the new block. It creates data structures like
+	the attributed dictionary and children nodes list.
+	By default, it sets the section_level of the block 
+	to that of the parend_block.
+	'''
 	def __init__(self, parent_block):
 		self.parent_block = parent_block
 		self.id = parent_block.id + '-' + utility.get_random_string(3)
-		self.children_blocks = children_blocks
-		#section level
+		#dictionary for attributes
+		self.attributes = {}
+		#list for childrend blocks
+		self.children_blocks = []
+		#Section level:
 		#by default the level is the same of parent block
 		self.section_level = self.parent_block.section_level 
 
@@ -25,5 +36,8 @@ class Block:
 	IMPORTANT: this function is called by the self.parse fuction.
 	It MUST NOT be called from outside, expecially the parser
 	'''
-	def add_children_block(self, block):
+	def add_child_block(self, block):
 		self.children_blocks.append(block)
+
+	def add_children_blocks(self, blocks):
+		self.children_blocks += blocks
