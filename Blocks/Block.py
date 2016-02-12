@@ -15,15 +15,17 @@ class Block:
 
 	'''
 	Base constructor for Block. 
-	It saves the parent_block and create the new id 
-	for the new block. It creates data structures like
-	the attributed dictionary and children nodes list.
+	It saves the parent_block and block name and create  
+	the new id for the new block. It creates data structures 
+	like the attributed dictionary and children nodes list.
 	By default, it sets the section_level of the block 
 	to that of the parend_block.
 	'''
-	def __init__(self, parent_block):
+	def __init__(self, block_name, parent_block):
+		self.blok_name = block_name
 		self.parent_block = parent_block
-		self.id = parent_block.id + '-' + utility.get_random_string(3)
+		self.id = parent_block.id + '-' + block_name +\
+				 '@' utility.get_random_string(3)
 		#dictionary for attributes
 		self.attributes = {}
 		#list for childrend blocks

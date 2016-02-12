@@ -9,6 +9,8 @@ class Parser:
 
 	def parse(self,tex):
 		###TODO:preparsing
+        #reading title...
+        #reading author...
 
 		#Getting content of 
 		m_doc = regexes.r_doc.search(tex)
@@ -16,12 +18,13 @@ class Parser:
 		content = m_doc.groups("content")
 		options = m_doc.groups("options")
 		#creating root block
-		self.root_block = documentBlock()
+		self.root_block = documentBlock('',{})
 		#beginning of parsing 
         options = {'parse_sections':True,
                    'parse_environments':True,
                    'sec_level':0}
-		self.parser_cycle(self.root_block,content,options)
+		blocks = self.parser_cycle(self.root_block,content,options)
+        print (blocks)
 
 
 	'''

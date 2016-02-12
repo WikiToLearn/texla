@@ -1,8 +1,12 @@
 import utility
 
-'''Root block of the tree'''
-class DocumentBlock(Block):
+'''
+Root block of the tree. It's a special 
+block and don't inherit from Block class
+'''
+class DocumentBlock():
 
-	def __init__(self, options):
+	def __init__(self, title,  options):
 		self.id = "root"
+		self.title = title
 		self.options = options

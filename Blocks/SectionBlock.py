@@ -1,5 +1,5 @@
 '''Block for sectioning'''
-
+import utility
 
 def parser_hooks():
 	pdict = {}
@@ -55,10 +55,12 @@ class SectionBlock(Block):
 	def __init__(self, title, index_title, numbered, level, parent_block):
 		#base constructor for Block. It created the id 
 		#nd basic data structures
-		super().__init__(parent_block)
+		section_name = utility.section_level[level]
+		super().__init__(section_name, parent_block)
 		#new section level
 		self.section_level = level
 		#attributes
+		self.attributes['section_name'] = section_name
 		self.attributes['title'] = title
 		self.attributes['index_title'] = index_title
 		self.attributes['numbered'] = numbered
