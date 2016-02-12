@@ -1,5 +1,6 @@
 '''Block for sectioning'''
 import utility
+import Block
 
 def parser_hooks():
 	pdict = {}
