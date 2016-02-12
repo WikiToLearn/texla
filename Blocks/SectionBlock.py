@@ -37,7 +37,6 @@ class SectionBlock(Block):
                    'parse_environments':True,
                    'sec_level': sec_level}
 		chld_blocks = parser.parser_cycle(content, sec_block, poptions)
-
 		#now we have all chld blocks. They are simply added to the list.
 		#no further processing for sections
 		sec_block.add_children_blocks(chld_blocks)

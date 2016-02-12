@@ -95,7 +95,7 @@ class Parser:
                 sec_options = { 'sec_level' : (level +1),
                             'level_key' : level_key }
                 #the tuple with the result is saved
-    			pblocks.append(self.parser_hooks[level_key](tok, 
+    			pblocks.append(self.call_parser_hook(level_key, tok, 
                                  parent_block, sec_options))
     	#found block are returned to main cycle
         return pblocks		
@@ -125,7 +125,7 @@ class Parser:
     		else:
     			env = e[0]
     			#we can call the parser hooks
-    			pblocks.append(self.parser_hooks[env](e[1],parent_block))
+    			pblocks.append(self.call_parser_hook(env, e[1],parent_block))
         return pblocks
 
     
@@ -186,7 +186,7 @@ class Parser:
     		else:
     			env = e[0]
     			#we can call the parser hooks
-    			pblocks.append(self.parser_hooks[env](e[1],parent_block))
+    			pblocks.append(self.call_parser_hook(env, e[1],parent_block))
         return pblocks
 
     '''
@@ -241,11 +241,11 @@ class Parser:
             text = tex[:match.start()]
             #The text here is completely parsed.
             #We have to create a text block
-            pblocks.append(self.parser_hooks['text'](text, parent_block))
+            pblocks.append(self.call_parser_hook('text', text, parent_block))
             #the matched command is parser by the parser_hook
             #and the remaining tex is returned as the second element of
             #a list. The first element is the parsed command.
-            result = self.parser_hooks[match.group('cmd')](tex[match.start():],
+            result = self.call_parser_hook(match.group('cmd'), tex[match.start():],
                         parent_block)
             tex_left = result[1]
             pblocks.append(result[0])
@@ -253,8 +253,21 @@ class Parser:
     	    pblocks+=self.parse_commands(tex_left, parent_block, options)
         else:
             #a text block is created
-            pblocks.append(self.parser_hooks['text'](tex, parent_block))
+            pblocks.append(self.call_parser_hook('text', tex, parent_block))
         return pblocks
+
+
+    '''
+    This function check if the required parser_hook is avaiable,
+    if not it calls th default hook
+    '''
+    def call_parser_hook(hook, tex, parent_block, options={}):
+        if hook in self.parser_hooks:
+            return self.parser_hooks[hook](self, tex, parent_block, options)
+        else 
+            #default hook is called
+            return self.parser_hooks['default'](self, tex, parent_block, options)
+
     	
 
     '''
