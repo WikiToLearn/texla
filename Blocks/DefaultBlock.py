@@ -1,5 +1,6 @@
 '''Default Block'''
-
+from . import utility
+from .Block import *
 
 def parser_hooks():
 	pdict = {}
@@ -18,15 +19,15 @@ class DefaultBlock(Block):
 		return block
 		
 
-	'''
-	Constructor for sections:
-	-title: main title
-	-index_title: title for table of content
-	-numbered: True/False
-	-level: sections level
-	-parent_block
-	'''
 	def __init__(self, tex, parent_block):
+		'''
+		Constructor for sections:
+		-title: main title
+		-index_title: title for table of content
+		-numbered: True/False
+		-level: sections level
+		-parent_block
+		'''
 		#base constructor for Block. It created the id 
 		#nd basic data structures
 		super().__init__('default', parent_block)

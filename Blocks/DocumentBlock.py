@@ -1,4 +1,4 @@
-import utility
+from . import utility
 
 '''
 Root block of the tree. It's a special 

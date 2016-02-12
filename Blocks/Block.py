@@ -1,5 +1,4 @@
-import utility
-
+from . import utility
 
 def parser_hooks():
 	pdict = {'default': Block.parse}
@@ -13,19 +12,20 @@ class Block:
 	def parse(parser, tex, parent_block, options={}):
 		pass
 
-	'''
-	Base constructor for Block. 
-	It saves the parent_block and block name and create  
-	the new id for the new block. It creates data structures 
-	like the attributed dictionary and children nodes list.
-	By default, it sets the section_level of the block 
-	to that of the parend_block.
-	'''
+	
 	def __init__(self, block_name, parent_block):
+		'''
+		Base constructor for Block. 
+		It saves the parent_block and block name and create  
+		the new id for the new block. It creates data structures 
+		like the attributed dictionary and children nodes list.
+		By default, it sets the section_level of the block 
+		to that of the parend_block.
+		'''
 		self.block_name = block_name
 		self.parent_block = parent_block
 		self.id = parent_block.id + '-' + block_name +\
-				 '@' utility.get_random_string(3)
+				'@' + utility.get_random_string(3)
 		#dictionary for attributes
 		self.attributes = {}
 		#list for childrend blocks

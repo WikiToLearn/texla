@@ -17,13 +17,14 @@ def get_random_string(N):
 	return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(N))
 
 
-'''
-This functions extract the env environment in a greedy way.
-It finds nested environment with same env.
-It return the start and end pos of the environment 
-and the string matched with \\begin and \\end
-'''
+
 def get_environment_greedy(tex, env):
+	'''
+	This functions extract the env environment in a greedy way.
+	It finds nested environment with same env.
+	It return the start and end pos of the environment 
+	and the string matched with \\begin and \\end
+'''
 	begin = '\\begin{'+ env+'}'
 	end = '\\end{'+ env + '}'
 	bre = re.compile(r'\\begin{'+ env+'}')

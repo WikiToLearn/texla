@@ -1,5 +1,7 @@
 import os
 import re
+from Blocks.DocumentBlock import DocumentBlock
+import Blocks.utility as utilityc  
 
 class Parser:
 
@@ -13,41 +15,41 @@ class Parser:
         #reading author...
 
         #Getting content of 
-        m_doc = regexes.r_doc.search(tex)
+        r_doc = re.compile(r'\\begin(?P<options>\[.*?\])?{document}(?P<content>.*?)\\end{document}', re.DOTALL)
+        m_doc = r_doc.search(tex)
         #getting content
         content = m_doc.groups("content")
         options = m_doc.groups("options")
         #creating root block
-        self.root_block = documentBlock('',{})
+        self.root_block = DocumentBlock('',{})
         #beginning of parsing 
         options = {'parse_sections':True,'parse_environments':True,'sec_level':0}
         blocks = self.parser_cycle(self.root_block,content,options)
         print (blocks)
 
 
-    '''
-    MAIN ENTRYPOINT FOR PARSING
-    A parser cycle needs a parent block, the tex to parser and
-    a dictionary of options.
-    Options controls the flow of operations in this order:
-    section-->environments-->math-->commands.
-    Options dict contains:
-    -parse_sections: say if the parser has to call parse_sections()
-    -sec_level: this parameter says to parser_sections()
-        what level of sections has to be splitted
-    -parse_envs: say if the parser has to call parse_enviroments()
-    -parse_math: parser call parse_math()
-    -parse_commands: parser calls parse_commands()
-
-    It returns a liste of tuples with the blocks parser, like:
-    [('math',math_block ), ('emph', emph_block),..]
-
-    The caller of the parser will manage to add the blocks to 
-    the parent_block. The parend_block is passed as parameter 
-    because it could contains useful informations for the parsing.
-
-    '''
     def parser_cycle(self, tex, parent_block, options):
+        '''
+        MAIN ENTRYPOINT FOR PARSING
+        A parser cycle needs a parent block, the tex to parser and
+        a dictionary of options.
+        Options controls the flow of operations in this order:
+        section-->environments-->math-->commands.
+        Options dict contains:
+        -parse_sections: say if the parser has to call parse_sections()
+        -sec_level: this parameter says to parser_sections()
+            what level of sections has to be splitted
+        -parse_envs: say if the parser has to call parse_enviroments()
+        -parse_math: parser call parse_math()
+        -parse_commands: parser calls parse_commands()
+
+        It returns a liste of tuples with the blocks parser, like:
+        [('math',math_block ), ('emph', emph_block),..]
+
+        The caller of the parser will manage to add the blocks to 
+        the parent_block. The parend_block is passed as parameter 
+        because it could contains useful informations for the parsing.
+        '''
         #list for result
         parsed_blocks = []
         #first of all we search for sectioning if enables
@@ -65,14 +67,14 @@ class Parser:
         return parsed_blocks
 
 
-    '''
-    This parser function search for sections splitting inside tex.
-    The level of sections searched is indicated by sec_level option.
-    The function calls the parser_hooks of every section block.
-
-    It returns a list of blocks parsed as tuples.
-    '''
     def parse_sections(self, tex, parent_block, options):
+        '''
+        This parser function search for sections splitting inside tex.
+        The level of sections searched is indicated by sec_level option.
+        The function calls the parser_hooks of every section block.
+
+        It returns a list of blocks parsed as tuples.
+        '''
         pblocks = []
         level = options['sec_level']
         #check if the level is greater than subparagraph
@@ -102,14 +104,14 @@ class Parser:
         return pblocks      
 
 
-    '''
-    This parser function parse the environments in a given tex.
-    It uses environments_tokenizer to split tex inside text and env items.
-    Then, text is send to another parser_cycle for further parsing.
-    Envirnments block are processed by dedicated parser_hooks and 
-    then returned as a list of tutle to parser_cycle()
-    '''
     def parse_environments(self, tex, parent_block, options):
+        '''
+        This parser function parse the environments in a given tex.
+        It uses environments_tokenizer to split tex inside text and env items.
+        Then, text is send to another parser_cycle for further parsing.
+        Envirnments block are processed by dedicated parser_hooks and 
+        then returned as a list of tutle to parser_cycle()
+        '''
         pblocks = []
         #first of all we get all the environment at first 
         #level in the tex.
@@ -130,15 +132,15 @@ class Parser:
         return pblocks
 
     
-    '''
-    This function split the given tex in text parts and environments.
-    Only the first level of environments is searched: the function don't 
-    go inside nested environments, the parser_cycle will manage this.
-
-    It return a list of tuples like:
-    [ ('text','abcde..) , ('itemize','\\begin{itemize}..\\end{itemize}' ,..)]
-    '''
     def environments_tokenizer(self, tex):
+        '''
+        This function split the given tex in text parts and environments.
+        Only the first level of environments is searched: the function don't 
+        go inside nested environments, the parser_cycle will manage this.
+
+        It return a list of tuples like:
+        [ ('text','abcde..) , ('itemize','\\begin{itemize}..\\end{itemize}' ,..)]
+        '''
         #list of tuple for results ('type_of_env', content)
         env_list= []
         #we search for the first enviroment
@@ -162,14 +164,14 @@ class Parser:
             return env_list
 
 
-    '''
-    This function parse math out of the tex. It splits tex in 
-    math and text tokens. Text is further analyzed by a new 
-    parser_cycle, the math tokens are processed by parser_hooks.
-    Then parsed blocks are returned as a list of tuple to the
-    parser_cycle()
-    '''
     def parse_math(self, tex, parent_block, options):
+        '''
+        This function parse math out of the tex. It splits tex in 
+        math and text tokens. Text is further analyzed by a new 
+        parser_cycle, the math tokens are processed by parser_hooks.
+        Then parsed blocks are returned as a list of tuple to the
+        parser_cycle()
+        '''
         pblocks = []
         #first of all we section the tex in a list
         #of tuples with (type, content).
@@ -190,13 +192,14 @@ class Parser:
                 pblocks.append(self.call_parser_hook(env, e[1],parent_block))
         return pblocks
 
-    '''
-    This function split the tex inside a list of tuples with
-    (type, content). The type could be text, display_math, inline_math.
-    The function is able to extract math inside \(...\) $...$ (inline) and
-    inside \[...\] $$...$$ (display).
-    '''
+    
     def math_tokenizer(self,tex):
+        '''
+        This function split the tex inside a list of tuples with
+        (type, content). The type could be text, display_math, inline_math.
+        The function is able to extract math inside \(...\) $...$ (inline) and
+        inside \[...\] $$...$$ (display).
+        '''
         inline_re = re.compile(r'(?<![\$])\$([^$]+)\$(?!\$)', re.DOTALL)
         display_re = re.compile(r'(?<![\$])\$\$([^$]+)\$\$(?!\$)', re.DOTALL)
         inline_re2 = re.compile(r'\\\((.*?)\\\)',re.DOTALL)
@@ -227,14 +230,14 @@ class Parser:
         return tokens
 
 
-    ''' 
-    This function parse single latex commands. Sectioning, environments
-    and math are already parsed. The function find the first command and 
-    call the proper parser_hook. The hook elaborate the command and returns
-    the tex left to parse. Then the fuction is called recursively.
-    Parsed commands are returned to parser_cycle() as a list of tuples.
-    '''
     def parse_commands(self, tex, parent_block, options):
+         ''' 
+        This function parse single latex commands. Sectioning, environments
+        and math are already parsed. The function find the first command and 
+        call the proper parser_hook. The hook elaborate the command and returns
+        the tex left to parse. Then the fuction is called recursively.
+        Parsed commands are returned to parser_cycle() as a list of tuples.
+        '''
         pblocks = []
         re_cmd = re.compile(r"\\(?P<cmd>[a-zA-Z\\']+?)(?=\s|\{)", re.DOTALL)
         match = re_cmd.search(tex)
@@ -258,11 +261,11 @@ class Parser:
         return pblocks
 
 
-    '''
-    This function check if the required parser_hook is avaiable,
-    if not it calls th default hook
-    '''
     def call_parser_hook(hook, tex, parent_block, options={}):
+        '''
+        This function check if the required parser_hook is avaiable,
+        if not it calls th default hook
+        '''
         if hook in self.parser_hooks:
             return self.parser_hooks[hook](self, tex, parent_block, options)
         else:
@@ -271,15 +274,18 @@ class Parser:
 
         
 
-    '''
-    This functions imports all the Blocks modules.
-    Each module has a parser_hooks() functions that returns a dictionary
-    of hooks with handling functions. This dictionary is inserted in 
-    the self.parser_hooks dictionary
-    '''
+    
     def import_block_modules(self):
+        '''
+        This functions imports all the Blocks modules.
+        Each module has a parser_hooks() functions that returns a dictionary
+        of hooks with handling functions. This dictionary is inserted in 
+        the self.parser_hooks dictionary
+        '''
         self.parser_hooks={}
         for module in os.listdir("Blocks"):
+            if module == 'utility.py':
+                continue
             if module.endswith('.py'):
                 __import__("Blocks."+module[:-3])
                 if hasattr(module,"parser_hooks"):
