@@ -22,7 +22,7 @@ class Block:
 	to that of the parend_block.
 	'''
 	def __init__(self, block_name, parent_block):
-		self.blok_name = block_name
+		self.block_name = block_name
 		self.parent_block = parent_block
 		self.id = parent_block.id + '-' + block_name +\
 				 '@' utility.get_random_string(3)
