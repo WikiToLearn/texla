@@ -1,9 +1,5 @@
 from . import utility
 
-def parser_hooks():
-	pdict = {'default': Block.parse}
-	return pdict
-
 
 '''Base Block definition'''
 class Block:
@@ -43,3 +39,4 @@ class Block:
 
 	def add_children_blocks(self, blocks):
 		self.children_blocks += blocks
+

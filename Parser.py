@@ -1,7 +1,7 @@
 import os
 import re
-from Blocks.DocumentBlock import DocumentBlock
-import Blocks.utility as utilityc  
+import Blocks
+import Blocks.utility as utility  
 
 class Parser:
 
@@ -21,7 +21,7 @@ class Parser:
         content = m_doc.groups("content")
         options = m_doc.groups("options")
         #creating root block
-        self.root_block = DocumentBlock('',{})
+        self.root_block = Blocks.DocumentBlock('',{})
         #beginning of parsing 
         options = {'parse_sections':True,'parse_environments':True,'sec_level':0}
         blocks = self.parser_cycle(self.root_block,content,options)
@@ -266,31 +266,11 @@ class Parser:
         This function check if the required parser_hook is avaiable,
         if not it calls th default hook
         '''
-        if hook in self.parser_hooks:
-            return self.parser_hooks[hook](self, tex, parent_block, options)
+        if hook in Blocks.parser_hooks:
+            return Blocks.parser_hooks[hook](self, tex, parent_block, options)
         else:
             #default hook is called
-            return self.parser_hooks['default'](self, tex, parent_block, options)
-
-        
-
-    
-    def import_block_modules(self):
-        '''
-        This functions imports all the Blocks modules.
-        Each module has a parser_hooks() functions that returns a dictionary
-        of hooks with handling functions. This dictionary is inserted in 
-        the self.parser_hooks dictionary
-        '''
-        self.parser_hooks={}
-        for module in os.listdir("Blocks"):
-            if module == 'utility.py':
-                continue
-            if module.endswith('.py'):
-                __import__("Blocks."+module[:-3])
-                if hasattr(module,"parser_hooks"):
-                    for key,value  in module.parser_hooks.items():
-                        self.parser_functions[key] = value
+            return Blocks.parser_hooks['default'](self, tex, parent_block, options)
 
 
 

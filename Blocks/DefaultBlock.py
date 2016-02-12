@@ -2,11 +2,6 @@
 from . import utility
 from .Block import *
 
-def parser_hooks():
-	pdict = {}
-	pdict['default']= SectionBlock.parse
-	return pdict
-
 class DefaultBlock(Block):
 
 	@staticmethod
@@ -32,3 +27,9 @@ class DefaultBlock(Block):
 		#nd basic data structures
 		super().__init__('default', parent_block)
 		self.tex = tex
+
+
+def parser_hooks():
+	pdict = {}
+	pdict['default']= DefaultBlock.parse
+	return pdict
