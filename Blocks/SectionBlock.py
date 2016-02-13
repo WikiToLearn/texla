@@ -1,4 +1,5 @@
 import re
+import logging
 from . import utility
 from .Block import *
 
@@ -16,6 +17,8 @@ class SectionBlock(Block):
         title = m.group('title')
         index_title = m.group('index_title')
         numbered = (m.group('ast')==None)
+        logging.info('SectionBlock.parse @ level: %s, title: %s',
+            level_key, title)
         #first of all we can create the new block
         sec_block = SectionBlock(title, index_title, 
             numbered, sec_level, parent_block)
@@ -24,7 +27,9 @@ class SectionBlock(Block):
         content = tex[m.end():]
         #the parser is called with options
         poptions = {'parse_sections':True,
-                   'parse_environments':True,
+                   'parse_envs':True,
+                   'parse_math':True,
+                   'parse_commands':True,
                    'sec_level': sec_level}
         chld_blocks = parser.parser_cycle(content, sec_block, poptions)
         #now we have all chld blocks. They are simply added to the list.

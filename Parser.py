@@ -27,7 +27,9 @@ class Parser:
         self.root_block = DocumentBlock('',{})
         #beginning of parsing 
         options = {'parse_sections':True,
-                   'parse_environments':True,
+                   'parse_envs':True,
+                   'parse_math':True,
+                   'parse_commands':True,
                    'sec_level':-1}
         blocks = self.parser_cycle(content, self.root_block,options)
         return blocks
@@ -55,20 +57,23 @@ class Parser:
         the parent_block. The parend_block is passed as parameter 
         because it could contains useful informations for the parsing.
         '''
-        logging.debug('PARSER.parser_cyle @ entered parser_cycle')
         #list for result
         parsed_blocks = []
         #first of all we search for sectioning if enables
         if options['parse_sections']:
+            logging.debug('PARSER.pcyle.SECTIONS @ dict: %s', str(options))
             parsed_blocks+=self.parse_sections(tex, parent_block, options)
         #then we parse environments
         elif options['parse_envs']:
+            logging.debug('PARSER.pcyle.ENVIRONMENTS @ dict: %s', str(options))
             parsed_blocks+=self.parse_environments(tex, parent_block, options)
         elif options['parse_math']:
             #then we parse maths
+            logging.debug('PARSER.pcyle.MATH @ dict: %s', str(options))
             parsed_blocks+=self.parse_math(tex, parent_block, options)
         elif options['parse_commands']:
             #finally single command are parserd
+            logging.debug('PARSER.pcyle.COMMANDS @ dict: %s', str(options))
             parsed_blocks+=self.parse_commands(tex, parent_block, options)
         return parsed_blocks
 
@@ -81,7 +86,6 @@ class Parser:
 
         It returns a list of blocks parsed as tuples.
         '''
-        logging.debug('PARSER.parser_sections @ parsing sections',)
         pblocks = []
         level = options['sec_level']
         #check if the level is greater than subparagraph
@@ -91,12 +95,14 @@ class Parser:
             #the tex is splitted by the section key
             toks = sec_re.split(tex)
             #the first token is the tex outside sectioning
-            outside_sec = toks.pop(0)
-            #this tex has to be parser but with a sectioning
-            #level greater than one
-            new_options = options.copy()
-            new_options['sec_level']+=1
-            pblocks+=self.parser_cycle(outside_sec, parent_block, new_options)
+            #the text is STRIPED
+            outside_sec = toks.pop(0).strip()
+            if outside_sec != '':
+                #this tex has to be parser but with a sectioning
+                #level greater than one
+                new_options = options.copy()
+                new_options['sec_level']+=1
+                pblocks+=self.parser_cycle(outside_sec, parent_block, new_options)
             #now the sections found are processed
             for tok in toks:
                 #readding splitted command
@@ -107,6 +113,12 @@ class Parser:
                 #the tuple with the result is saved
                 pblocks.append(self.call_parser_hook(level_key, tok, 
                                  parent_block, sec_options))
+        else:
+            #if we have searched for all section levels 
+            #we continue with environments
+            new_options = options.copy()
+            new_options['parse_sections'] = False
+            pblocks+= self.parser_cycle(tex,parent_block,new_options)
         #found block are returned to main cycle
         return pblocks      
 
@@ -119,19 +131,20 @@ class Parser:
         Envirnments block are processed by dedicated parser_hooks and 
         then returned as a list of tutle to parser_cycle()
         '''
-        logging.debug('PARSER.parse_environments @ parsing envs')
         pblocks = []
         #first of all we get all the environment at first 
         #level in the tex.
         env_list = self.environments_tokenizer(tex)
+        logging.debug('PARSER.ENVIRONMENTS: tokens: ' + str([x[0] for x in env_list]))
         #now we can further analyze text tokens
         #and elaborate with parser_hooks the environment founded
         for e in env_list:
             if e[0] == 'text':
-                #we make sure that the section check is disabled
-                #because sectioning is parsed before environments
+                #Sections and envs discovery is disabled 
+                #because we have found text
                 new_options = options.copy()
                 new_options['parse_sections'] = False
+                new_options['parse_envs'] = False
                 pblocks+=self.parser_cycle(e[1], parent_block, new_options)
             else:
                 env = e[0]
@@ -156,7 +169,8 @@ class Parser:
         match = re_env1.search(tex)
         if not match == None:
             #we save the first part without 
-            env_list.append(('text',tex[0:match.start()]))
+            if match.start()>0:
+                env_list.append(('text',tex[0:match.start()]))
             #the remaing part with the first matched is analized
             tex = tex[match.start():]
             env = match.group('env')
@@ -169,7 +183,10 @@ class Parser:
             after_env_list = self.environments_tokenizer(left_tex)
             if not after_env_list == None:
                 env_list = env_list + after_env_list
-            return env_list
+        else:
+            #all text
+            env_list.append(('text',tex))
+        return env_list
 
 
     def parse_math(self, tex, parent_block, options):
@@ -180,11 +197,11 @@ class Parser:
         Then parsed blocks are returned as a list of tuple to the
         parser_cycle()
         '''
-        loggin.debug('PARSER.parse_math @ parsing math')
         pblocks = []
         #first of all we section the tex in a list
         #of tuples with (type, content).
         toks = self.math_tokenizer(tex)
+        logging.debug('PARSER.MATH: tokens: '+ str([x[0] for x in toks]))
         #now we can further analyze text tokens
         #and elaborate with parser_hooks the math founded
         for e in toks:
@@ -194,6 +211,7 @@ class Parser:
                 new_options = options.copy()
                 new_options['parse_sections'] = False
                 new_options['parse_envs'] = False
+                new_options['parse_math'] = False
                 pblocks+=self.parser_cycle(e[1], parent_block, new_options)
             else:
                 env = e[0]
@@ -225,6 +243,8 @@ class Parser:
             pos[md2.start()] = ('display_math',md2)
         #now we sort the dictionary
         tokens = []
+        #if we don't find math we return the text
+        tokens.append(('text',tex))
         last_tex_index = 0
         for start in sorted(pos.keys()):
             end = pos[start][1].end()
@@ -247,7 +267,6 @@ class Parser:
         the tex left to parse. Then the fuction is called recursively.
         Parsed commands are returned to parser_cycle() as a list of tuples.
         '''
-        logging.debug('PARSER.parser_commands @ parsing commands')
         pblocks = []
         re_cmd = re.compile(r"\\(?P<cmd>[a-zA-Z\\']+?)(?=\s|\{)", re.DOTALL)
         match = re_cmd.search(tex)

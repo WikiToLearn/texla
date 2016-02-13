@@ -7,7 +7,7 @@ block and don't inherit from Block class
 class DocumentBlock():
 
 	def __init__(self, title,  options):
-		self.id = "root"
+		self.id = "@"
 		self.title = title
 		self.options = options
 		self.parent_block = None

@@ -6,6 +6,9 @@ class Block:
 
 	@staticmethod
 	def parse(parser, tex, parent_block, options={}):
+		'''
+		The method must return a tuple with the created 
+		Block and the last used index of tex string.'''
 		pass
 
 	
@@ -20,8 +23,7 @@ class Block:
 		'''
 		self.block_name = block_name
 		self.parent_block = parent_block
-		self.id = parent_block.id + '-' + block_name +\
-				'@' + utility.get_random_string(3)
+		self.id = parent_block.id + '-' + utility.get_random_string(3)
 		#dictionary for attributes
 		self.attributes = {'N_chblocks':0}
 		#list for childrend blocks
@@ -50,12 +52,14 @@ class Block:
 		json = '' 
 		levelb = level+3
 		json += (' '*level + '{\n')
+		json += (' '*levelb + '"ID":"'+ self.id+'",\n')
+		json += (' '*levelb + '"block_name":"'+ self.block_name+'",\n')
 		for k,v in self.attributes.items():
-			json += (' '*levelb + '"'+k+ '":"'+str(v)+ '"\n' )
+			json += (' '*levelb + '"'+k+ '":"'+str(v)+ '",\n' )
 		json += (' '*levelb + '"children_blocks":[\n')
 		for b in self.ch_blocks:
 			json+= b.to_json(levelb+3)
-		json += (' '*levelb+']\n')
+		json += (' '*levelb+'],\n')
 		json += (' '*level + '}\n')
 		return json
 
