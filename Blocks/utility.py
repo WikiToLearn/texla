@@ -104,9 +104,10 @@ def get_command_greedy(tex):
 	'''This function removes the first command found in
 	the string. It removes all its parenthesis in a greedy way.
 	If the string is '\emph[option]{text}\emph{..}' it removes the 
-	first command.
+	first command. 
 	It returns a tuple with the extraced command with options 
-	and the remaining tex (and it's starting index).
+	and the remaining tex (and it's starting index). If there are 
+	no commands it returns the tex as (tex, '' len(tex)) for consistency.
 	'''
 	logging.debug('UTILITY.get_command_greedy @ tex: %s', tex)
 	#first of all we remove the cmd 
@@ -114,8 +115,8 @@ def get_command_greedy(tex):
 	#we match the fist command
 	mat = re_cmd.search(tex)
 	if mat ==None:
-		logging.error('UTILITY.get_command_greedy @ command not found')
-		return ('','','')
+		logging.error('UTILITY.get_command_greedy @ any command found!')
+		return (tex,'',len(tex))
 	cmd = mat.group('cmd')
 	left_tex = tex[mat.end('cmd'):]
 	#now we extract the tokens

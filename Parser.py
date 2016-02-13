@@ -95,7 +95,7 @@ class Parser:
             #the tex is splitted by the section key
             toks = sec_re.split(tex)
             #the first token is the tex outside sectioning
-            #the text is STRIPED
+            #the text is STRIPED to avoid null strings
             outside_sec = toks.pop(0).strip()
             if outside_sec != '':
                 #this tex has to be parser but with a sectioning
@@ -113,6 +113,7 @@ class Parser:
                 #the tuple with the result is saved
                 pblocks.append(self.call_parser_hook(level_key,'env', tok, 
                                  parent_block, sec_options))
+                logging.info('PARSER.SECTIONS @ block: %s', str(pblocks[-1]))
         else:
             #if we have searched for all section levels 
             #we continue with environments
@@ -150,6 +151,7 @@ class Parser:
                 env = e[0]
                 #we can call the parser hooks
                 pblocks.append(self.call_parser_hook(env,'env', e[1],parent_block))
+                logging.info('PARSER.ENVIRONMENTS @ block: %s', str(pblocks[-1]))
         return pblocks
 
     
@@ -168,21 +170,22 @@ class Parser:
         re_env1 = re.compile(r'\\begin\{(?P<env>.*?)\}')
         match = re_env1.search(tex)
         if not match == None:
-            #we save the first part without 
+            #we save the first part outside environment
             if match.start()>0:
                 env_list.append(('text',tex[0:match.start()]))
-            #the remaing part with the first matched is analized
+            #the remaing part with the first env matched is analized
             tex = tex[match.start():]
             env = match.group('env')
             #now we extract the env greedy
             s,e,content = utility.get_environment_greedy(tex,env)
             env_list.append((env, content))
-            #now we iterate the process for remaining tex
-            left_tex = tex[e:]
-            #returning the ordered list of matches
-            after_env_list = self.environments_tokenizer(left_tex)
-            if not after_env_list == None:
-                env_list = env_list + after_env_list
+            #we iterate the process for remaining tex (STRIPED)
+            #if it's not empty
+            left_tex = tex[e:].strip()
+            if len(left_tex)>0 :
+                after_env_list = self.environments_tokenizer(left_tex)
+                if len(after_env_list) > 0:
+                    env_list += after_env_list
         else:
             #all text
             env_list.append(('text',tex))
@@ -217,6 +220,7 @@ class Parser:
                 env = e[0]
                 #we can call the parser hooks
                 pblocks.append(self.call_parser_hook(env,'env', e[1],parent_block))
+                logging.info('PARSER.MATH @ block: %s', str(pblocks[-1]))
         return pblocks
 
     
@@ -243,15 +247,19 @@ class Parser:
             pos[md2.start()] = ('display_math',md2)
         #now we sort the dictionary
         tokens = []
-        #if we don't find math we return the text
-        tokens.append(('text',tex))
+        #if we don't find math we return the tex
+        if len(pos) == 0:
+            tokens.append(('text',tex))
         last_tex_index = 0
         for start in sorted(pos.keys()):
             end = pos[start][1].end()
             typ = pos[start][0]
             content = pos[start][1].group()
-            previous_tex = tex[last_tex_index : start]
-            tokens.append(('text', previous_tex))
+            #the text outside math is extracted and STRIPED
+            previous_tex = tex[last_tex_index : start].strip()
+            if len(previous_tex)>0:
+                #if ok the text is saved
+                tokens.append(('text', previous_tex))
             #the last_tex_index is moved forward
             last_tex_index = end
             #the match is saved
@@ -271,26 +279,34 @@ class Parser:
         (new Block, tex left to parser). 
         '''
         pblocks = []
-        re_cmd = re.compile(r"\\(?P<cmd>[a-zA-Z\\']+?)(?=\s|\{)", re.DOTALL)
+        re_cmd = re.compile(r"\\(?P<cmd>[a-zA-Z\\']+)(?=[\s{[])", re.DOTALL)
         match = re_cmd.search(tex)
         if match!=None:
-            text = tex[:match.start()]
-            #The text before the cmd is completely parsed.
-            #We have to create a text block
-            pblocks.append(self.call_parser_hook('text','cmd',text, parent_block)[0])
+            matched_cmd = match.group('cmd')
+            logging.debug('PARSER.COMMANDS @ matched: %s', matched_cmd)
+            #The text before the cmd is extracted and STRIPED
+            text = tex[:match.start()].strip()
+            if len(text)>0:
+                #We have to create a text block
+                pblocks.append(self.call_parser_hook('text','cmd',
+                        text, parent_block)[0])
             #the matched command is parser by the parser_hook
             #and the remaining tex is returned as the second element of
-            #a list. The first element is the parsed command.
-            result = self.call_parser_hook(match.group('cmd'),'cmd',tex[match.start():],
-                        parent_block)
-            tex_left = result[1]
-            logging.debug('PARSER.COMMANDS @ match: %s', str(result))
+            #a list.  The first element is the parsed command.
+            result = self.call_parser_hook(matched_cmd,'cmd',
+                    tex[match.start():], parent_block)
+            logging.debug('PARSER.COMMANDS @ block: %s', str(result[0]))
+            #the block is appended
             pblocks.append(result[0])
-            #the left tex is parsed again
-            pblocks+=self.parse_commands(tex_left, parent_block, options)
+            #the remaining tex is striped
+            tex_left = result[1].strip()
+            if len(tex_left)>0:
+                #the left tex is parsed again if not null
+                pblocks+=self.parse_commands(tex_left, parent_block, options)
         else:
             #a text block is created
             pblocks.append(self.call_parser_hook('text','cmd', tex, parent_block)[0])
+            logging.debug('PARSER.COMMANDS @ block: %s', str(result[0]))
         return pblocks
 
 

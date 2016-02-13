@@ -17,7 +17,7 @@ class SectionBlock(Block):
         title = m.group('title')
         index_title = m.group('index_title')
         numbered = (m.group('ast')==None)
-        logging.info('SectionBlock.parse @ level: %s, title: %s',
+        logging.debug('SectionBlock.parse @ level: %s, title: %s',
             level_key, title)
         #first of all we can create the new block
         sec_block = SectionBlock(title, index_title, 
@@ -60,6 +60,12 @@ class SectionBlock(Block):
         self.attributes['title'] = title
         self.attributes['index_title'] = index_title
         self.attributes['numbered'] = numbered
+
+    def __str__(self):
+        return  '<Block:{}, ID:{}, section_name:{}, title:{}>'.format(
+            self.block_name, self.id, self.attributes['section_name'],
+            self.attributes['title'])
+
 
 
 def parser_hooks():

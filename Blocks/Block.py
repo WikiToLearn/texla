@@ -44,6 +44,9 @@ class Block:
 		self.ch_blocks += blocks
 		self.attributes['N_chblocks']+=len(blocks)
 
+	def __str__(self):
+		return '<Block:{}, ID:{}>'.format( self.block_name, self.id)
+
 	def to_json(self, level=0):
 		'''
 		This functions create a json ouput that 
