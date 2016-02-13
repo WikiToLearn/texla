@@ -1,6 +1,7 @@
 import re
 import logging
 from . import utility
+from . import CommandParser
 from .Block import *
 
 class TextBlock(Block):
@@ -16,7 +17,7 @@ class TextBlock(Block):
     def parse_accents(parser, tex, parent_block, options):
         logging.debug('TextBlock.parse_plain_text @ ')
         #we can extract the letter using utility
-        params = utility.get_command_greedy()
+        params = CommandParser.get_command_greedy()
 
         
 

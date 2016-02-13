@@ -20,7 +20,6 @@ def get_random_string(N):
 		string.digits) for _ in range(N))
 
 
-
 def get_environment_greedy(tex, env):
 	'''
 	This functions extract the env environment in a greedy way.
@@ -98,82 +97,3 @@ def get_environment_content_greedy(tex,env):
 		if level == 0:
 			#we can return the start, end pos and the matches itself
 			return tex[start_match.end(): end_match.start()]
-
-
-def get_command_greedy(tex, list=False):
-	'''This function removes the first command found in
-	the string (the string must start with the command).
-	It removes all its parenthesis in a greedy way.
-	If the string is '\emph[option]{text}\emph{..}' it removes the 
-	first command. 
-	It returns a tuple with the extracted command with options , the 
-	command itself (only the name), the remaining tex and it's 
-	starting index). 
-	Example: (cmd,  cmd_tex, left_tex, left_tex starting index)
-	If there are no commands it returns the tex as 
-	(tex, '', '' len(tex)) for consistency.
-	'''
-	logging.debug('UTILITY.get_command_greedy @ tex: %s', tex)
-	#first of all we remove the cmd 
-	re_cmd = re.compile(r'\\(?P<cmd>.*?)[\[\{]')
-	#we match the fist command
-	mat = re_cmd.match(tex)
-	if mat ==None:
-		logging.debug('UTILITY.get_command_greedy @ any command found!')
-		return (tex,'','',len(tex))
-	cmd = mat.group('cmd')
-	left_tex = tex[mat.end('cmd'):]
-	#now we extract the tokens
-	toks = remove_parenthesis(left_tex)
-	result = '\\'+cmd 
-	for t, cont ,e in toks:
-		if t != 'out':
-			result+= t+cont+e
-	return (cmd, result, left_tex[len(result):], len(result))
-
-def get_options_greedy(tex, cmd):
-	#first of all we remove the cmd
-	opt_tex = tex[len(cmd)+1:]
-	#the remove_parenthesis is called with the options string
-	return remove_parenthesis(tex)
-
-
-def remove_parenthesis(tex):
-	'''This funcion parses strings like '[text]{text}[text]..'
-	It parses only [ and { parenthesis. It returns a list of tuples
-	in the format: (start_parenthesis, content , end_parenthesis).
-	The remaining string, not in [] or {}, is returned as ('out', string, '').
-	The function is able to understand nested parenthesis.
-	'''
-	#we check if there is a *
-	if tex.startswith('*'):
-		content.append(('a', '*', ''))
-		content 
-	if tex.startswith('['):
-		beginp = '['
-		endp = ']'
-	elif tex.startswith('{'):
-		beginp = '{'
-		endp = '}'
-	else:
-		#if the tex doesn't start
-		#with [ or { a empty list is returnses
-		return [('out',tex,'')]
-	content= []
-	level = 0
-	pos = -1
-	for ch in tex:
-		pos+=1
-		if ch == beginp:
-			level+=1
-		elif ch == endp:
-			level-=1
-		if level==0:
-			#we can extrac the token
-			content.append((beginp, tex[1:pos], endp))
-			break
-	#the left tex is parsed again
-	content += remove_parenthesis(tex[pos+1:])
-	return content
-
-

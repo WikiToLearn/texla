@@ -1,5 +1,6 @@
 '''Default Block'''
 from . import utility
+from . import CommandParser
 from .Block import *
 
 class DefaultBlock(Block):
@@ -21,7 +22,7 @@ class DefaultBlock(Block):
 	@staticmethod
 	def parse_cmd(parser ,tex, parent_block, options):
 		#the command has to be extracted with all the options. 
-		match = utility.get_command_greedy(tex)
+		match = CommandParser.get_command_greedy(tex)
 		#match is (commands_tex, command, left_tex, index for starting_tex)
 		#default block is created
 		cmd_name = match[0]
