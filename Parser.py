@@ -149,8 +149,11 @@ class Parser:
                 pblocks+=self.parser_cycle(e[1], parent_block, new_options)
             else:
                 env = e[0]
+                #the name of catched env is inserted in options
+                env_options = {'env_name':env}
                 #we can call the parser hooks
-                pblocks.append(self.call_parser_hook(env,'env', e[1],parent_block))
+                pblocks.append(self.call_parser_hook(env,'env', e[1],
+                        parent_block, env_options))
                 logging.info('PARSER.ENVIRONMENTS @ block: %s', str(pblocks[-1]))
         return pblocks
 
@@ -306,7 +309,7 @@ class Parser:
         else:
             #a text block is created
             pblocks.append(self.call_parser_hook('text','cmd', tex, parent_block)[0])
-            logging.debug('PARSER.COMMANDS @ block: %s', str(result[0]))
+            logging.debug('PARSER.COMMANDS @ block: %s', str(pblocks[-1]))
         return pblocks
 
 

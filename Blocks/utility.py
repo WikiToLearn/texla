@@ -105,9 +105,12 @@ def get_command_greedy(tex):
 	the string. It removes all its parenthesis in a greedy way.
 	If the string is '\emph[option]{text}\emph{..}' it removes the 
 	first command. 
-	It returns a tuple with the extraced command with options 
-	and the remaining tex (and it's starting index). If there are 
-	no commands it returns the tex as (tex, '' len(tex)) for consistency.
+	It returns a tuple with the extracted command with options , the 
+	command itself (only the name), the remaining tex and it's 
+	starting index). 
+	Example: (cmd_tex, cmd, left_tex, left_tex starting index)
+	If there are no commands it returns the tex as 
+	(tex, '', '' len(tex)) for consistency.
 	'''
 	logging.debug('UTILITY.get_command_greedy @ tex: %s', tex)
 	#first of all we remove the cmd 
@@ -116,7 +119,7 @@ def get_command_greedy(tex):
 	mat = re_cmd.search(tex)
 	if mat ==None:
 		logging.error('UTILITY.get_command_greedy @ any command found!')
-		return (tex,'',len(tex))
+		return (tex,'','',len(tex))
 	cmd = mat.group('cmd')
 	left_tex = tex[mat.end('cmd'):]
 	#now we extract the tokens
@@ -125,7 +128,7 @@ def get_command_greedy(tex):
 	for t, cont ,e in toks:
 		if t != 'out':
 			result+= t+cont+e
-	return (result, left_tex[len(result):], len(result))
+	return (result, cmd, left_tex[len(result):], len(result))
 
 
 def remove_parenthesis(tex):
