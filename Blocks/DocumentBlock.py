@@ -10,3 +10,5 @@ class DocumentBlock():
 		self.id = "root"
 		self.title = title
 		self.options = options
+		self.parent_block = None
+		self.section_level = -1

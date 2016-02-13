@@ -1,3 +1,4 @@
+import re
 from . import utility
 from .Block import *
 
@@ -10,7 +11,7 @@ class SectionBlock(Block):
         #we have to parse the section
         sec_re = re.compile(r'\\'+level_key+ r'(?P<ast>[*])?' \
             r'(?:\[(?P<index_title>.*?)\])?{(?P<title>.*?)}')
-        m = sec.match(tex)
+        m = sec_re.match(tex)
         #the regex MUST MATCH if not the parse wouldn't be called
         title = m.group('title')
         index_title = m.group('index_title')

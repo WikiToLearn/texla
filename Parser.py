@@ -1,12 +1,14 @@
 import os
 import re
+import logging
 import Blocks
 import Blocks.utility as utility  
+from Blocks.DocumentBlock import DocumentBlock
 
 class Parser:
 
     def __init__(self):
-        self.import_block_modules()
+        pass
 
 
     def parse(self,tex):
@@ -14,18 +16,21 @@ class Parser:
         #reading title...
         #reading author...
 
-        #Getting content of 
+        #Getting content of document
         r_doc = re.compile(r'\\begin(?P<options>\[.*?\])?{document}(?P<content>.*?)\\end{document}', re.DOTALL)
         m_doc = r_doc.search(tex)
         #getting content
-        content = m_doc.groups("content")
-        options = m_doc.groups("options")
+        content = m_doc.group("content")
+        options = m_doc.group("options")
+        logging.debug('PARSER @ got content of Document')
         #creating root block
-        self.root_block = Blocks.DocumentBlock('',{})
+        self.root_block = DocumentBlock('',{})
         #beginning of parsing 
-        options = {'parse_sections':True,'parse_environments':True,'sec_level':0}
-        blocks = self.parser_cycle(self.root_block,content,options)
-        print (blocks)
+        options = {'parse_sections':True,
+                   'parse_environments':True,
+                   'sec_level':-1}
+        blocks = self.parser_cycle(content, self.root_block,options)
+        return blocks
 
 
     def parser_cycle(self, tex, parent_block, options):
@@ -50,6 +55,7 @@ class Parser:
         the parent_block. The parend_block is passed as parameter 
         because it could contains useful informations for the parsing.
         '''
+        logging.debug('PARSER.parser_cyle @ entered parser_cycle')
         #list for result
         parsed_blocks = []
         #first of all we search for sectioning if enables
@@ -75,6 +81,7 @@ class Parser:
 
         It returns a list of blocks parsed as tuples.
         '''
+        logging.debug('PARSER.parser_sections @ parsing sections',)
         pblocks = []
         level = options['sec_level']
         #check if the level is greater than subparagraph
@@ -112,6 +119,7 @@ class Parser:
         Envirnments block are processed by dedicated parser_hooks and 
         then returned as a list of tutle to parser_cycle()
         '''
+        logging.debug('PARSER.parse_environments @ parsing envs')
         pblocks = []
         #first of all we get all the environment at first 
         #level in the tex.
@@ -172,6 +180,7 @@ class Parser:
         Then parsed blocks are returned as a list of tuple to the
         parser_cycle()
         '''
+        loggin.debug('PARSER.parse_math @ parsing math')
         pblocks = []
         #first of all we section the tex in a list
         #of tuples with (type, content).
@@ -231,13 +240,14 @@ class Parser:
 
 
     def parse_commands(self, tex, parent_block, options):
-         ''' 
+        ''' 
         This function parse single latex commands. Sectioning, environments
         and math are already parsed. The function find the first command and 
         call the proper parser_hook. The hook elaborate the command and returns
         the tex left to parse. Then the fuction is called recursively.
         Parsed commands are returned to parser_cycle() as a list of tuples.
         '''
+        logging.debug('PARSER.parser_commands @ parsing commands')
         pblocks = []
         re_cmd = re.compile(r"\\(?P<cmd>[a-zA-Z\\']+?)(?=\s|\{)", re.DOTALL)
         match = re_cmd.search(tex)
@@ -261,7 +271,7 @@ class Parser:
         return pblocks
 
 
-    def call_parser_hook(hook, tex, parent_block, options={}):
+    def call_parser_hook(self,hook, tex, parent_block, options={}):
         '''
         This function check if the required parser_hook is avaiable,
         if not it calls th default hook

@@ -23,9 +23,9 @@ class Block:
 		self.id = parent_block.id + '-' + block_name +\
 				'@' + utility.get_random_string(3)
 		#dictionary for attributes
-		self.attributes = {}
+		self.attributes = {'N_chblocks':0}
 		#list for childrend blocks
-		self.children_blocks = []
+		self.ch_blocks = []
 		#Section level:
 		#by default the level is the same of parent block
 		self.section_level = self.parent_block.section_level 
@@ -35,8 +35,10 @@ class Block:
 	It MUST NOT be called from outside, expecially the parser
 	'''
 	def add_child_block(self, block):
-		self.children_blocks.append(block)
+		self.ch_blocks.append(block)
+		self.attributes['N_chblocks']+=1
 
 	def add_children_blocks(self, blocks):
-		self.children_blocks += blocks
+		self.ch_blocks += blocks
+		self.attributes['N_chblocks']+=len(blocks)
 
