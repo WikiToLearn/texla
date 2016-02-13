@@ -111,7 +111,7 @@ class Parser:
                 sec_options = { 'sec_level' : (level +1),
                             'level_key' : level_key }
                 #the tuple with the result is saved
-                pblocks.append(self.call_parser_hook(level_key, tok, 
+                pblocks.append(self.call_parser_hook(level_key,'env', tok, 
                                  parent_block, sec_options))
         else:
             #if we have searched for all section levels 
@@ -149,7 +149,7 @@ class Parser:
             else:
                 env = e[0]
                 #we can call the parser hooks
-                pblocks.append(self.call_parser_hook(env, e[1],parent_block))
+                pblocks.append(self.call_parser_hook(env,'env', e[1],parent_block))
         return pblocks
 
     
@@ -216,7 +216,7 @@ class Parser:
             else:
                 env = e[0]
                 #we can call the parser hooks
-                pblocks.append(self.call_parser_hook(env, e[1],parent_block))
+                pblocks.append(self.call_parser_hook(env,'env', e[1],parent_block))
         return pblocks
 
     
@@ -262,35 +262,39 @@ class Parser:
     def parse_commands(self, tex, parent_block, options):
         ''' 
         This function parse single latex commands. Sectioning, environments
-        and math are already parsed. The function find the first command and 
+        and math are already parsed. The function finds the first command and 
         call the proper parser_hook. The hook elaborate the command and returns
-        the tex left to parse. Then the fuction is called recursively.
+        the new Block and the tex left to parse. Then the fuction is called 
+        recursively.
         Parsed commands are returned to parser_cycle() as a list of tuples.
+        WARNING: the call_parser_hook result is ALWAYS  a tuple with
+        (new Block, tex left to parser). 
         '''
         pblocks = []
         re_cmd = re.compile(r"\\(?P<cmd>[a-zA-Z\\']+?)(?=\s|\{)", re.DOTALL)
         match = re_cmd.search(tex)
         if match!=None:
             text = tex[:match.start()]
-            #The text here is completely parsed.
+            #The text before the cmd is completely parsed.
             #We have to create a text block
-            pblocks.append(self.call_parser_hook('text', text, parent_block))
+            pblocks.append(self.call_parser_hook('text','cmd',text, parent_block)[0])
             #the matched command is parser by the parser_hook
             #and the remaining tex is returned as the second element of
             #a list. The first element is the parsed command.
-            result = self.call_parser_hook(match.group('cmd'), tex[match.start():],
+            result = self.call_parser_hook(match.group('cmd'),'cmd',tex[match.start():],
                         parent_block)
             tex_left = result[1]
+            logging.debug('PARSER.COMMANDS @ match: %s', str(result))
             pblocks.append(result[0])
             #the left tex is parsed again
             pblocks+=self.parse_commands(tex_left, parent_block, options)
         else:
             #a text block is created
-            pblocks.append(self.call_parser_hook('text', tex, parent_block))
+            pblocks.append(self.call_parser_hook('text','cmd', tex, parent_block)[0])
         return pblocks
 
 
-    def call_parser_hook(self,hook, tex, parent_block, options={}):
+    def call_parser_hook(self,hook, type, tex, parent_block, options={}):
         '''
         This function check if the required parser_hook is avaiable,
         if not it calls th default hook
@@ -299,7 +303,9 @@ class Parser:
             return Blocks.parser_hooks[hook](self, tex, parent_block, options)
         else:
             #default hook is called
-            return Blocks.parser_hooks['default'](self, tex, parent_block, options)
-
+            if type == 'cmd':
+                return Blocks.parser_hooks['default_cmd'](self, tex, parent_block, options)
+            elif type == 'env':
+                return Blocks.parser_hooks['default_env'](self, tex, parent_block, options)
 
 

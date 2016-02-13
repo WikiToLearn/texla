@@ -1,6 +1,7 @@
 import random
 import re
 import collections
+import logging
 import string
 
 section_level = {
@@ -105,12 +106,16 @@ def get_command_greedy(tex):
 	If the string is '\emph[option]{text}\emph{..}' it removes the 
 	first command.
 	It returns a tuple with the extraced command with options 
-	and the remaining tex.
+	and the remaining tex (and it's starting index).
 	'''
+	logging.debug('UTILITY.get_command_greedy @ tex: %s', tex)
 	#first of all we remove the cmd 
 	re_cmd = re.compile(r'\\(?P<cmd>.*?)[\[\{]')
 	#we match the fist command
 	mat = re_cmd.search(tex)
+	if mat ==None:
+		logging.error('UTILITY.get_command_greedy @ command not found')
+		return ('','','')
 	cmd = mat.group('cmd')
 	left_tex = tex[mat.end('cmd'):]
 	#now we extract the tokens
@@ -119,7 +124,7 @@ def get_command_greedy(tex):
 	for t, cont ,e in toks:
 		if t != 'out':
 			result+= t+cont+e
-	return (result, left_tex[len(result):])
+	return (result, left_tex[len(result):], len(result))
 
 
 def remove_parenthesis(tex):
