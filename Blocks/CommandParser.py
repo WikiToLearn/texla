@@ -22,8 +22,10 @@ def get_command_options(tex, cmd, grammar):
 	'''
 	opt_tex = tex[len(cmd)+1:]
 	prt = get_parenthesis(opt_tex)
-	#now we have to match the parenthesis with the grammar
-	result = {}
+	#now we have to match the parenthesis with the grammar,
+	#preloading keys with None
+	result = {x[0]:None  for x in grammar}
+	#preloading of void options
 	for pr in prt:
 		beginp = pr[0]
 		content = pr[1]
@@ -90,7 +92,7 @@ def get_command_greedy(tex):
 	with options, the remaining	tex and it's starting index). 
 	Example: (cmd,  cmd_tex, left_tex, left_tex starting index)
 	If there are no commands it returns the tex as 
-	(tex, '', '' len(tex)) for consistency.
+	(tex, '', '', len(tex)) for consistency.
 	'''
 	logging.debug('COMMAND_PARSER.get_command_greedy @ tex: %s', tex)
 	#first of all we remove the cmd 
@@ -108,4 +110,4 @@ def get_command_greedy(tex):
 	for t, cont ,e in toks:
 		if t != 'out':
 			result+= t+cont+e
-	return (cmd, result, left_tex[len(result):], len(result))
+	return (cmd, result, tex[len(result):], len(result))

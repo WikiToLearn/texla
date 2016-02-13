@@ -20,7 +20,7 @@ def get_random_string(N):
 		string.digits) for _ in range(N))
 
 
-def get_environment_greedy(tex, env):
+def get_environment(tex, env):
 	'''
 	This functions extract the env environment in a greedy way.
 	It finds nested environment with same env.
@@ -61,7 +61,7 @@ def get_environment_greedy(tex, env):
 					 tex[start_match.start(): end_match.end()])
 
 
-def get_environment_content_greedy(tex,env):
+def get_environment_content(tex,env):
 	'''
 	This funciont returns the content of the environment 
 	in a greedy way

@@ -8,7 +8,8 @@ of parser__hooks
 '''
 parser_hooks={}
 
-not_import = ('__init__.py', 'utility.py', 'DocumentBlock.py')
+not_import = ('__init__.py', 'utility.py', 'DocumentBlock.py',
+    'CommandParser.py')
 
 for module in os.listdir("Blocks"):
     #utility module is not imported under Blocks

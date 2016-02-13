@@ -180,7 +180,7 @@ class Parser:
             tex = tex[match.start():]
             env = match.group('env')
             #now we extract the env greedy
-            s,e,content = utility.get_environment_greedy(tex,env)
+            s,e,content = utility.get_environment(tex,env)
             env_list.append((env, content))
             #we iterate the process for remaining tex (STRIPED)
             #if it's not empty
