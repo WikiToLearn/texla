@@ -293,12 +293,13 @@ class Parser:
                 #We have to create a text block
                 pblocks.append(self.call_parser_hook('text','cmd',
                         text, parent_block)[0])
+                logging.info('PARSER.COMMANDS @ block: %s', str(pblocks[-1]))
             #the matched command is parser by the parser_hook
             #and the remaining tex is returned as the second element of
             #a list.  The first element is the parsed command.
             result = self.call_parser_hook(matched_cmd,'cmd',
                     tex[match.start():], parent_block)
-            logging.debug('PARSER.COMMANDS @ block: %s', str(result[0]))
+            logging.info('PARSER.COMMANDS @ block: %s', str(result[0]))
             #the block is appended
             pblocks.append(result[0])
             #the remaining tex is striped
@@ -309,7 +310,7 @@ class Parser:
         else:
             #a text block is created
             pblocks.append(self.call_parser_hook('text','cmd', tex, parent_block)[0])
-            logging.debug('PARSER.COMMANDS @ block: %s', str(pblocks[-1]))
+            logging.info('PARSER.COMMANDS @ block: %s', str(pblocks[-1]))
         return pblocks
 
 

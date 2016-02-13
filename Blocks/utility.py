@@ -118,7 +118,7 @@ def get_command_greedy(tex):
 	#we match the fist command
 	mat = re_cmd.search(tex)
 	if mat ==None:
-		logging.error('UTILITY.get_command_greedy @ any command found!')
+		logging.debug('UTILITY.get_command_greedy @ any command found!')
 		return (tex,'','',len(tex))
 	cmd = mat.group('cmd')
 	left_tex = tex[mat.end('cmd'):]

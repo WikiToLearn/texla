@@ -49,8 +49,7 @@ class DefaultBlock(Block):
 		self.attributes['tex'] = tex
 
 
-def parser_hooks():
-	pdict = {}
-	pdict['default_env'] = DefaultBlock.parse_env
-	pdict['default_cmd'] = DefaultBlock.parse_cmd
-	return pdict
+parser_hooks = {
+	'default_env' : DefaultBlock.parse_env,
+	'default_cmd' : DefaultBlock.parse_cmd,
+	}

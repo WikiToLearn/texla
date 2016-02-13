@@ -67,14 +67,12 @@ class SectionBlock(Block):
             self.attributes['title'])
 
 
-
-def parser_hooks():
-    pdict = {}
-    pdict['part']= SectionBlock.parse
-    pdict['chapter']= SectionBlock.parse
-    pdict['section']= SectionBlock.parse
-    pdict['subsection']= SectionBlock.parse
-    pdict['subsubsection']= SectionBlock.parse
-    pdict['paragraph']= SectionBlock.parse
-    pdict['subparagraph']= SectionBlock.parse
-    return pdict
+parser_hooks = {
+    'part': SectionBlock.parse,
+    'chapter': SectionBlock.parse,
+    'section': SectionBlock.parse,
+    'subsection': SectionBlock.parse,
+    'subsubsection': SectionBlock.parse,
+    'paragraph': SectionBlock.parse,
+    'subparagraph': SectionBlock.parse,
+    }

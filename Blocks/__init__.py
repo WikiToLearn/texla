@@ -18,6 +18,6 @@ for module in os.listdir("Blocks"):
         m = importlib.import_module('Blocks.'+ module[:-3])
         logging.info('BLOCKS @ imported %s', m.__name__)
         if hasattr(m,"parser_hooks"):
-            for key,value  in m.parser_hooks().items():
+            for key,value  in m.parser_hooks.items():
                 logging.info('BLOCKS @ parser_hook: %s | %s', key, value)
                 parser_hooks[key] = value
