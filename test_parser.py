@@ -5,11 +5,10 @@ logging.info('Started')
     
 from Parser import Parser
 
-
-
 p = Parser() 
 a = open('tests/test2.tex','r').read()
-p.parse(a)
-
+result = p.parse(a)
+json = result[0].to_json(0)
+open('tree','w').write(json)
 
 logging.info('Finished')
