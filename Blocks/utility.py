@@ -100,15 +100,16 @@ def get_environment_content_greedy(tex,env):
 			return tex[start_match.end(): end_match.start()]
 
 
-def get_command_greedy(tex):
+def get_command_greedy(tex, list=False):
 	'''This function removes the first command found in
-	the string. It removes all its parenthesis in a greedy way.
+	the string (the string must start with the command).
+	It removes all its parenthesis in a greedy way.
 	If the string is '\emph[option]{text}\emph{..}' it removes the 
 	first command. 
 	It returns a tuple with the extracted command with options , the 
 	command itself (only the name), the remaining tex and it's 
 	starting index). 
-	Example: (cmd_tex, cmd, left_tex, left_tex starting index)
+	Example: (cmd,  cmd_tex, left_tex, left_tex starting index)
 	If there are no commands it returns the tex as 
 	(tex, '', '' len(tex)) for consistency.
 	'''
@@ -116,7 +117,7 @@ def get_command_greedy(tex):
 	#first of all we remove the cmd 
 	re_cmd = re.compile(r'\\(?P<cmd>.*?)[\[\{]')
 	#we match the fist command
-	mat = re_cmd.search(tex)
+	mat = re_cmd.match(tex)
 	if mat ==None:
 		logging.debug('UTILITY.get_command_greedy @ any command found!')
 		return (tex,'','',len(tex))
@@ -128,7 +129,13 @@ def get_command_greedy(tex):
 	for t, cont ,e in toks:
 		if t != 'out':
 			result+= t+cont+e
-	return (result, cmd, left_tex[len(result):], len(result))
+	return (cmd, result, left_tex[len(result):], len(result))
+
+def get_options_greedy(tex, cmd):
+	#first of all we remove the cmd
+	opt_tex = tex[len(cmd)+1:]
+	#the remove_parenthesis is called with the options string
+	return remove_parenthesis(tex)
 
 
 def remove_parenthesis(tex):
@@ -138,6 +145,10 @@ def remove_parenthesis(tex):
 	The remaining string, not in [] or {}, is returned as ('out', string, '').
 	The function is able to understand nested parenthesis.
 	'''
+	#we check if there is a *
+	if tex.startswith('*'):
+		content.append(('a', '*', ''))
+		content 
 	if tex.startswith('['):
 		beginp = '['
 		endp = ']'

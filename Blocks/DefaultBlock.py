@@ -24,11 +24,11 @@ class DefaultBlock(Block):
 		match = utility.get_command_greedy(tex)
 		#match is (commands_tex, command, left_tex, index for starting_tex)
 		#default block is created
-		cmd_name = match[1]
+		cmd_name = match[0]
 		if cmd_name!= '':
-			block = DefaultBlock(match[0], cmd_name, parent_block)
+			block = DefaultBlock(match[1], cmd_name, parent_block)
 		else:
-			block = DefaultBlock(match[0], 'no_cmd', parent_block)
+			block = DefaultBlock(match[1], 'no_cmd', parent_block)
 		#we return the block and the left tex to parse
 		return (block, match[2])
 

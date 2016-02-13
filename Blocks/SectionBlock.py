@@ -35,7 +35,7 @@ class SectionBlock(Block):
         #now we have all chld blocks. They are simply added to the list.
         #no further processing for sections
         sec_block.add_children_blocks(chld_blocks)
-        #the block is returnes
+        #the block is returned
         return sec_block
         
 

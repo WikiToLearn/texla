@@ -3,6 +3,19 @@ from . import utility
 
 '''Base Block definition'''
 class Block:
+	'''
+	Block general attributes:
+	-block_name: the new of the "type" of the block
+	-id: unique id for the block in the tree
+	-parent_block: parent in the tree
+	-attributes: a dictionary for description of the block.
+		All useful parser data go into attributes
+	-ch_blocks: a list of children_blocks
+	-section_level: the position of the block compared to 
+		sectioning levels defined in utility.py
+
+	Derived Block could add more attributes.
+	'''
 
 	@staticmethod
 	def parse(parser, tex, parent_block, options={}):
@@ -32,15 +45,20 @@ class Block:
 		#by default the level is the same of parent block
 		self.section_level = self.parent_block.section_level 
 
-	'''
-	IMPORTANT: this function is called by the self.parse fuction.
-	It MUST NOT be called from outside, expecially the parser
-	'''
+	
 	def add_child_block(self, block):
+		'''
+		IMPORTANT: this function is called by the self.parse fuction.
+		It MUST NOT be called from outside, expecially the parser
+		'''
 		self.ch_blocks.append(block)
 		self.attributes['N_chblocks']+=1
 
 	def add_children_blocks(self, blocks):
+		'''
+		IMPORTANT: this function is called by the self.parse fuction.
+		It MUST NOT be called from outside, expecially the parser
+		'''
 		self.ch_blocks += blocks
 		self.attributes['N_chblocks']+=len(blocks)
 
