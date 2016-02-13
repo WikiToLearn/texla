@@ -48,13 +48,13 @@ class Block:
 		represents the tree of subblocks of the called block.
 		'''
 		json = '' 
-		levelb = level+4
+		levelb = level+3
 		json += (' '*level + '{\n')
 		for k,v in self.attributes.items():
 			json += (' '*levelb + '"'+k+ '":"'+str(v)+ '"\n' )
 		json += (' '*levelb + '"children_blocks":[\n')
 		for b in self.ch_blocks:
-			json+= b.to_json(levelb+4)
+			json+= b.to_json(levelb+3)
 		json += (' '*levelb+']\n')
 		json += (' '*level + '}\n')
 		return json
