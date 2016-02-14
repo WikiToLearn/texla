@@ -13,6 +13,7 @@ class DefaultBlock(Block):
 			env_name = options['env']
 		else:
 			env_name = 'no_env'
+		env_name = env_name + '*' if options['star'] else env_name
 		#default block is created
 		logging.debug('DefaultBlock.parse_env @ %s:',tex[:5]+'...')
 		block = DefaultBlock(tex, env_name, parent_block)

@@ -27,10 +27,10 @@ def get_environment(tex, env):
 	It return the start and end pos of the environment 
 	and the string matched with \\begin and \\end
 	'''
-	begin = '\\begin{'+ env+'}'
-	end = '\\end{'+ env + '}'
-	bre = re.compile(r'\\begin{'+ env+'}')
-	ere = re.compile(r'\\end{'+ env + '}')
+	begin = '\\begin{(?: *)' + env+'(?: *)}'
+	end = '\\end{(?: *)'+ env + '(?: *)}'
+	bre = re.compile(r'\\begin{(?: *)'+ env+'(?: *)}')
+	ere = re.compile(r'\\end{(?: *)'+ env + '(?: *)}')
 	matchs = {}
 	pos = {}
 	for bmatch in bre.finditer(tex):

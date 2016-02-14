@@ -153,15 +153,16 @@ class Parser:
                 new_options = options.copy()
                 new_options['parse_sections'] = False
                 new_options['parse_envs'] = False
-                pblocks+=self.parser_cycle(e[1], parent_block, new_options)
+                pblocks+=self.parser_cycle(e[2], parent_block, new_options)
             else:
                 env = e[0]
                 #the name of catched env is inserted in options
-                env_options = {'env':env}
+                #with the star param
+                env_options = {'env':env, 'star':e[1]}
                 #we can call the parser hooks.
                 #N.B.: the tex passed to parser hook is the CONTENT
                 #of the environment, without \begin{} and \end{} part.
-                pblocks.append(self.call_parser_hook(env,'env', e[1],
+                pblocks.append(self.call_parser_hook(env,'env', e[2],
                         parent_block, env_options))
                 logging.info('PARSER.ENVIRONMENTS @ block: %s', str(pblocks[-1]))
         return pblocks
@@ -175,13 +176,15 @@ class Parser:
         N.B.: the tex returned is only the CONTENT of the environment, 
         without \begin{} and \end{} part.
 
-        It return a list of tuples like:
-        [ ('text','abcde..) , ('itemize','content' ,..)]
+        It returns a list of tuples with parsed env. If the env is starred
+        the second parameter returned is True:
+        [ ('text',False, 'abcde..) , ('itemize',(True/False),'content' ,..)]
         '''
         #list of tuple for results ('type_of_env', content)
         env_list= []
         #we search for the first enviroment
-        re_env1 = re.compile(r'\\begin\{(?P<env>.*?)\}')
+        re_env1 = re.compile(r'\\begin\{(?: *)(?P<env>\w*?)'+\
+                            r'(?P<star>[*]?)(?: *)\}')
         match = re_env1.search(tex)
         if not match == None:
             #we save the first part outside environment STRIPED
@@ -191,9 +194,11 @@ class Parser:
             #the remaing part with the first env matched is analized
             tex = tex[match.start():]
             env = match.group('env')
+            star = True if match.group('star')!='' else False
+            env_tot = env + '\*' if star else env
             #now we extract the env greedy
-            s,e,content = utility.get_environment(tex,env)
-            env_list.append((env, content))
+            s,e,content = utility.get_environment(tex,env_tot)
+            env_list.append((env, star, content))
             #we iterate the process for remaining tex (STRIPED)
             #if it's not empty
             left_tex = tex[e:].strip()
@@ -205,7 +210,7 @@ class Parser:
             #all remaining text
             #IMPORTANT: it couldn't be void because the section
             #content is STRIPPED
-            env_list.append(('text',tex))
+            env_list.append(('text',False, tex))
         return env_list
 
 
@@ -320,10 +325,7 @@ class Parser:
             #managing match
             if match.group('cmd')!=None:
                 matched_cmd = match.group('cmd')
-                if match.group('star') != None:
-                    star = True
-                else:
-                    star = False
+                star = True if match.group('star')!='' else False
                 logging.debug('PARSER.COMMANDS @ matched: %s', matched_cmd)
                 #we insert the matched options in the dict for hooks
                 opts = {'cmd':matched_cmd, 'star':star}
