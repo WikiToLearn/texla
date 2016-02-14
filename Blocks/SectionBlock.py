@@ -10,7 +10,7 @@ class SectionBlock(Block):
         sec_level = options['sec_level']
         level_key = options['level_key'] 
         #we have to parse the section
-        sec_re = re.compile(r'\\'+level_key+ r'(?P<ast>[*])?' \
+        sec_re = re.compile(r'\\'+level_key+ r'(?P<ast>[*])?(?: *)' \
             r'(?:\[(?P<index_title>.*?)\])?{(?P<title>.*?)}')
         m = sec_re.match(tex)
         #the regex MUST MATCH if not the parse wouldn't be called
