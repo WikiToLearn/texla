@@ -155,7 +155,7 @@ class Parser:
             else:
                 env = e[0]
                 #the name of catched env is inserted in options
-                env_options = {'env_name':env}
+                env_options = {'env':env}
                 #we can call the parser hooks
                 pblocks.append(self.call_parser_hook(env,'env', e[1],
                         parent_block, env_options))
@@ -263,15 +263,15 @@ class Parser:
             #it couldn't be void because environment
             #parsing never returns void strings
             tokens.append(('text',tex))
+            return tokens
+
         last_tex_index = 0
         for start in sorted(pos.keys()):
             end = pos[start][1].end()
             typ = pos[start][0]
             content = pos[start][1].group()
-            #the text outside math is extracted and NOT STRIPED
-            #we don't want to loose information about \n between
-            #math and text.
-            previous_tex = tex[last_tex_index : start]
+            #the text outside math is extracted and STRIPED
+            previous_tex = tex[last_tex_index : start].strip()
             if len(previous_tex)>0:
                 #if ok the text is saved
                 tokens.append(('text', previous_tex))
@@ -300,11 +300,10 @@ class Parser:
         (new Block, tex left to parser). 
         '''
         pblocks = []
-        re_cmd = re.compile(r"\\(?P<cmd>[a-zA-Z\\']+)(?=[\s{[])", re.DOTALL)
+        re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z']+)"+\
+                r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
         match = re_cmd.search(tex)
         if match!=None:
-            matched_cmd = match.group('cmd')
-            logging.debug('PARSER.COMMANDS @ matched: %s', matched_cmd)
             #The text before the cmd is extracted and STRIPED
             text = tex[:match.start()].strip()
             if len(text)>0:
@@ -312,19 +311,53 @@ class Parser:
                 pblocks.append(self.call_parser_hook('text','cmd',
                         text, parent_block)[0])
                 logging.info('PARSER.COMMANDS @ block: %s', str(pblocks[-1]))
-            #the matched command is parser by the parser_hook
-            #and the remaining tex is returned as the second element of
-            #a list.  The first element is the parsed command.
-            result = self.call_parser_hook(matched_cmd,'cmd',
-                    tex[match.start():], parent_block)
-            logging.info('PARSER.COMMANDS @ block: %s', str(result[0]))
-            #the block is appended
-            pblocks.append(result[0])
-            #the remaining tex is striped
-            tex_left = result[1].strip()
-            if len(tex_left)>0:
-                #the left tex is parsed again if not null
-                pblocks+=self.parse_commands(tex_left, parent_block, options)
+            #managing match
+            if match.group('cmd')!=None:
+                matched_cmd = match.group('cmd')
+                if match.group('star') != None:
+                    star = True
+                else:
+                    star = False
+                logging.debug('PARSER.COMMANDS @ matched: %s', matched_cmd)
+                #we insert the matched options in the dict for hooks
+                opts = {'cmd':matched_cmd, 'star':star}
+                #the text passed to hooks is LEFT-STRIPPED to remove
+                #spaces between commands and options.
+                #N.B the matched parted is not sent to hook
+                tex_to_parse = tex[match.end():].lstrip()
+                #the matched command is parsed by the parser_hook
+                #and the remaining tex is returned as the second element of
+                #a list.  The first element is the parsed Block.
+                result = self.call_parser_hook(matched_cmd,'cmd',
+                        tex_to_parse, parent_block,opts)
+                logging.info('PARSER.COMMANDS @ block: %s', str(result[0]))
+                #the block is appended
+                pblocks.append(result[0])
+                 #the remaining tex is STRIPED and starts
+                #a new cyle in parser_commands
+                tex_left = result[1].strip()
+                if len(tex_left)>0:
+                    #the left tex is parsed again if not null
+                    pblocks+=self.parse_commands(tex_left, parent_block, options)
+            
+            else:
+                #we have a \\ command
+                matched_cmd = '\\'
+                logging.debug('PARSER.COMMANDS @ matched: \\')
+                #we insert the matched options in the dict for hooks
+                opts = {'cmd':'\\', 'star':False}
+                tex_to_parse = tex[match.end():].lstrip()
+                result = self.call_parser_hook(matched_cmd,'cmd',
+                        tex_to_parse, parent_block,opts)
+                logging.info('PARSER.COMMANDS @ block: %s', str(result[0]))
+                #the block is appended
+                pblocks.append(result[0])
+                #the remaining tex is STRIPED and starts
+                #a new cyle in parser_commands
+                tex_left = result[1].strip()
+                if len(tex_left)>0:
+                    #the left tex is parsed again if not null
+                    pblocks+=self.parse_commands(tex_left, parent_block, options)
         else:
             #a text block is created
             pblocks.append(self.call_parser_hook('text','cmd', tex, parent_block)[0])

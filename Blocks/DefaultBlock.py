@@ -1,4 +1,5 @@
 '''Default Block'''
+import logging
 from . import utility
 from . import CommandParser
 from .Block import *
@@ -8,11 +9,12 @@ class DefaultBlock(Block):
 	@staticmethod
 	def parse_env(parser ,tex, parent_block, options):
 		#getting the name of env
-		if 'env_name' in options:
-			env_name = options['env_name']
+		if 'env' in options:
+			env_name = options['env']
 		else:
 			env_name = 'no_env'
 		#default block is created
+		logging.debug('DefaultBlock.parse_env @ %s:',tex[:5]+'...')
 		block = DefaultBlock(tex, env_name, parent_block)
 		#We cannot look inside tex, we don't know
 		#what to parser.
@@ -21,17 +23,17 @@ class DefaultBlock(Block):
 
 	@staticmethod
 	def parse_cmd(parser ,tex, parent_block, options):
-		#the command has to be extracted with all the options. 
-		match = CommandParser.get_command_greedy(tex)
-		#match is (commands_tex, command, left_tex, index for starting_tex)
+		cmd = options['cmd']
+		cmd = cmd + '*' if options['star'] else cmd
+		#the options has to be matched from the tex
+		match = CommandParser.get_command_options(tex)
+		#match is (options string, left tex
+		ptex = '\\'+cmd+match[0]
+		logging.debug('DefaultBlock.parse_cmd @ %s:',ptex)
 		#default block is created
-		cmd_name = match[0]
-		if cmd_name!= '':
-			block = DefaultBlock(match[1], cmd_name, parent_block)
-		else:
-			block = DefaultBlock(match[1], 'no_cmd', parent_block)
+		block = DefaultBlock(ptex, cmd, parent_block)
 		#we return the block and the left tex to parse
-		return (block, match[2])
+		return (block, match[1])
 
 	def __init__(self, tex, block_name, parent_block):
 		'''

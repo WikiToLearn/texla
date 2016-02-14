@@ -6,50 +6,44 @@ import unittest
 
 class CommandParserTest(unittest.TestCase):
 	def test_grammar_complete(self):
-		a = '\command[option]{text}other text'
+		a = '[option]{text}other text'
 		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.get_command_options(a,'command',grammar),
+		self.assertEqual(CommandParser.parse_command_options(a, grammar),
 			{'opt':'option','content':'text'})
 	
 	def test_grammar_command_near_command(self):
-		a = '\command[option]{text}\cmd{other text}'
+		a = '[option]{text}\cmd{other text}'
 		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.get_command_options(a,'command',grammar),
+		self.assertEqual(CommandParser.parse_command_options(a,grammar),
 			{'opt':'option','content':'text'})
 
 	def test_grammar_blank_left(self):
-		a = '\command{text} other text'
+		a = '{text} other text'
 		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.get_command_options(a,'command',grammar),
+		self.assertEqual(CommandParser.parse_command_options(a,grammar),
 			{'opt':None,'content':'text'})
 
 	def test_grammar_blank_right(self):
-		a = '\command[option] other text'
+		a = '[option] other text'
 		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.get_command_options(a,'command',grammar),
+		self.assertEqual(CommandParser.parse_command_options(a, grammar),
 			{'opt':'option','content':None})
 
 	def test_grammar_blank_middle(self):
-		a = '\command[option1][option2] other text'
+		a = '[option1][option2] other text'
 		grammar = [('opt1','[',']'),('content','{','}'),
 			('opt2','[',']')]
-		self.assertEqual(CommandParser.get_command_options(a,'command',grammar),
+		self.assertEqual(CommandParser.parse_command_options(a, grammar),
 			{'opt1':'option1','content':None,
 			 'opt2':'option2'})
 
 	def test_grammar_blank_same(self):
-		a = '\command[option1][option2]	other text'
+		a = '[option1][option2]	other text'
 		grammar = [('opt1','[',']'),('opt2','[',']'),
 			('opt3','[',']')]
-		self.assertEqual(CommandParser.get_command_options(a,'command',grammar),
+		self.assertEqual(CommandParser.parse_command_options(a, grammar),
 			{'opt1':'option1','opt2':'option2',
 			 'opt3':None})
-
-	def test_gramma_star(self):
-		a = '\command*[option]{text} other text'
-		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.get_command_options(a,'command*',grammar),
-			{'opt':'option','content':'text'})
 
 	def test_get_parenthesis_nested(self):
 		a = '[a][b]{abc\command{}[]}[d]{boh[]} tests'
@@ -72,6 +66,11 @@ class CommandParserTest(unittest.TestCase):
 		self.assertEqual(CommandParser.get_command_greedy(a),
 			('command','\command[a][b]{abc\emph{}[]}[d]{boh[]}',
 				 '\cmd2{tests}',38))
+
+	def test_get_command_options(self):
+		a = '[boh]{test{test}}[{boh}a] left tex'
+		self.assertEqual(CommandParser.get_command_options(a),
+			('[boh]{test{test}}[{boh}a]', ' left tex'))
 
 
 

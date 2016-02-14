@@ -6,9 +6,11 @@ import re
 import logging
 from . import utility
 
-def get_command_options(tex, cmd, grammar):
+def parse_command_options(tex, grammar):
 	'''
 	This function extract commands options given a grammar.
+	The tex input must start with the options parenthesis [ or {,
+	and must not contain the \cmd part.
 	The grammar is a list of tuples that defines the possible
 	option for the command:
 	[(opt_name, '{', '}' ), (opt_name2, '[', ']'),...  ].
@@ -20,8 +22,7 @@ def get_command_options(tex, cmd, grammar):
 	The function returns a dictionary with the matched 
 	options.
 	'''
-	opt_tex = tex[len(cmd)+1:]
-	prt = get_parenthesis(opt_tex)
+	prt = get_parenthesis(tex)
 	#now we have to match the parenthesis with the grammar,
 	#preloading keys with None
 	result = {x[0]:None  for x in grammar}
@@ -46,6 +47,23 @@ def get_command_options(tex, cmd, grammar):
 			else:
 				result[name] = None
 	return result 
+
+def get_command_options(tex):
+	'''
+	The function removes an arbitrary number of options
+	parenthesis from tex. Tex must start with a parenthesis
+	([ or {). The funcion is useful to remove a command's
+	parenthesis without knowing their structure.
+	The function return (matched parenthesis, left tex )
+	'''
+	#now we extract the tokens
+	toks = get_parenthesis(tex)
+	result = ''
+	for t, cont ,e in toks:
+		if t != 'out':
+			result+= t+cont+e
+	return (result, tex[len(result):])
+
 
 def get_parenthesis(tex):
 	'''This funcion parses strings like '[text]{text}[text]..'
@@ -83,7 +101,8 @@ def get_parenthesis(tex):
 
 
 def get_command_greedy(tex):
-	'''This function removes the first command found in
+	'''
+	This function removes the first command found in
 	the string (the string must start with the command).
 	It removes all its parenthesis in a greedy way.
 	If the string is '\emph[option]{text}\emph{..}' it removes the 
@@ -111,3 +130,5 @@ def get_command_greedy(tex):
 		if t != 'out':
 			result+= t+cont+e
 	return (cmd, result, tex[len(result):], len(result))
+
+
