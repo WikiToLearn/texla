@@ -40,7 +40,7 @@ def get_environment_greedy(tex, env):
 		if level == 0:
 			#we can return the start, end pos and the matches itself
 			return (start_match.start(), end_match.end(),
-					 tex[start_match.start(): end_match.end()])
+					 tex[start_match.end(): end_match.start()])
 
 
 

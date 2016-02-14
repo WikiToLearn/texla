@@ -49,7 +49,7 @@ class DefaultBlock(Block):
 		super().__init__('default-'+block_name, parent_block)
 		self.tex = tex
 		#the tex is added also as attribute
-		self.attributes['tex'] = tex
+		self.attributes['content_tex'] = tex
 
 
 parser_hooks = {

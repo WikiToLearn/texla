@@ -135,7 +135,9 @@ class Parser:
         It uses environments_tokenizer to split tex inside text and env items.
         Then, text is send to another parser_cycle for further parsing.
         Envirnments block are processed by dedicated parser_hooks and 
-        then returned as a list of tutle to parser_cycle()
+        then returned as a list of tutle to parser_cycle().
+        N.B.: the tex passed to parser hook is the CONTENT
+        of the environment, without \begin{} and \end{} part.
         '''
         pblocks = []
         #first of all we get all the environment at first 
@@ -156,7 +158,9 @@ class Parser:
                 env = e[0]
                 #the name of catched env is inserted in options
                 env_options = {'env':env}
-                #we can call the parser hooks
+                #we can call the parser hooks.
+                #N.B.: the tex passed to parser hook is the CONTENT
+                #of the environment, without \begin{} and \end{} part.
                 pblocks.append(self.call_parser_hook(env,'env', e[1],
                         parent_block, env_options))
                 logging.info('PARSER.ENVIRONMENTS @ block: %s', str(pblocks[-1]))
@@ -168,9 +172,11 @@ class Parser:
         This function split the given tex in text parts and environments.
         Only the first level of environments is searched: the function don't 
         go inside nested environments, the parser_cycle will manage this.
+        N.B.: the tex returned is only the CONTENT of the environment, 
+        without \begin{} and \end{} part.
 
         It return a list of tuples like:
-        [ ('text','abcde..) , ('itemize','\\begin{itemize}..\\end{itemize}' ,..)]
+        [ ('text','abcde..) , ('itemize','content' ,..)]
         '''
         #list of tuple for results ('type_of_env', content)
         env_list= []

@@ -57,8 +57,9 @@ def get_environment(tex, env):
 		#check the level
 		if level == 0:
 			#we can return the start, end pos and the matches itself
+			#without the \begin{}, \end{} part.
 			return (start_match.start(), end_match.end(),
-					 tex[start_match.start(): end_match.end()])
+					 tex[start_match.end(): end_match.start()])
 
 
 def get_environment_content(tex,env):
