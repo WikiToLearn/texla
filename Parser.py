@@ -242,10 +242,10 @@ class Parser:
         The function is able to extract math inside \(...\) $...$ (inline) and
         inside \[...\] $$...$$ (display).
         '''
-        inline_re = re.compile(r'(?<![\$])\$([^$]+)\$(?!\$)', re.DOTALL)
-        display_re = re.compile(r'(?<![\$])\$\$([^$]+)\$\$(?!\$)', re.DOTALL)
-        inline_re2 = re.compile(r'\\\((.*?)\\\)',re.DOTALL)
-        display_re2 = re.compile(r'\\\[(.*?)\\\]', re.DOTALL)
+        inline_re = re.compile(r'(?<![\$])\$(?P<m>[^$]+)\$(?!\$)', re.DOTALL)
+        display_re = re.compile(r'(?<![\$])\$\$(?P<m>[^$]+)\$\$(?!\$)', re.DOTALL)
+        inline_re2 = re.compile(r'\\\((?P<m>.*?)\\\)',re.DOTALL)
+        display_re2 = re.compile(r'\\\[(?P<m>.*?)\\\]', re.DOTALL)
         #first of all we match a save the pos
         pos = {}
         for mi in inline_re.finditer(tex):
@@ -269,7 +269,7 @@ class Parser:
         for start in sorted(pos.keys()):
             end = pos[start][1].end()
             typ = pos[start][0]
-            content = pos[start][1].group()
+            content = pos[start][1].group('m')
             #the text outside math is extracted and STRIPED
             previous_tex = tex[last_tex_index : start].strip()
             if len(previous_tex)>0:
