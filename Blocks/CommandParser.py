@@ -18,7 +18,7 @@ def get_command_options(tex, cmd, grammar):
 	doesn't match the second one is checked, and so on for 
 	all parsed parenthesis.
 	The function returns a dictionary with the matched 
-	options. 
+	options.
 	'''
 	opt_tex = tex[len(cmd)+1:]
 	prt = get_parenthesis(opt_tex)

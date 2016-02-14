@@ -8,7 +8,7 @@ class TextBlock(Block):
 
     @staticmethod
     def parse_plain_text(parser ,tex, parent_block, options):
-        logging.debug('TextBlock.parse_plain_text @ ')
+        logging.debug('TextBlock.parse_plain_text @ %s', tex[:5]+'...')
         #first of all we can create the new block
         text_block = TextBlock(tex, parent_block)
         #the block is returned

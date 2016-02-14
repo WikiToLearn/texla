@@ -11,7 +11,7 @@ class CommandParserTest(unittest.TestCase):
 		self.assertEqual(CommandParser.get_command_options(a,'command',grammar),
 			{'opt':'option','content':'text'})
 	
-	def test_grammar_command_near(self):
+	def test_grammar_command_near_command(self):
 		a = '\command[option]{text}\cmd{other text}'
 		grammar = [('opt','[',']'),('content','{','}')]
 		self.assertEqual(CommandParser.get_command_options(a,'command',grammar),

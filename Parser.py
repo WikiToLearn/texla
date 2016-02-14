@@ -61,19 +61,19 @@ class Parser:
         parsed_blocks = []
         #first of all we search for sectioning if enables
         if options['parse_sections']:
-            logging.debug('PARSER.pcyle.SECTIONS @ dict: %s', str(options))
+            logging.debug('PARSER.pcyle.SECTIONS @ options: %s', str(options))
             parsed_blocks+=self.parse_sections(tex, parent_block, options)
         #then we parse environments
         elif options['parse_envs']:
-            logging.debug('PARSER.pcyle.ENVIRONMENTS @ dict: %s', str(options))
+            logging.debug('PARSER.pcyle.ENVIRONMENTS @ options: %s', str(options))
             parsed_blocks+=self.parse_environments(tex, parent_block, options)
         elif options['parse_math']:
             #then we parse maths
-            logging.debug('PARSER.pcyle.MATH @ dict: %s', str(options))
+            logging.debug('PARSER.pcyle.MATH @ options: %s', str(options))
             parsed_blocks+=self.parse_math(tex, parent_block, options)
         elif options['parse_commands']:
             #finally single command are parserd
-            logging.debug('PARSER.pcyle.COMMANDS @ dict: %s', str(options))
+            logging.debug('PARSER.pcyle.COMMANDS @ options: %s', str(options))
             parsed_blocks+=self.parse_commands(tex, parent_block, options)
         return parsed_blocks
 
@@ -90,6 +90,7 @@ class Parser:
         level = options['sec_level']
         #check if the level is greater than subparagraph
         if (level+1) < (len(utility.section_level)-1):
+            #getting level key from utility to create regex
             level_key = utility.section_level[level+1]
             sec_re = re.compile(r'\\'+ level_key)
             #the tex is splitted by the section key
@@ -117,9 +118,13 @@ class Parser:
         else:
             #if we have searched for all section levels 
             #we continue with environments
-            new_options = options.copy()
-            new_options['parse_sections'] = False
-            pblocks+= self.parser_cycle(tex,parent_block,new_options)
+            #First we STRIP the tex
+            #and check if tex is not void
+            new_tex = tex.strip()
+            if len(new_tex) > 0:
+                new_options = options.copy()
+                new_options['parse_sections'] = False
+                pblocks+= self.parser_cycle(new_tex,parent_block,new_options)
         #found block are returned to main cycle
         return pblocks      
 
@@ -173,9 +178,10 @@ class Parser:
         re_env1 = re.compile(r'\\begin\{(?P<env>.*?)\}')
         match = re_env1.search(tex)
         if not match == None:
-            #we save the first part outside environment
-            if match.start()>0:
-                env_list.append(('text',tex[0:match.start()]))
+            #we save the first part outside environment STRIPED
+            outside_env = tex[0:match.start()].strip()
+            if len(outside_env) >0:
+                env_list.append(('text',outside_env))
             #the remaing part with the first env matched is analized
             tex = tex[match.start():]
             env = match.group('env')
@@ -190,7 +196,9 @@ class Parser:
                 if len(after_env_list) > 0:
                     env_list += after_env_list
         else:
-            #all text
+            #all remaining text
+            #IMPORTANT: it couldn't be void because the section
+            #content is STRIPPED
             env_list.append(('text',tex))
         return env_list
 
@@ -252,14 +260,18 @@ class Parser:
         tokens = []
         #if we don't find math we return the tex
         if len(pos) == 0:
+            #it couldn't be void because environment
+            #parsing never returns void strings
             tokens.append(('text',tex))
         last_tex_index = 0
         for start in sorted(pos.keys()):
             end = pos[start][1].end()
             typ = pos[start][0]
             content = pos[start][1].group()
-            #the text outside math is extracted and STRIPED
-            previous_tex = tex[last_tex_index : start].strip()
+            #the text outside math is extracted and NOT STRIPED
+            #we don't want to loose information about \n between
+            #math and text.
+            previous_tex = tex[last_tex_index : start]
             if len(previous_tex)>0:
                 #if ok the text is saved
                 tokens.append(('text', previous_tex))
@@ -267,6 +279,12 @@ class Parser:
             last_tex_index = end
             #the match is saved
             tokens.append((typ, content))
+        #the text after last math must be extracted.
+        #It is not necessary to STRIP it because
+        #the previous parsing have stripped it.
+        last_text = tex[last_tex_index:]
+        if len(last_text) > 0:
+            tokens.append(('text', last_text))
         return tokens
 
 
