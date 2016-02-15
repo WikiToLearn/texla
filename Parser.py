@@ -332,7 +332,7 @@ class Parser:
                 opts = {'cmd':matched_cmd, 'star':star}
                 #the text passed to hooks is LEFT-STRIPPED to remove
                 #spaces between commands and options.
-                #N.B the matched parted is not sent to hook
+                #N.B the matched part is not sent to hook
                 tex_to_parse = tex[match.end():].lstrip()
                 #the matched command is parsed by the parser_hook
                 #and the remaining tex is returned as the second element of

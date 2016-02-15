@@ -15,7 +15,7 @@ class EmphBlock(Block):
 
 
 	def __init__(self, text, parent_block):
-		super().__init__('emph',parent_block)
+		super().__init__('emph',text,parent_block)
 		self.content = text
 		self.attributes['text'] = text
 		self.attributes['text_lenght'] = len(text)
