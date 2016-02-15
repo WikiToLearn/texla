@@ -190,15 +190,15 @@ class Parser:
             #we save the first part outside environment STRIPED
             outside_env = tex[0:match.start()].strip()
             if len(outside_env) >0:
-                env_list.append(('text',outside_env))
+                env_list.append(('text',False,outside_env))
             #the remaing part with the first env matched is analized
             tex = tex[match.start():]
             env = match.group('env')
             star = True if match.group('star')!='' else False
             env_tot = env + '\*' if star else env
-            #now we extract the env greedy
+            #now we extract the env greedy, with L-STRIPED content
             s,e,content = utility.get_environment(tex,env_tot)
-            env_list.append((env, star, content))
+            env_list.append((env, star, content.lstrip()))
             #we iterate the process for remaining tex (STRIPED)
             #if it's not empty
             left_tex = tex[e:].strip()
@@ -226,6 +226,7 @@ class Parser:
         #first of all we section the tex in a list
         #of tuples with (type, content).
         toks = self.math_tokenizer(tex)
+        print(toks)
         logging.debug('PARSER.MATH: tokens: '+ str([x[0] for x in toks]))
         #now we can further analyze text tokens
         #and elaborate with parser_hooks the math founded
@@ -281,8 +282,8 @@ class Parser:
             end = pos[start][1].end()
             typ = pos[start][0]
             content = pos[start][1].group('m')
-            #the text outside math is extracted and STRIPED
-            previous_tex = tex[last_tex_index : start].strip()
+            #the text outside math is extracted and NOT STRIPED
+            previous_tex = tex[last_tex_index : start]
             if len(previous_tex)>0:
                 #if ok the text is saved
                 tokens.append(('text', previous_tex))
@@ -291,8 +292,7 @@ class Parser:
             #the match is saved
             tokens.append((typ, content))
         #the text after last math must be extracted.
-        #It is not necessary to STRIP it because
-        #the previous parsing have stripped it.
+        #NOT STRIPED
         last_text = tex[last_tex_index:]
         if len(last_text) > 0:
             tokens.append(('text', last_text))
