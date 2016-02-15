@@ -40,12 +40,12 @@ class SectionBlock(Block):
         
 
     
-    def __init__(self, title, index_title, numbered, level, parent_block):
+    def __init__(self, title, index_title, star, level, parent_block):
         '''
         Constructor for sections:
         -title: main title
         -index_title: title for table of content
-        -numbered: True/False
+        -star: True/False
         -level: sections level
         -parent_block
         '''
@@ -59,7 +59,7 @@ class SectionBlock(Block):
         self.attributes['section_name'] = section_name
         self.attributes['title'] = title
         self.attributes['index_title'] = index_title
-        self.attributes['numbered'] = numbered
+        self.attributes['star'] = star
 
     def __str__(self):
         return  '<Block:{}, ID:{}, section_name:{}, title:{}>'.format(

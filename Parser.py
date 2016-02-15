@@ -353,9 +353,14 @@ class Parser:
                 #we have a \\ command
                 matched_cmd = '\\'
                 logging.debug('PARSER.COMMANDS @ matched: \\')
+                tex_to_parse = tex[match.end():].lstrip()
                 #we insert the matched options in the dict for hooks
                 opts = {'cmd':'\\', 'star':False}
-                tex_to_parse = tex[match.end():].lstrip()
+                #check if we have \\*
+                if tex_to_parse.startswith('*'):
+                    opts['star'] = True
+                    tex_to_parse = tex_to_parse[1:]
+                #parser_hook call
                 result = self.call_parser_hook(matched_cmd,'cmd',
                         tex_to_parse, parent_block,opts)
                 logging.info('PARSER.COMMANDS @ block: %s', str(result[0]))

@@ -49,13 +49,14 @@ class AccentedLetterBlock(Block):
 class NewlineBlock(Block):
 
     def parse_newline(parser, tex, parent_block, options):
-        block = NewlineBlock(parent_block)
+        block = NewlineBlock(options['star'], parent_block)
         left_tex = CommandParser.parse_options(tex,[])[1]
         return (block, left_tex)
 
-    def __init__(self, parent_block):
+    def __init__(self, star, parent_block):
         super().__init__('newline','\n', parent_block)
         self.attributes['text'] = '\n'
+        self.attributes['star'] = star
 
 
 
