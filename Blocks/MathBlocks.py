@@ -1,4 +1,3 @@
-import re
 import logging
 from . import utility
 from . import CommandParser
@@ -6,21 +5,22 @@ from .Block import *
 
 class MathBlock(Block):
 
-
 	@staticmethod
 	def parse_math_env(parser, tex, parent_block, options):
 		env = options['env']
 		star = options.get('star',False)
 		block = MathBlock(env, star, tex, parent_block)
+		logging.debug('MathBlock.parse_math_env @ env: %s', env)
 		return block
 
 	@staticmethod
 	def parse_ensure_math(parser, tex, parent_block, options):
 		''' The \ensuremath{} is a math command, not env'''
-		param, left_tex = CommandParser.parse_command_options(tex,
+		param, left_tex = CommandParser.parse_options(tex,
 			[('math','{','}')])
 		text = param['math']
 		block = MathBlock('ensuremath', False, text, parent_block)
+		logging.debug('MathBlock.parse_ensure_math')
 		return (block, left_tex)
 
 
@@ -32,7 +32,6 @@ class MathBlock(Block):
 		#the content is saved in attributes
 		self.attributes['content'] = tex
 		self.attributes['star'] = star
-
 
 
 parser_hooks = {

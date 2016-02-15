@@ -7,7 +7,7 @@ class EmphBlock(Block):
 	@staticmethod
 	def parse(parser, tex, parent_block, options):
 		logging.debug('EmphBlock.parse @ tex: %s', tex[:5]+'...' )
-		params, left_tex = CommandParser.parse_command_options(tex,
+		params, left_tex = CommandParser.parse_options(tex,
 			[('text','{','}')])
 		text = params['text']
 		block = EmphBlock(text, parent_block)

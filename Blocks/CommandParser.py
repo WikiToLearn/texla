@@ -6,7 +6,7 @@ import re
 import logging
 from . import utility
 
-def parse_command_options(tex, grammar):
+def parse_options(tex, grammar):
 	'''
 	This function extract commands options given a grammar.
 	The tex input must start with the options parenthesis [ or {,

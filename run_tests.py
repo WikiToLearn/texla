@@ -8,32 +8,32 @@ class CommandParserTest(unittest.TestCase):
 	def test_grammar_complete(self):
 		a = '[option]{text}other text'
 		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.parse_command_options(a, grammar),
+		self.assertEqual(CommandParser.parse_options(a, grammar),
 			({'opt':'option','content':'text'}, 'other text'))
 	
 	def test_grammar_command_near_command(self):
 		a = '[option]{text}\cmd{other text}'
 		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.parse_command_options(a,grammar),
+		self.assertEqual(CommandParser.parse_options(a,grammar),
 			({'opt':'option','content':'text'},'\cmd{other text}'))
 
 	def test_grammar_blank_left(self):
 		a = '{text} other text'
 		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.parse_command_options(a,grammar),
+		self.assertEqual(CommandParser.parse_options(a,grammar),
 			({'opt':None,'content':'text'},' other text'))
 
 	def test_grammar_blank_right(self):
 		a = '[option] other text'
 		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.parse_command_options(a, grammar),
+		self.assertEqual(CommandParser.parse_options(a, grammar),
 			({'opt':'option','content':None},' other text'))
 
 	def test_grammar_blank_middle(self):
 		a = '[option1][option2] other text'
 		grammar = [('opt1','[',']'),('content','{','}'),
 			('opt2','[',']')]
-		self.assertEqual(CommandParser.parse_command_options(a, grammar),
+		self.assertEqual(CommandParser.parse_options(a, grammar),
 			({'opt1':'option1','content':None,
 			 'opt2':'option2'},' other text'))
 
@@ -41,9 +41,13 @@ class CommandParserTest(unittest.TestCase):
 		a = '[option1][option2] other text'
 		grammar = [('opt1','[',']'),('opt2','[',']'),
 			('opt3','[',']')]
-		self.assertEqual(CommandParser.parse_command_options(a, grammar),
+		self.assertEqual(CommandParser.parse_options(a, grammar),
 			({'opt1':'option1','opt2':'option2',
 			 'opt3':None},' other text'))
+
+	def test_grammar_nooptions(self):
+		self.assertEqual(CommandParser.parse_options(' text',[]),
+			({},' text'))
 
 	def test_get_parenthesis_nested(self):
 		a = '[a][b]{abc\command{}[]}[d]{boh[]} tests'

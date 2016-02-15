@@ -25,7 +25,7 @@ class Block:
 		pass
 
 	
-	def __init__(self, block_name, content,  parent_block):
+	def __init__(self, block_name, content, parent_block):
 		'''
 		Base constructor for Block. 
 		It saves the parent_block and block name and create  

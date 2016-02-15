@@ -34,7 +34,7 @@ class AccentedLetterBlock(Block):
     def parse_accents(parser, tex, parent_block, options):
         logging.debug('TextBlock.parse_plain_text @ ')
         #we can extract the letter using grammar
-        params,left_tex = CommandParser.parse_command_options(tex,
+        params,left_tex = CommandParser.parse_options(tex,
             [('letter','{','}')])
         #we get the letter
         letter = params['letter']
@@ -46,7 +46,22 @@ class AccentedLetterBlock(Block):
         self.attributes['letter'] = letter
 
 
+class NewlineBlock(Block):
+
+    def parse_newline(parser, tex, parent_block, options):
+        block = NewlineBlock(parent_block)
+        left_tex = CommandParser.parse_options(tex,[])[1]
+        return (block, left_tex)
+
+    def __init__(self, parent_block):
+        super().__init__('newline','\n', parent_block)
+        self.attributes['text'] = '\n'
+
+
+
 parser_hooks = {
     'text': TextBlock.parse_plain_text,
-    "'": AccentedLetterBlock.parse_accents
+    "'": AccentedLetterBlock.parse_accents,
+    '\\': NewlineBlock.parse_newline,
+    'newline': NewlineBlock.parse_newline
     }
