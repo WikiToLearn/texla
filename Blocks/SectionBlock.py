@@ -50,9 +50,9 @@ class SectionBlock(Block):
         -parent_block
         '''
         #base constructor for Block. It created the id 
-        #nd basic data structures
+        #nd basic data structures. Section has no content
         section_name = utility.section_level[level]
-        super().__init__(section_name, parent_block)
+        super().__init__(section_name, None, parent_block)
         #new section level
         self.section_level = level
         #attributes

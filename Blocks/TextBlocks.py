@@ -19,7 +19,7 @@ class TextBlock(Block):
         Constructor for text:
         -text: string:
         '''
-        super().__init__('text', parent_block)
+        super().__init__('text', text, parent_block)
         #attributes
         self.attributes['text'] = text
         self.attributes['text_lenght'] = len(text)
@@ -42,7 +42,7 @@ class AccentedLetterBlock(Block):
         return (block, left_tex)
         
     def __init__(self, letter, parent_block):
-        super().__init__('accented_letter', parent_block)
+        super().__init__('accented_letter',letter, parent_block)
         self.attributes['letter'] = letter
 
 

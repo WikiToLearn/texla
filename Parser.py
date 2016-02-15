@@ -226,7 +226,6 @@ class Parser:
         #first of all we section the tex in a list
         #of tuples with (type, content).
         toks = self.math_tokenizer(tex)
-        print(toks)
         logging.debug('PARSER.MATH: tokens: '+ str([x[0] for x in toks]))
         #now we can further analyze text tokens
         #and elaborate with parser_hooks the math founded
@@ -242,7 +241,9 @@ class Parser:
             else:
                 env = e[0]
                 #we can call the parser hooks
-                pblocks.append(self.call_parser_hook(env,'env', e[1],parent_block))
+                poptions = {'env': env}
+                pblocks.append(self.call_parser_hook(env,'env', e[1],
+                        parent_block, poptions))
                 logging.info('PARSER.MATH @ block: %s', str(pblocks[-1]))
         return pblocks
 

@@ -25,16 +25,18 @@ class Block:
 		pass
 
 	
-	def __init__(self, block_name, parent_block):
+	def __init__(self, block_name, content,  parent_block):
 		'''
 		Base constructor for Block. 
 		It saves the parent_block and block name and create  
 		the new id for the new block. It creates data structures 
 		like the attributed dictionary and children nodes list.
+		It always saves a content variable. 
 		By default, it sets the section_level of the block 
 		to that of the parend_block.
 		'''
 		self.block_name = block_name
+		self.content = content
 		self.parent_block = parent_block
 		self.id = parent_block.id + '-' + utility.get_random_string(3)
 		#dictionary for attributes

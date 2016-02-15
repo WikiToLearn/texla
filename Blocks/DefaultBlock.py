@@ -48,10 +48,9 @@ class DefaultBlock(Block):
 		'''
 		#base constructor for Block. It created the id 
 		#nd basic data structures
-		super().__init__('default-'+block_name, parent_block)
-		self.tex = tex
+		super().__init__('default-'+block_name, tex, parent_block)
 		#the tex is added also as attribute
-		self.attributes['content_tex'] = tex
+		self.attributes['content'] = tex
 
 
 parser_hooks = {
