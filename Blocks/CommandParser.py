@@ -26,13 +26,14 @@ def parse_command_options(tex, grammar):
 	#now we have to match the parenthesis with the grammar,
 	#preloading keys with None
 	result = {x[0]:None  for x in grammar}
+	left_tex = ''
 	#preloading of void options
 	for pr in prt:
 		beginp = pr[0]
 		content = pr[1]
 		endp = pr[2]
 		if beginp=='out':
-			break
+			left_tex = content
 		#now we have to check the grammar
 		for gr in enumerate(grammar):
 			name = gr[1][0]
@@ -46,7 +47,7 @@ def parse_command_options(tex, grammar):
 				break
 			else:
 				result[name] = None
-	return result 
+	return (result, left_tex)
 
 def get_command_options(tex):
 	'''

@@ -28,17 +28,18 @@ class TextBlock(Block):
         return  '<Block:{}, ID:{}, text_lenght:{}>'.format(
             self.block_name, self.id, self.attributes['text_lenght'])
 
-class AccentedLetterBlock(Block):
 
+class AccentedLetterBlock(Block):
+    
     def parse_accents(parser, tex, parent_block, options):
         logging.debug('TextBlock.parse_plain_text @ ')
         #we can extract the letter using grammar
-        params = CommandParser.parse_command_options(tex,
+        params,left_tex = CommandParser.parse_command_options(tex,
             [('letter','{','}')])
         #we get the letter
         letter = params['letter']
         block = AccentedLetterBlock(letter, parent_block)
-        return (block, '')
+        return (block, left_tex)
         
     def __init__(self, letter, parent_block):
         super().__init__('accented_letter', parent_block)
