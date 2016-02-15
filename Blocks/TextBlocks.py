@@ -14,13 +14,6 @@ class TextBlock(Block):
         #the block is returned
         return (text_block,'')
 
-    def parse_accents(parser, tex, parent_block, options):
-        logging.debug('TextBlock.parse_plain_text @ ')
-        #we can extract the letter using utility
-        params = CommandParser.get_command_greedy()
-
-        
-
     def __init__(self, text, parent_block):
         '''
         Constructor for text:
@@ -35,8 +28,24 @@ class TextBlock(Block):
         return  '<Block:{}, ID:{}, text_lenght:{}>'.format(
             self.block_name, self.id, self.attributes['text_lenght'])
 
+class AccentedLetterBlock(Block):
+
+    def parse_accents(parser, tex, parent_block, options):
+        logging.debug('TextBlock.parse_plain_text @ ')
+        #we can extract the letter using grammar
+        params = CommandParser.parse_command_options(tex,
+            [('letter','{','}')])
+        #we get the letter
+        letter = params['letter']
+        block = AccentedLetterBlock(letter, parent_block)
+        return (block, '')
+        
+    def __init__(self, letter, parent_block):
+        super().__init__('accented_letter', parent_block)
+        self.attributes['letter'] = letter
+
 
 parser_hooks = {
     'text': TextBlock.parse_plain_text,
-    "'": TextBlock.parse_accents
+    "'": AccentedLetterBlock.parse_accents
     }
