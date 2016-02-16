@@ -8,11 +8,13 @@ class TextBlock(Block):
 
     @staticmethod
     def parse_plain_text(parser ,tex, parent_block, options):
+        '''Plain text is seen as and env. It has only to return
+        the block'''
         logging.debug('TextBlock.parse_plain_text @ %s', tex[:10]+'...')
         #first of all we can create the new block
         text_block = TextBlock(tex, parent_block)
         #the block is returned
-        return (text_block,'')
+        return text_block
 
     def __init__(self, text, parent_block):
         '''

@@ -41,14 +41,14 @@ class Parser:
         A parser cycle needs a parent block, the tex to parser and
         a dictionary of options.
         Options controls the flow of operations in this order:
-        section-->environments-->math-->commands.
+        section-->environments-->commands-->math&text.
         Options dict contains:
         -parse_sections: say if the parser has to call parse_sections()
         -sec_level: this parameter says to parser_sections()
             what level of sections has to be splitted
         -parse_envs: say if the parser has to call parse_enviroments()
-        -parse_math: parser call parse_math()
         -parse_commands: parser calls parse_commands()
+        -parse_math: parser call parse_math()
 
         It returns a liste of tuples with the blocks parser, like:
         [('math',math_block ), ('emph', emph_block),..]
@@ -67,14 +67,14 @@ class Parser:
         elif options['parse_envs']:
             logging.debug('PARSER.pcyle.ENVIRONMENTS @ options: %s', str(options))
             parsed_blocks+=self.parse_environments(tex, parent_block, options)
-        elif options['parse_math']:
-            #then we parse maths
-            logging.debug('PARSER.pcyle.MATH @ options: %s', str(options))
-            parsed_blocks+=self.parse_math(tex, parent_block, options)
         elif options['parse_commands']:
-            #finally single command are parserd
+            #commands are parserd
             logging.debug('PARSER.pcyle.COMMANDS @ options: %s', str(options))
             parsed_blocks+=self.parse_commands(tex, parent_block, options)
+        elif options['parse_math']:
+            #then we parse maths and remaining text
+            logging.debug('PARSER.pcyle.MATH @ options: %s', str(options))
+            parsed_blocks+=self.parse_math(tex, parent_block, options)
         return parsed_blocks
 
 
@@ -216,6 +216,95 @@ class Parser:
         return env_list
 
 
+    def parse_commands(self, tex, parent_block, options):
+        ''' 
+        This function parse single latex commands. Sectioning, environments
+        are already parsed. The function finds the first command and 
+        call the proper parser_hook. The hook elaborate the command and returns
+        the new Block and the tex left to parse. Then the fuction is called 
+        recursively.
+        Remaining tex is passed to parser_cycle to parse math and plain text.
+        Parsed commands are returned to parser_cycle() as a list of tuples.
+        WARNING: the call_parser_hook result is ALWAYS  a tuple with
+        (new Block, tex left to parser). 
+        '''
+        pblocks = []
+        re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z']+)"+\
+                r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
+        match = re_cmd.search(tex)
+        if match!=None:
+            #The text before the cmd is extracted and STRIPED
+            left_text = tex[:match.start()].strip()
+            if len(left_text)>0:
+                #We have to call the parser_cycle
+                new_options = options.copy()
+                new_options['parse_sections'] = False
+                new_options['parse_envs'] = False
+                new_options['parse_commands'] = False
+                pblocks+=self.parser_cycle(left_text, 
+                    parent_block, new_options)
+            #managing match
+            if match.group('cmd')!=None:
+                matched_cmd = match.group('cmd')
+                star = True if match.group('star')!='' else False
+                logging.debug('PARSER.COMMANDS @ matched: %s', matched_cmd)
+                #we insert the matched options in the dict for hooks
+                opts = {'cmd':matched_cmd, 'star':star}
+                #the text passed to hooks is LEFT-STRIPPED to remove
+                #spaces between commands and options.
+                #N.B the matched part is not sent to hook
+                tex_to_parse = tex[match.end():].lstrip()
+                #the matched command is parsed by the parser_hook
+                #and the remaining tex is returned as the second element of
+                #a list.  The first element is the parsed Block.
+                result = self.call_parser_hook(matched_cmd,'cmd',
+                        tex_to_parse, parent_block,opts)
+                logging.info('PARSER.COMMANDS @ block: %s', str(result[0]))
+                #the block is appended
+                pblocks.append(result[0])
+                #the remaining tex is STRIPED and starts
+                #a new cyle in parser_commands
+                tex_left = result[1].strip()
+                if len(tex_left)>0:
+                    #the left tex is parsed again if not null
+                    pblocks+=self.parse_commands(tex_left, 
+                        parent_block, options)
+            
+            else:
+                #we have a \\ command
+                matched_cmd = '\\'
+                logging.debug('PARSER.COMMANDS @ matched: \\')
+                tex_to_parse = tex[match.end():].lstrip()
+                #we insert the matched options in the dict for hooks
+                opts = {'cmd':'\\', 'star':False}
+                #check if we have \\*
+                if tex_to_parse.startswith('*'):
+                    opts['star'] = True
+                    tex_to_parse = tex_to_parse[1:]
+                #parser_hook call
+                result = self.call_parser_hook(matched_cmd,'cmd',
+                        tex_to_parse, parent_block,opts)
+                logging.info('PARSER.COMMANDS @ block: %s', str(result[0]))
+                #the block is appended
+                pblocks.append(result[0])
+                #the remaining tex is STRIPED and starts
+                #a new cyle in parser_commands
+                tex_left = result[1].strip()
+                if len(tex_left)>0:
+                    #the left tex is parsed again if not null
+                    pblocks+=self.parse_commands(tex_left,  
+                        parent_block, soptions)
+        else:
+            #the remaining tex is passed to parser_cyle
+            #to parse text and math
+            new_options = options.copy()
+            new_options['parse_sections'] = False
+            new_options['parse_envs'] = False
+            new_options['parse_commands'] = False
+            pblocks+=self.parser_cycle(tex, parent_block, new_options)
+        return pblocks
+
+
     def parse_math(self, tex, parent_block, options):
         '''
         This function parse math out of the tex. It splits tex in 
@@ -229,23 +318,18 @@ class Parser:
         #of tuples with (type, content).
         toks = self.math_tokenizer(tex)
         logging.debug('PARSER.MATH: tokens: '+ str([x[0] for x in toks]))
-        #now we can further analyze text tokens
-        #and elaborate with parser_hooks the math founded
+        #now we can save plain tex block.s
         for e in toks:
             if e[0] == 'text':
-                #we make sure that the section and env check is disabled
-                #because sectioning and envs are parsed before math
-                new_options = options.copy()
-                new_options['parse_sections'] = False
-                new_options['parse_envs'] = False
-                new_options['parse_math'] = False
-                pblocks+=self.parser_cycle(e[1], parent_block, new_options)
+                poptions = {'env':'text'}
+                pblocks.append(self.call_parser_hook('text','env', 
+                    e[1],parent_block,poptions))
             else:
                 env = e[0]
-                #we can call the parser hooks
+                #we can call the parser hooks with found math.
                 poptions = {'env': env}
-                pblocks.append(self.call_parser_hook(env,'env', e[1],
-                        parent_block, poptions))
+                pblocks.append(self.call_parser_hook(env,'env', 
+                        e[1], parent_block, poptions))
                 logging.info('PARSER.MATH @ block: %s', str(pblocks[-1]))
         return pblocks
 
@@ -300,85 +384,6 @@ class Parser:
         if len(last_text) > 0:
             tokens.append(('text', last_text))
         return tokens
-
-
-    def parse_commands(self, tex, parent_block, options):
-        ''' 
-        This function parse single latex commands. Sectioning, environments
-        and math are already parsed. The function finds the first command and 
-        call the proper parser_hook. The hook elaborate the command and returns
-        the new Block and the tex left to parse. Then the fuction is called 
-        recursively.
-        Parsed commands are returned to parser_cycle() as a list of tuples.
-        WARNING: the call_parser_hook result is ALWAYS  a tuple with
-        (new Block, tex left to parser). 
-        '''
-        pblocks = []
-        re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z']+)"+\
-                r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
-        match = re_cmd.search(tex)
-        if match!=None:
-            #The text before the cmd is extracted and STRIPED
-            text = tex[:match.start()].strip()
-            if len(text)>0:
-                #We have to create a text block
-                pblocks.append(self.call_parser_hook('text','cmd',
-                        text, parent_block)[0])
-                logging.info('PARSER.COMMANDS @ block: %s', str(pblocks[-1]))
-            #managing match
-            if match.group('cmd')!=None:
-                matched_cmd = match.group('cmd')
-                star = True if match.group('star')!='' else False
-                logging.debug('PARSER.COMMANDS @ matched: %s', matched_cmd)
-                #we insert the matched options in the dict for hooks
-                opts = {'cmd':matched_cmd, 'star':star}
-                #the text passed to hooks is LEFT-STRIPPED to remove
-                #spaces between commands and options.
-                #N.B the matched part is not sent to hook
-                tex_to_parse = tex[match.end():].lstrip()
-                #the matched command is parsed by the parser_hook
-                #and the remaining tex is returned as the second element of
-                #a list.  The first element is the parsed Block.
-                result = self.call_parser_hook(matched_cmd,'cmd',
-                        tex_to_parse, parent_block,opts)
-                logging.info('PARSER.COMMANDS @ block: %s', str(result[0]))
-                #the block is appended
-                pblocks.append(result[0])
-                 #the remaining tex is STRIPED and starts
-                #a new cyle in parser_commands
-                tex_left = result[1].strip()
-                if len(tex_left)>0:
-                    #the left tex is parsed again if not null
-                    pblocks+=self.parse_commands(tex_left, parent_block, options)
-            
-            else:
-                #we have a \\ command
-                matched_cmd = '\\'
-                logging.debug('PARSER.COMMANDS @ matched: \\')
-                tex_to_parse = tex[match.end():].lstrip()
-                #we insert the matched options in the dict for hooks
-                opts = {'cmd':'\\', 'star':False}
-                #check if we have \\*
-                if tex_to_parse.startswith('*'):
-                    opts['star'] = True
-                    tex_to_parse = tex_to_parse[1:]
-                #parser_hook call
-                result = self.call_parser_hook(matched_cmd,'cmd',
-                        tex_to_parse, parent_block,opts)
-                logging.info('PARSER.COMMANDS @ block: %s', str(result[0]))
-                #the block is appended
-                pblocks.append(result[0])
-                #the remaining tex is STRIPED and starts
-                #a new cyle in parser_commands
-                tex_left = result[1].strip()
-                if len(tex_left)>0:
-                    #the left tex is parsed again if not null
-                    pblocks+=self.parse_commands(tex_left, parent_block, options)
-        else:
-            #a text block is created
-            pblocks.append(self.call_parser_hook('text','cmd', tex, parent_block)[0])
-            logging.info('PARSER.COMMANDS @ block: %s', str(pblocks[-1]))
-        return pblocks
 
 
     def call_parser_hook(self,hook, type, tex, parent_block, options={}):

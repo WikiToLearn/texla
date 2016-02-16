@@ -8,17 +8,19 @@ class FootnoteBlock(Block):
 	@staticmethod
 	def parse(parser, tex, parent_block, options):
 		#we get the content and the left_tex
+		print(tex)
 		params, left_tex = CommandParser.parse_options(tex,
 			[('content','{','}')])
 		content = params['content']
+		print(content)
 		#we first create the Block
 		block = FootnoteBlock(content, parent_block)
 		logging.debug('FootnoteBlock.parse @')
 		#now we parse the content 
 		poptions = {'parse_sections':False,
                    'parse_envs':True,
-                   'parse_math':True,
-                   'parse_commands':True }
+                   'parse_commands':True,
+                   'parse_math':True, }
 		children_blocks = parser.parser_cycle(content, block, poptions)
 		#now we can add the children nodes
 		block.add_children_blocks(children_blocks)
