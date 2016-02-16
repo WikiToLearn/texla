@@ -22,3 +22,6 @@ for module in os.listdir("Blocks"):
             for key,value  in m.parser_hooks.items():
                 logging.info('BLOCKS @ parser_hook: %s | %s', key, value)
                 parser_hooks[key] = value
+print('Supported commands/environments')
+for key in sorted(parser_hooks.keys()):
+    print('- '+key)

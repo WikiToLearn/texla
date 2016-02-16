@@ -92,7 +92,9 @@ class Parser:
         if (level+1) < (len(utility.section_level)-1):
             #getting level key from utility to create regex
             level_key = utility.section_level[level+1]
-            sec_re = re.compile(r'\\'+ level_key)
+            sec_re = re.compile(r'\\'+ level_key + \
+                r'(?:[*])?(?: *)'+\
+                r'(?=[\{\[])')
             #the tex is splitted by the section key
             toks = sec_re.split(tex)
             #the first token is the tex outside sectioning
@@ -192,16 +194,16 @@ class Parser:
             if len(outside_env) >0:
                 env_list.append(('text',False,outside_env))
             #the remaing part with the first env matched is analized
-            tex = tex[match.start():]
+            text = tex[match.start():]
             env = match.group('env')
             star = True if match.group('star')!='' else False
             env_tot = env + '\*' if star else env
             #now we extract the env greedy, with L-STRIPED content
-            s,e,content = utility.get_environment(tex,env_tot)
+            s,e,content = utility.get_environment(text,env_tot)
             env_list.append((env, star, content.lstrip()))
             #we iterate the process for remaining tex (STRIPED)
             #if it's not empty
-            left_tex = tex[e:].strip()
+            left_tex = text[e:].strip()
             if len(left_tex)>0 :
                 after_env_list = self.environments_tokenizer(left_tex)
                 if len(after_env_list) > 0:
