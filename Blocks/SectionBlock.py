@@ -6,7 +6,7 @@ from .Block import *
 class SectionBlock(Block):
 
     @staticmethod
-    def parse(parser ,tex, parent_block, options):
+    def parse(parser, tex, parent_block, options):
         sec_level = options['sec_level']
         level_key = options['level_key'] 
         #we have to parse the section
@@ -39,7 +39,6 @@ class SectionBlock(Block):
         return sec_block
         
 
-    
     def __init__(self, title, index_title, star, level, parent_block):
         '''
         Constructor for sections:

@@ -1,4 +1,4 @@
-import tests
+import re
 import Blocks
 from Blocks import CommandParser
 from Blocks import utility
@@ -101,6 +101,24 @@ class UtilityTest(unittest.TestCase):
 		self.assertEqual(a[s:e],'\\begin{A} test \\begin{A}\nt\n\\end{A}'+\
 			'test\ntest\n\\end{A}')
 
+class RegexTest(unittest.TestCase):
+	def test_section_regex(self):
+		sec = re.compile(r'\\section' + \
+                r'(?:[*])?(?: *)'+\
+                r'(?=[\{\[])')
+		a = 'text tex \\section* {} text '+\
+			'\\section text'
+		self.assertEqual(sec.split(a),
+			['text tex ','{} text \\section text'])
+
+	def test_section_regex2(self):
+		sec = re.compile(r'\\section' + \
+                r'(?:[*])?(?: *)'+\
+                r'(?=[\{\[])')
+		a = 'text tex \\section* {} text '+\
+			'\\section[] text'
+		self.assertEqual(sec.split(a),
+			['text tex ','{} text ','[] text'])
 
 
 
