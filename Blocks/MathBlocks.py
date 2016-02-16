@@ -7,6 +7,8 @@ class MathBlock(Block):
 
     @staticmethod
     def parse_math_env(parser, tex, parent_block, options):
+        ''' This parse hook it's used for $$, $, \[ \( and
+        general math environments'''
         env = options['env']
         star = options.get('star',False)
         #the content of the math is stripped

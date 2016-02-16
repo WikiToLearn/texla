@@ -4,6 +4,8 @@ from . import CommandParser
 from .Block import *
 
 class AlignmentBlock(Block):
+	'''This class handles the flushright, flushleft
+	and center environments'''
 
 	@staticmethod
 	def parse(parser, tex, parent_block, options):

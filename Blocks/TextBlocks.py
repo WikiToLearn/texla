@@ -32,7 +32,7 @@ class TextBlock(Block):
 class AccentedLetterBlock(Block):
     
     def parse_accents(parser, tex, parent_block, options):
-        logging.debug('TextBlock.parse_plain_text @ ')
+        logging.debug('AccentedLetterBlock.parse @ ')
         #we can extract the letter using grammar
         params,left_tex = CommandParser.parse_options(tex,
             [('letter','{','}')])
@@ -49,6 +49,7 @@ class AccentedLetterBlock(Block):
 class NewlineBlock(Block):
 
     def parse_newline(parser, tex, parent_block, options):
+        logging.debug('NewlineBlock.parse @ ')
         block = NewlineBlock(options['star'], parent_block)
         left_tex = CommandParser.parse_options(tex,[])[1]
         return (block, left_tex)

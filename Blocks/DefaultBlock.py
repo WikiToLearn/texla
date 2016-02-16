@@ -5,6 +5,8 @@ from . import CommandParser
 from .Block import *
 
 class DefaultBlock(Block):
+	''' This Block is used when the parser doesn't find
+	a proper parser_hook to call for a matched env or command'''
 
 	@staticmethod
 	def parse_env(parser ,tex, parent_block, options):
