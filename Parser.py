@@ -5,6 +5,9 @@ import Blocks
 import Blocks.utility as utility  
 from Blocks.DocumentBlock import DocumentBlock
 
+'''Commands that changes directly the subsequent letter'''
+letters_commands = ("'","`",'"','~','^','=','.')
+
 class Parser:
 
     def __init__(self):
@@ -105,24 +108,24 @@ class Parser:
                 pblocks.append(self.parse_plain_text(before_tex,
                         parent_block))
             #we check if it's a math command like \[ or \(
-            if tex_tp[1:2] in ('[','('):
+            if tex_tp[1] in ('[','('):
                 block, left_tex = self.parse_math(
                     tex_tp, parent_block, options)
             #now we check if it's an environment
             elif tex_tp[1:6] == 'begin':
                 block, left_tex = self.parse_enviroment(
                     tex_tp, parent_block, options)
+            #we have if we have letters commands
+            elif tex_tp[1] in letters_commands:
+                block, left_tex = self.parse_letter_command(
+                    tex_tp, parent_block, options)
             else:
-                #finally we have a command
+                #finally we have a normal command
                 block, left_tex = self.parse_command(
                     tex_tp, parent_block, options)
             #block saved
             pblocks.append(block)
         else:
-            if dollar == -1:
-                #it's plain text
-                pblocks.append(self.parse_plain_text(tex, 
-                    parent_block))
             #test before is plain text. 
             before_tex = tex[:dollar]
             tex_tp = tex[dollar:]
@@ -188,7 +191,7 @@ class Parser:
 
     def parse_command(self, tex, parent_block, options):
         #regex to catch commands
-        re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z']+)"+\
+        re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z]+)"+\
                     r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
         match = re_cmd.match(tex)
         if match!=None:
@@ -205,7 +208,7 @@ class Parser:
                 #the matched command is parsed by the parser_hook
                 #and the remaining tex is returned as the second element of
                 #a list.  The first element is the parsed Block.
-                block, left_tex = self.call_parser_hook(matched_cmd,'cmd',
+                return self.call_parser_hook(matched_cmd,'cmd',
                         tex_to_parse, parent_block,opts)
             else:
                 #we have a \\ command
@@ -218,9 +221,8 @@ class Parser:
                     opts['star'] = True
                     tex_to_parse = tex_to_parse[1:]
                 #parser_hook call
-                block, left_tex = self.call_parser_hook(matched_cmd,'cmd',
+                return self.call_parser_hook(matched_cmd,'cmd',
                         tex_to_parse, parent_block,opts)
-            return (block, left_tex)
         else:
             #it's an error
             logging.error('PARSER.parse_command @ command NOT FOUND')
@@ -230,6 +232,28 @@ class Parser:
         poptions = {'env':'text'}
         return self.call_parser_hook('text','env', 
                 tex, parent_block,poptions)
+
+    def parse_letter_command(self, tex, parent_block,options):
+        #first of all we get the command
+        cmd = tex[1]
+        opts = {'cmd':cmd, 'star':False}
+        #check if the letter is inside a {}
+        r = re.compile(r'\\' + cmd + r'\s*\{(.*?)\}')
+        match = r.match(tex)
+        if match != None:
+            tex_to_parse = tex[2:].lstrip()
+            return self.call_parser_hook(cmd,'cmd',
+                        tex_to_parse, parent_block,opts)
+        else: 
+            #we have to catch the next letter
+            re_letter = re.compile(r'\\' + cmd + r'\s*(?P<letter>\w)')
+            letter_m = re_letter.match(tex)
+            letter = letter_m.group('letter')
+            #adding parenthesis to standardize parser_hook
+            tex_to_parse = '{'+letter + '}'+ \
+                    tex[letter_m.end():]
+            return self.call_parser_hook(cmd,'cmd',
+                        tex_to_parse, parent_block, opts)
 
 
     def call_parser_hook(self,hook, type, tex, parent_block, options={}):

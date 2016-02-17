@@ -38,8 +38,8 @@ class AccentedLetterBlock(Block):
         #we can extract the letter using grammar
         params,left_tex = CommandParser.parse_options(tex,
             [('letter','{','}')])
-        #we get the letter
-        letter = params['letter']
+        #we get the letter, stripper to avoid spaces
+        letter = params['letter'].strip()
         block = AccentedLetterBlock(letter, parent_block)
         return (block, left_tex)
         
