@@ -81,12 +81,10 @@ class Parser:
 
 
     def parse_instructions(self, tex, parent_block, options):
-        print(tex)
         #list of blocks parsed
         pblocks = []
         #checking if tex is void
         if len(tex) == 0:
-            print('len0')
             return pblocks
         #searching for comands \cmd, envs \begin or math
         slash = tex.find('\\')
@@ -98,7 +96,7 @@ class Parser:
                     parent_block))
             return pblocks
         #what's the first token: cmd,env or math
-        if (slash < dollar and slash!=-1 and slash!=-1) or dollar==-1:
+        elif (slash < dollar and slash!=-1 and slash!=-1) or dollar==-1:
             #text before and to parse
             before_tex = tex[:slash]
             tex_tp = tex[slash:]
@@ -110,9 +108,8 @@ class Parser:
             if tex_tp[1:2] in ('[','('):
                 block, left_tex = self.parse_math(
                     tex_tp, parent_block, options)
-                print('LEFT#',left_tex,'#')
             #now we check if it's an environment
-            if tex_tp[1:6] == 'begin':
+            elif tex_tp[1:6] == 'begin':
                 block, left_tex = self.parse_enviroment(
                     tex_tp, parent_block, options)
             else:
@@ -184,14 +181,13 @@ class Parser:
                 content = m.group('m')
                 left_tex = tex[m.end():]
         poptions = {'env': env}
-        print('left_tex_math#',left_tex,'#')
         block = self.call_parser_hook(env,'env', 
                 content, parent_block, poptions)
         return (block, left_tex)
 
 
     def parse_command(self, tex, parent_block, options):
-        print(tex)
+        #regex to catch commands
         re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z']+)"+\
                     r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
         match = re_cmd.match(tex)
