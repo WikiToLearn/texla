@@ -49,6 +49,23 @@ class CommandParserTest(unittest.TestCase):
 		self.assertEqual(CommandParser.parse_options(' text',[]),
 			({},' text'))
 
+	def test_grammar_envinside(self):
+		a =  '{test $x=y$ text \\begin{align*}A'+\
+			'\end{align*} text}'
+		grammar = [('content','{','}')]
+		self.assertEqual(CommandParser.parse_options(a,grammar),
+			({'content':'test $x=y$ text \\begin{align*}A'+\
+			'\end{align*} text'},''))
+
+	def test_grammar_get_param_with_env(self):
+		a =  '{test $x=y$ text \\begin{align*}A'+\
+			'\end{align*} text}'
+		grammar = [('content','{','}')]
+		self.assertEqual(
+			CommandParser.parse_options(a,grammar)[0]['content'],
+			'test $x=y$ text \\begin{align*}A'+\
+			'\end{align*} text')
+
 	def test_get_parenthesis_nested(self):
 		a = '[a][b]{abc\command{}[]}[d]{boh[]} tests'
 		self.assertEqual(CommandParser.get_parenthesis(a)[:-1], 
@@ -56,6 +73,13 @@ class CommandParserTest(unittest.TestCase):
 			('[','d',']'),('{','boh[]','}')]) 
 		self.assertEqual(CommandParser.get_parenthesis(a)[-1:],
 			[('out',' tests','')])
+
+	def test_get_parenthesis_env(self):
+		a =  '{test $x=y$ text \\begin{align*}A'+\
+			'\end{align*} text}'
+		self.assertEqual(CommandParser.get_parenthesis(a), 
+			[('{','test $x=y$ text \\begin{align*}A'+\
+			'\end{align*} text','}'),('out','','')]) 
 
 	def test_get_parenthesis_near_command(self):
 		a = '[a][b]{abc\command{}[]}[d]{boh[]}\cmd2{tests}'
