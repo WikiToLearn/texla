@@ -26,12 +26,8 @@ class SectionBlock(Block):
         #of the section to get the children blocks.
         content = tex[m.end():]
         #the parser is called with options
-        poptions = {'parse_sections':True,
-                   'parse_envs':True,
-                   'parse_math':True,
-                   'parse_commands':True,
-                   'sec_level': sec_level}
-        chld_blocks = parser.parser_cycle(content, sec_block, poptions)
+        chld_blocks = parser.parse_sections(content,
+                sec_level,sec_block, {})
         #now we have all chld blocks. They are simply added to the list.
         #no further processing for sections
         sec_block.add_children_blocks(chld_blocks)

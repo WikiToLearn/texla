@@ -13,11 +13,7 @@ class AlignmentBlock(Block):
 		block = AlignmentBlock(options['env'], tex, parent_block)
 		logging.debug('AlignmentBlock.parse @ type: %s', options['env'])
 		#now we parse the content 
-		poptions = {'parse_sections':False,
-                   'parse_envs':True,
-                   'parse_math':True,
-                   'parse_commands':True }
-		children_blocks = parser.parser_cycle(tex, block, poptions)
+		children_blocks = parser.parse_instructions(tex, block, {})
 		#now we can add the children nodes
 		block.add_children_blocks(children_blocks)
 		return block
