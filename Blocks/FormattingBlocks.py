@@ -11,8 +11,11 @@ class EmphBlock(Block):
 			[('text','{','}')])
 		text = params['text']
 		block = EmphBlock(text, parent_block)
+		#now we parse the content just to be sure
+		ch_blocks = parser.parse_instructions(
+				text, block, {})
+		block.add_children_blocks(ch_blocks)
 		return (block, left_tex)
-
 
 	def __init__(self, text, parent_block):
 		super().__init__('emph',text,parent_block)
@@ -30,6 +33,10 @@ class UnderlineBlock(Block):
 			[('text','{','}')])
 		text = params['text']
 		block = UnderlineBlock(text, parent_block)
+		#now we parse the content just to be sure
+		ch_blocks = parser.parse_instructions(
+				text, block, {})
+		block.add_children_blocks(ch_blocks)
 		return (block, left_tex)
 
 	def __init__(self, text, parent_block):
