@@ -35,18 +35,25 @@ class TextBlock(Block):
 class AccentedLetterBlock(Block):
     
     def parse_accents(parser, tex, parent_block, options):
+        accent_type = options['cmd']
         logging.debug('AccentedLetterBlock.parse @ ')
         #we can extract the letter using grammar
         params,left_tex = CommandParser.parse_options(tex,
             [('letter','{','}')])
         #we get the letter, stripper to avoid spaces
         letter = params['letter'].strip()
-        block = AccentedLetterBlock(letter, parent_block)
+        block = AccentedLetterBlock(letter, accent_type, parent_block)
         return (block, left_tex)
         
-    def __init__(self, letter, parent_block):
+    def __init__(self, letter, accent_type, parent_block):
         super().__init__('accented_letter',letter, parent_block)
         self.attributes['letter'] = letter
+        self.attributes['accent_type'] = accent_type
+
+    def __str__(self):
+        return '<Block:{}, ID:{}, accent:{}>'.format(
+            self.block_name, self.id, 
+            self.attributes['accent_type'])
 
 
 class NewlineBlock(Block):
@@ -63,11 +70,15 @@ class NewlineBlock(Block):
         self.attributes['star'] = star
 
 
-
 parser_hooks = {
     'text': TextBlock.parse_plain_text,
     "'": AccentedLetterBlock.parse_accents,
     "`" : AccentedLetterBlock.parse_accents,
+    '"' : AccentedLetterBlock.parse_accents,
+    "~" : AccentedLetterBlock.parse_accents,
+    "^" : AccentedLetterBlock.parse_accents,
+    "=" : AccentedLetterBlock.parse_accents,
+    "." : AccentedLetterBlock.parse_accents,
     '\\': NewlineBlock.parse_newline,
     'newline': NewlineBlock.parse_newline
     }
