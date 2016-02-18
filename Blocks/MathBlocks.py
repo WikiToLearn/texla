@@ -1,6 +1,8 @@
 import logging
+import re
 from . import utility
 from . import CommandParser
+from .ReferenceBlocks import LabelBlock
 from .Block import *
 
 class MathBlock(Block):
@@ -11,9 +13,17 @@ class MathBlock(Block):
         general math environments'''
         env = options['env']
         star = options.get('star',False)
+        #getting labels and tex without labels
+        tex, labels = MathBlock.parse_labels(tex)
         #the content of the math is stripped
         block = MathBlock(env, star, tex.strip(), parent_block)
         logging.debug('MathBlock.parse_math_env @ env: %s', env)
+        #creating and adding labels blocks
+        for l in labels:
+            lblock = LabelBlock(l, block)
+            logging.info('BLOCK @ %s%s', 
+                    "\t"*lblock.tree_depth, str(lblock))
+            block.add_child_block(lblock)
         return block
 
     @staticmethod
@@ -25,6 +35,23 @@ class MathBlock(Block):
         block = MathBlock('ensuremath', False, text, parent_block)
         logging.debug('MathBlock.parse_ensure_math')
         return (block, left_tex)
+
+    @staticmethod
+    def parse_labels(tex):
+        '''
+        The function get labels from math. 
+        Multiple labels in math are allowed.
+        It creates a list of Label mathced and removes 
+        them from the tex.
+        It returns the modified tex and list of labels.
+        '''
+        lre = re.compile(r'\\label\s*\{(?P<label>.*?)\}')
+        labels = []
+        for m in lre.finditer(tex):
+            labels.append(m.group('label'))
+            #removing label from tex
+            tex = tex.replace(m.group(), '')
+        return (tex, labels)
 
 
     def __init__(self, math_type, star, tex, parent_block):
