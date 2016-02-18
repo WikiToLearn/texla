@@ -46,6 +46,8 @@ class Block:
 		#Section level:
 		#by default the level is the same of parent block
 		self.section_level = self.parent_block.section_level 
+		#depth in the tree
+		self.tree_depth = self.parent_block.tree_depth+1
 
 	
 	def add_child_block(self, block):

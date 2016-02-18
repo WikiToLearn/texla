@@ -12,3 +12,4 @@ class DocumentBlock():
 		self.options = options
 		self.parent_block = None
 		self.section_level = -1
+		self.tree_depth = -1 
