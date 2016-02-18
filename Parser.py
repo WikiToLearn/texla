@@ -39,7 +39,8 @@ class Parser:
         This parser function search for sections splitting inside tex.
         The level of sections searched is indicated by sec_level option.
         The function calls the parser_hooks of every section block.
-
+        When all sections levels are searched the control 
+        pass to parse_instructions().
         It returns a list of blocks parsed as tuples.
         '''
         pblocks = []
@@ -86,6 +87,24 @@ class Parser:
 
 
     def parse_instructions(self, tex, parent_block, options):
+        '''This function is the MAIN ENTRY POINT for parsing.
+        It scan the tex from left to right. It searches for
+        \\ or $. When an instruction is found (a pattern starting
+        with \\ or $), the right parser funcion is called. 
+        These functions take care to parse the command,
+        create the block calling parser_hooks, and to return
+        the block and the tex left to parse. Then the remaing 
+        tex starts a new cycle in parse_instructions() recursively.
+        It returnes a list of parsed blocks. 
+
+        The categories of instrucions parsed are:
+        -math: starts with $, $$ or \[ \(
+        -environments: (start with \begin)
+        -letters commands: they are special commands
+            listed in letters_commands. They are 
+            parsed separately
+        -normal commands: like \cmd{text}
+        '''  
         #list of blocks parsed
         pblocks = []
         #checking if tex is void
@@ -144,6 +163,17 @@ class Parser:
 
 
     def parse_enviroment(self, tex, parent_block, options):
+        '''
+        This function handles the parsing of environments.
+        It parses the name of the environment and if it's starred.
+        Then utility.get_environment() is used to extract 
+        the complete environment, handling nested envs.
+        The content is sent to parser_hook for the specific parsing.
+        The parser_hook decides also if the content of the env 
+        must be parsed recursively.
+        A new block is created and returned with the tex
+        remained to parse.
+        '''
         #we search for the first enviroment
         re_env1 = re.compile(r'\\begin\{(?: *)(?P<env>\w*?)'+\
                             r'(?P<star>[*]?)(?: *)\}')
@@ -174,6 +204,12 @@ class Parser:
             
 
     def parse_math(self, tex, parent_block, options):
+        '''
+        This function handles the parsing of math commands:
+        $..$, $$..$$, \[..\], \(..\). The matched math
+        is inserted in "display_math" or "inline_math" block.
+        The function returnes the block and left_tex.
+        '''
         inline_re = re.compile(r'(?<![\$])\$(?P<m>[^$]+)\$(?!\$)', re.DOTALL)
         display_re = re.compile(r'(?<![\$])\$\$(?P<m>[^$]+)\$\$(?!\$)', re.DOTALL)
         inline_re2 = re.compile(r'\\\((?P<m>.*?)\\\)',re.DOTALL)
@@ -198,6 +234,17 @@ class Parser:
 
 
     def parse_command(self, tex, parent_block, options):
+        '''
+        This function handles the parsing of normal
+        commands. It catches the command's name and if it's
+        starred. Removed the \cmd part, the tex is passed
+        to the right parser_hook that manages the real 
+        parsing of commands options. The parser_hook decides 
+        also if the content of the command must be parsed
+        recursively.
+        It returns the block and the left tex that must
+        be parsed by another cycle of parse_instructions()
+        '''
         #regex to catch commands
         re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z]+)"+\
                     r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
@@ -243,16 +290,25 @@ class Parser:
             logging.error('PARSER.parse_command @ command NOT FOUND')
 
 
-    def parse_plain_text(self, tex, parent_block):
-        poptions = {'env':'text'}
-        block = self.call_parser_hook('text','env', 
-                tex, parent_block,poptions)
-        logging.info('BLOCK @ %s%s', 
-                    "\t"*block.tree_depth,
-                    str(block))
-        return block
 
     def parse_letter_command(self, tex, parent_block,options):
+        ''''
+        This function handles special commands for accented
+        or modified letters.
+        They are special commands because they don't need a {}
+        and they act directly on the next letter.
+        Examples:
+        \'a: accented letter
+        \`a: grave accent
+        \~a \=a \^a other changes on the letter
+
+        The function parse that commands and call 
+        parser_hook as the normal parse_command() function.
+        Althought, the letter influenced by the command is 
+        inserted in a {} so that special command could 
+        be treated like normal commands with hooks.
+        It returns the block and the left tex to parse.
+        '''
         #first of all we get the command
         cmd = tex[1]
         opts = {'cmd':cmd, 'star':False}
@@ -278,18 +334,39 @@ class Parser:
         return (block, left_tex)
 
 
-    def call_parser_hook(self,hook, type, tex, parent_block, options={}):
+    def parse_plain_text(self, tex, parent_block):
         '''
-        This function check if the required parser_hook is avaiable,
-        if not it calls th default hook
+        This function create the block for plain text.
+        It doesn't return any left tex. 
+        '''
+        poptions = {'env':'text'}
+        block = self.call_parser_hook('text','env', 
+                tex, parent_block,poptions)
+        logging.info('BLOCK @ %s%s', 
+                    "\t"*block.tree_depth,
+                    str(block))
+        return block
+
+
+    def call_parser_hook(self, hook, type, tex, parent_block, options={}):
+        '''
+        This function checks if the required parser_hook 
+        is avaiable, if not it calls th default hook.
+        The function ask for type of call (env or cmd)
+        to be able of asking the right default hooks, 
+        in case the hook in not avaiable.
+        It returns directly the output of parser_hook.
         '''
         if hook in Blocks.parser_hooks:
-            return Blocks.parser_hooks[hook](self, tex, parent_block, options)
+            return Blocks.parser_hooks[hook](self, tex,
+                    parent_block, options)
         else:
             #default hook is called
             if type == 'cmd':
-                return Blocks.parser_hooks['default_cmd'](self, tex, parent_block, options)
+                return Blocks.parser_hooks['default_cmd'](
+                    self, tex, parent_block, options)
             elif type == 'env':
-                return Blocks.parser_hooks['default_env'](self, tex, parent_block, options)
+                return Blocks.parser_hooks['default_env'](
+                    self, tex, parent_block, options)
 
 
