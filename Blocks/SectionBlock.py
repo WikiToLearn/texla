@@ -28,8 +28,8 @@ class SectionBlock(Block):
         #the parser is called with options
         chld_blocks = parser.parse_sections(content,
                 sec_level,sec_block, {})
-        #now we have all chld blocks. They are simply added to the list.
-        #no further processing for sections
+        #now we have all child blocks. They are simply added 
+        #to the list. no further processing for sections
         sec_block.add_children_blocks(chld_blocks)
         #the block is returned
         return sec_block

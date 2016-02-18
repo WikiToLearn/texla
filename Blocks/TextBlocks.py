@@ -67,6 +67,7 @@ class NewlineBlock(Block):
 parser_hooks = {
     'text': TextBlock.parse_plain_text,
     "'": AccentedLetterBlock.parse_accents,
+    "`" : AccentedLetterBlock.parse_accents,
     '\\': NewlineBlock.parse_newline,
     'newline': NewlineBlock.parse_newline
     }

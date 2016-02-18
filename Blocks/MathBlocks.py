@@ -51,7 +51,8 @@ parser_hooks = {
     'multline' : MathBlock.parse_math_env,
     'alignat' : MathBlock.parse_math_env,
     'gather' : MathBlock.parse_math_env,
-    'ensuremath' : MathBlock.parse_ensure_math
+    'ensuremath' : MathBlock.parse_ensure_math,
+    'empheq' : MathBlock.parse_math_env
 }
 
 
