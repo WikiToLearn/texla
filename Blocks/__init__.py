@@ -17,10 +17,10 @@ for module in os.listdir("Blocks"):
         continue
     if module.endswith('.py'):
         m = importlib.import_module('Blocks.'+ module[:-3])
-        logging.info('BLOCKS @ imported %s', m.__name__)
+        logging.info('BLOCKS_MODULE @ imported %s', m.__name__)
         if hasattr(m,"parser_hooks"):
             for key,value  in m.parser_hooks.items():
-                logging.info('BLOCKS @ parser_hook: %s | %s', key, value)
+                logging.info('BLOCKS_HOOK @ parser_hook: %s | %s', key, value)
                 parser_hooks[key] = value
 print('Supported commands/environments')
 for key in sorted(parser_hooks.keys()):

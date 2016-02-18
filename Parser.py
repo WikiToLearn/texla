@@ -68,9 +68,11 @@ class Parser:
                 sec_options = { 'sec_level' : (level +1),
                             'level_key' : level_key }
                 #the tuple with the result is saved
-                pblocks.append(self.call_parser_hook(level_key,'env', tok, 
-                                 parent_block, sec_options))
-                logging.info('PARSER.SECTIONS @ block: %s', str(pblocks[-1]))
+                pblocks.append(self.call_parser_hook(level_key,
+                        'env', tok, parent_block, sec_options))
+                logging.info('BLOCK @ %s%s', 
+                    "\t"*pblocks[-1].tree_depth,
+                    str(pblocks[-1]))
         else:
             #if we have searched for all section levels 
             #we continue with instructions
@@ -96,7 +98,7 @@ class Parser:
         if slash == -1 and dollar == -1:
             #it's plain text
             pblocks.append(self.parse_plain_text(tex, 
-                    parent_block))
+                    parent_block)) 
             return pblocks
         #what's the first token: cmd,env or math
         elif (slash < dollar and slash!=-1 and slash!=-1) or dollar==-1:
@@ -160,6 +162,9 @@ class Parser:
             #of the environment, without \begin{} and \end{} part.
             block = self.call_parser_hook(env,'env', 
                     content.lstrip(), parent_block, env_options)
+            logging.info('BLOCK @ %s%s', 
+                    "\t"*block.tree_depth,
+                    str(block))
             #we return the block and left_tex
             return (block, tex[e:])
         else:
@@ -186,6 +191,9 @@ class Parser:
         poptions = {'env': env}
         block = self.call_parser_hook(env,'env', 
                 content, parent_block, poptions)
+        logging.info('BLOCK @ %s%s', 
+                    "\t"*block.tree_depth,
+                    str(block))
         return (block, left_tex)
 
 
@@ -208,8 +216,11 @@ class Parser:
                 #the matched command is parsed by the parser_hook
                 #and the remaining tex is returned as the second element of
                 #a list.  The first element is the parsed Block.
-                return self.call_parser_hook(matched_cmd,'cmd',
-                        tex_to_parse, parent_block,opts)
+                block, left_tex = self.call_parser_hook(matched_cmd,
+                        'cmd', tex_to_parse, parent_block,opts)
+                logging.info('BLOCK @ %s%s', 
+                    "\t"*block.tree_depth,
+                    str(block))
             else:
                 #we have a \\ command
                 matched_cmd = '\\'
@@ -221,8 +232,12 @@ class Parser:
                     opts['star'] = True
                     tex_to_parse = tex_to_parse[1:]
                 #parser_hook call
-                return self.call_parser_hook(matched_cmd,'cmd',
-                        tex_to_parse, parent_block,opts)
+                block, left_tex = self.call_parser_hook(matched_cmd,
+                        'cmd', tex_to_parse, parent_block,opts)
+                logging.info('BLOCK @ %s%s', 
+                    "\t"*block.tree_depth,
+                    str(block))
+            return (block, left_tex)
         else:
             #it's an error
             logging.error('PARSER.parse_command @ command NOT FOUND')
@@ -230,8 +245,12 @@ class Parser:
 
     def parse_plain_text(self, tex, parent_block):
         poptions = {'env':'text'}
-        return self.call_parser_hook('text','env', 
+        block = self.call_parser_hook('text','env', 
                 tex, parent_block,poptions)
+        logging.info('BLOCK @ %s%s', 
+                    "\t"*block.tree_depth,
+                    str(block))
+        return block
 
     def parse_letter_command(self, tex, parent_block,options):
         #first of all we get the command
@@ -242,8 +261,8 @@ class Parser:
         match = r.match(tex)
         if match != None:
             tex_to_parse = tex[2:].lstrip()
-            return self.call_parser_hook(cmd,'cmd',
-                        tex_to_parse, parent_block,opts)
+            block, left_tex =  self.call_parser_hook(cmd,
+                    'cmd', tex_to_parse, parent_block,opts)
         else: 
             #we have to catch the next letter
             re_letter = re.compile(r'\\' + cmd + r'\s*(?P<letter>\w)')
@@ -252,8 +271,11 @@ class Parser:
             #adding parenthesis to standardize parser_hook
             tex_to_parse = '{'+letter + '}'+ \
                     tex[letter_m.end():]
-            return self.call_parser_hook(cmd,'cmd',
-                        tex_to_parse, parent_block, opts)
+            block, left_tex =  self.call_parser_hook(cmd,
+                    'cmd', tex_to_parse, parent_block, opts)
+        logging.info('BLOCK @ %s%s', "\t"*block.tree_depth,
+                    str(block))
+        return (block, left_tex)
 
 
     def call_parser_hook(self,hook, type, tex, parent_block, options={}):
