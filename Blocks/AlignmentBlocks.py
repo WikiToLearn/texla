@@ -8,10 +8,10 @@ class AlignmentBlock(Block):
 	and center environments'''
 
 	@staticmethod
-	def parse(parser, tex, parent_block, options):
+	def parse(parser, tex, parent_block, params):
 		#we first create the Block
-		block = AlignmentBlock(options['env'], tex, parent_block)
-		logging.debug('AlignmentBlock.parse @ type: %s', options['env'])
+		block = AlignmentBlock(params['env'], tex, parent_block)
+		logging.debug('AlignmentBlock.parse @ type: %s', params['env'])
 		#now we parse the content 
 		children_blocks = parser.parse_instructions(tex, block, {})
 		#now we can add the children nodes

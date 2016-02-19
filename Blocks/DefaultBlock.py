@@ -9,14 +9,14 @@ class DefaultBlock(Block):
 	a proper parser_hook to call for a matched env or command'''
 
 	@staticmethod
-	def parse_env(parser ,tex, parent_block, options):
+	def parse_env(parser ,tex, parent_block, params):
 		#getting the name of env
-		if 'env' in options:
-			env_name = options['env']
+		if 'env' in params:
+			env_name = params['env']
 		else:
 			env_name = 'no_env'
-		if 'star' in options:
-			env_name = env_name + '*' if options['star'] else env_name
+		if 'star' in params:
+			env_name = env_name + '*' if params['star'] else env_name
 		#default block is created
 		logging.debug('DefaultBlock.parse_env @ %s:',tex[:5]+'...')
 		block = DefaultBlock(tex, env_name, parent_block)
@@ -26,9 +26,9 @@ class DefaultBlock(Block):
 		return block
 
 	@staticmethod
-	def parse_cmd(parser ,tex, parent_block, options):
-		cmd = options['cmd']
-		cmd = cmd + '*' if options['star'] else cmd
+	def parse_cmd(parser ,tex, parent_block, params):
+		cmd = params['cmd']
+		cmd = cmd + '*' if params['star'] else cmd
 		#the options has to be matched from the tex
 		match = CommandParser.get_command_options(tex)
 		#match is (options string, left tex

@@ -11,7 +11,7 @@ class ListBlock(Block):
 	'''
 
 	@staticmethod
-	def parse(parser, tex, parent_block, options):
+	def parse(parser, tex, parent_block, params):
 		'''We parse the content of the env. 
 		Then we analyze the blocks and find
 		which are items and not. The hierarchy of 
@@ -21,7 +21,7 @@ class ListBlock(Block):
 		blocks are reappended under items blocks and
 		added as children nodes.
 		'''
-		list_type = options['env']
+		list_type = params['env']
 		block = ListBlock(list_type, 
 				tex, parent_block)
 		logging.debug('ListBlock.parse @' )
@@ -66,11 +66,11 @@ class ItemBlock(Block):
 	It's impossibile to extract it before'''
 
 	@staticmethod
-	def parse (parser, tex, parent_block, options):
+	def parse (parser, tex, parent_block, params):
 		#we must search for the param \item [word]
-		params, left_tex = CommandParser.parse_options(
+		options, left_tex = CommandParser.parse_options(
 			tex, [('word','[',']')])
-		word = params['word']
+		word = options['word']
 		block = ItemBlock(word, parent_block)
 		logging.debug('ItemBlock.parse @ word: %s',str(word))
 		#the left_tex is returned stripped

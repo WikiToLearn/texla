@@ -6,11 +6,11 @@ class FootnoteBlock(Block):
 	'''This class handles \footnote command'''
 
 	@staticmethod
-	def parse(parser, tex, parent_block, options):
+	def parse(parser, tex, parent_block, params):
 		#we get the content and the left_tex
-		params, left_tex = CommandParser.parse_options(tex,
+		options, left_tex = CommandParser.parse_options(tex,
 			[('content','{','}')])
-		content = params['content']
+		content = options['content']
 		#we first create the Block
 		block = FootnoteBlock(content, parent_block)
 		logging.debug('FootnoteBlock.parse @')
@@ -28,11 +28,11 @@ class FootnoteBlock(Block):
 class QuotationBlock(Block):
 
 	@staticmethod
-	def parse(parser, tex, parent_block, options):
+	def parse(parser, tex, parent_block, params):
 		#we get the content and the left_tex
-		params, left_tex = CommandParser.parse_options(tex,
+		options, left_tex = CommandParser.parse_options(tex,
 			[('content','{','}')])
-		content = params['content']
+		content = options['content']
 		#we first create the Block
 		block = QuotationBlock(content, parent_block)
 		logging.debug('QuotationBlock.parse @')
@@ -50,11 +50,11 @@ class QuotationBlock(Block):
 class QuotationBlock(Block):
 
 	@staticmethod
-	def parse(parser, tex, parent_block, options):
+	def parse(parser, tex, parent_block, params):
 		#we get the content and the left_tex
-		params, left_tex = CommandParser.parse_options(tex,
+		options, left_tex = CommandParser.parse_options(tex,
 			[('content','{','}')])
-		content = params['content']
+		content = options['content']
 		#we first create the Block
 		block = QuotationBlock(content, parent_block)
 		logging.debug('QuotationBlock.parse @')
@@ -71,11 +71,11 @@ class QuotationBlock(Block):
 
 class VerseBlock(Block):
 	@staticmethod
-	def parse(parser, tex, parent_block, options):
+	def parse(parser, tex, parent_block, params):
 		#we get the content and the left_tex
-		params, left_tex = CommandParser.parse_options(tex,
+		options, left_tex = CommandParser.parse_options(tex,
 			[('content','{','}')])
-		content = params['content']
+		content = options['content']
 		#we first create the Block
 		block = VerseBlock(content, parent_block)
 		logging.debug('VerseBlock.parse @')

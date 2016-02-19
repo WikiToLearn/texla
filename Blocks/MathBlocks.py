@@ -8,11 +8,11 @@ from .Block import *
 class MathBlock(Block):
 
     @staticmethod
-    def parse_math_env(parser, tex, parent_block, options):
+    def parse_math_env(parser, tex, parent_block, params):
         ''' This parse hook it's used for $$, $, \[ \( and
         general math environments'''
-        env = options['env']
-        star = options.get('star',False)
+        env = params['env']
+        star = params.get('star',False)
         #getting labels and tex without labels
         tex, labels = MathBlock.parse_labels(tex)
         #the content of the math is stripped
@@ -27,11 +27,11 @@ class MathBlock(Block):
         return block
 
     @staticmethod
-    def parse_ensure_math(parser, tex, parent_block, options):
+    def parse_ensure_math(parser, tex, parent_block, params):
         ''' The \ensuremath{} is a math command, not env'''
-        param, left_tex = CommandParser.parse_options(tex,
+        options, left_tex = CommandParser.parse_options(tex,
             [('math','{','}')])
-        text = param['math']
+        text = options['math']
         block = MathBlock('ensuremath', False, text, parent_block)
         logging.debug('MathBlock.parse_ensure_math')
         return (block, left_tex)

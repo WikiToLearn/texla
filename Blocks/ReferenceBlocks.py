@@ -7,10 +7,10 @@ class LabelBlock(Block):
 	'''Block that represents labels'''
 
 	@staticmethod
-	def parse_label(parser, tex, parent_block, options):
-		params, left_tex = CommandParser.parse_options(
+	def parse_label(parser, tex, parent_block, params):
+		options, left_tex = CommandParser.parse_options(
 			tex, [('label','{','}')])
-		label = params['label']
+		label = options['label']
 		logging.debug('LabelBlock.parse @ label: %s', label)
 		block =  LabelBlock(label, parent_block)
 		return (block, left_tex)
@@ -24,11 +24,11 @@ class RefBlock(Block):
 	'''Block thar represents reference'''
 
 	@staticmethod
-	def parse_ref(parser, tex, parent_block, options):
-		params, left_tex = CommandParser.parse_options(
+	def parse_ref(parser, tex, parent_block, params):
+		options, left_tex = CommandParser.parse_options(
 			tex, [('ref','{','}')])
-		ref = params['ref']
-		ref_type = options['cmd']
+		ref = options['ref']
+		ref_type = params['cmd']
 		logging.debug('RefBlock.parse @ label: %s', ref)
 		block = RefBlock(ref, ref_type, parent_block)
 		return (block, left_tex)

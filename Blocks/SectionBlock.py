@@ -6,9 +6,9 @@ from .Block import *
 class SectionBlock(Block):
 
     @staticmethod
-    def parse(parser, tex, parent_block, options):
-        sec_level = options['sec_level']
-        level_key = options['level_key'] 
+    def parse(parser, tex, parent_block, params):
+        sec_level = params['sec_level']
+        level_key = params['level_key'] 
         #we have to parse the section
         sec_re = re.compile(r'\\'+level_key+ r'(?P<ast>[*])?(?: *)' \
             r'(?:\[(?P<index_title>.*?)\])?{(?P<title>.*?)}')

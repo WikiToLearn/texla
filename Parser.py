@@ -66,11 +66,11 @@ class Parser:
                 #readding splitted command
                 tok = '\\'+ level_key +tok
                 #we insert the level in the options
-                sec_options = { 'sec_level' : (level +1),
+                sec_params = { 'sec_level' : (level +1),
                             'level_key' : level_key }
                 #the tuple with the result is saved
                 pblocks.append(self.call_parser_hook(level_key,
-                        'env', tok, parent_block, sec_options))
+                        'env', tok, parent_block, sec_params))
                 logging.info('BLOCK @ %s%s', 
                     "\t"*pblocks[-1].tree_depth,
                     str(pblocks[-1]))
@@ -184,15 +184,15 @@ class Parser:
             env_tot = env + '\*' if star else env
             #now we extract the env greedy
             s,e,content = utility.get_environment(tex,env_tot)
-            #the name of catched env is inserted in options
+            #the name of catched env is inserted in params
             #with the star param
-            env_options = {'env':env, 'star':star}
+            env_params = {'env':env, 'star':star}
             #we can call the parser hooks.
             #N.B.: the tex passed to parser hook is the CONTENT LSTRIPPED
             #of the environment, without \begin{} and \end{} part.
             #The lstrip is necessary to parse possible options.
             block = self.call_parser_hook(env,'env', 
-                    content.lstrip(), parent_block, env_options)
+                    content.lstrip(), parent_block, env_params)
             logging.info('BLOCK @ %s%s', 
                     "\t"*block.tree_depth,
                     str(block))
@@ -225,9 +225,9 @@ class Parser:
             if m != None:
                 content = m.group('m')
                 left_tex = tex[m.end():]
-        poptions = {'env': env}
+        params = {'env': env}
         block = self.call_parser_hook(env,'env', 
-                content, parent_block, poptions)
+                content, parent_block, params)
         logging.info('BLOCK @ %s%s', 
                     "\t"*block.tree_depth,
                     str(block))
@@ -256,7 +256,7 @@ class Parser:
                 matched_cmd = match.group('cmd')
                 star = True if match.group('star')!='' else False
                 #we insert the matched options in the dict for hooks
-                opts = {'cmd':matched_cmd, 'star':star}
+                params = {'cmd':matched_cmd, 'star':star}
                 #the text passed to hooks is LEFT-STRIPPED to remove
                 #spaces between commands and options.
                 #N.B the matched part is not sent to hook
@@ -265,7 +265,7 @@ class Parser:
                 #and the remaining tex is returned as the second element of
                 #a list.  The first element is the parsed Block.
                 block, left_tex = self.call_parser_hook(matched_cmd,
-                        'cmd', tex_to_parse, parent_block,opts)
+                        'cmd', tex_to_parse, parent_block,params)
                 logging.info('BLOCK @ %s%s', 
                     "\t"*block.tree_depth,
                     str(block))
@@ -274,14 +274,14 @@ class Parser:
                 matched_cmd = '\\'
                 tex_to_parse = tex[match.end():].lstrip()
                 #we insert the matched options in the dict for hooks
-                opts = {'cmd':'\\', 'star':False}
+                params = {'cmd':'\\', 'star':False}
                 #check if we have \\*
                 if tex_to_parse.startswith('*'):
-                    opts['star'] = True
+                    params['star'] = True
                     tex_to_parse = tex_to_parse[1:]
                 #parser_hook call
                 block, left_tex = self.call_parser_hook(matched_cmd,
-                        'cmd', tex_to_parse, parent_block,opts)
+                        'cmd', tex_to_parse, parent_block,params)
                 logging.info('BLOCK @ %s%s', 
                     "\t"*block.tree_depth,
                     str(block))
@@ -312,14 +312,14 @@ class Parser:
         '''
         #first of all we get the command
         cmd = tex[1]
-        opts = {'cmd':cmd, 'star':False}
+        params = {'cmd':cmd, 'star':False}
         #check if the letter is inside a {}
         r = re.compile(r'\\' + cmd + r'\s*\{(.*?)\}')
         match = r.match(tex)
         if match != None:
             tex_to_parse = tex[2:].lstrip()
             block, left_tex =  self.call_parser_hook(cmd,
-                    'cmd', tex_to_parse, parent_block,opts)
+                    'cmd', tex_to_parse, parent_block,params)
         else: 
             #we have to catch the next letter
             re_letter = re.compile(r'\\' + cmd + r'\s*(?P<letter>\w)')
@@ -329,7 +329,7 @@ class Parser:
             tex_to_parse = '{'+letter + '}'+ \
                     tex[letter_m.end():]
             block, left_tex =  self.call_parser_hook(cmd,
-                    'cmd', tex_to_parse, parent_block, opts)
+                    'cmd', tex_to_parse, parent_block, params)
         logging.info('BLOCK @ %s%s', "\t"*block.tree_depth,
                     str(block))
         return (block, left_tex)
@@ -340,34 +340,37 @@ class Parser:
         This function create the block for plain text.
         It doesn't return any left tex. 
         '''
-        poptions = {'env':'text'}
+        params = {'env':'text'}
         block = self.call_parser_hook('text','env', 
-                tex, parent_block,poptions)
+                tex, parent_block,params)
         logging.info('BLOCK @ %s%s', 
                     "\t"*block.tree_depth,
                     str(block))
         return block
 
 
-    def call_parser_hook(self, hook, type, tex, parent_block, options={}):
+    def call_parser_hook(self, hook, type, tex, parent_block, params={}):
         '''
         This function checks if the required parser_hook 
         is avaiable, if not it calls th default hook.
         The function ask for type of call (env or cmd)
         to be able of asking the right default hooks, 
         in case the hook in not avaiable.
+        Params is a dictionary of options for the parser. It 
+        usually contains che env or cmd parsed and if it's 
+        starred.
         It returns directly the output of parser_hook.
         '''
         if hook in Blocks.parser_hooks:
             return Blocks.parser_hooks[hook](self, tex,
-                    parent_block, options)
+                    parent_block, params)
         else:
             #default hook is called
             if type == 'cmd':
                 return Blocks.parser_hooks['default_cmd'](
-                    self, tex, parent_block, options)
+                    self, tex, parent_block, params)
             elif type == 'env':
                 return Blocks.parser_hooks['default_env'](
-                    self, tex, parent_block, options)
+                    self, tex, parent_block, params)
 
 

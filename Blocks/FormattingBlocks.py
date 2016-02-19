@@ -5,11 +5,11 @@ from .Block import *
 class EmphBlock(Block):
 
 	@staticmethod
-	def parse(parser, tex, parent_block, options):
+	def parse(parser, tex, parent_block, params):
 		logging.debug('EmphBlock.parse @ tex: %s', tex[:5]+'...' )
-		params, left_tex = CommandParser.parse_options(tex,
+		options, left_tex = CommandParser.parse_options(tex,
 			[('text','{','}')])
-		text = params['text']
+		text = options['text']
 		block = EmphBlock(text, parent_block)
 		#now we parse the content just to be sure
 		ch_blocks = parser.parse_instructions(
@@ -26,11 +26,11 @@ class EmphBlock(Block):
 class UnderlineBlock(Block):
 
 	@staticmethod
-	def parse(parser, tex, parent_block, options):
+	def parse(parser, tex, parent_block, params):
 		logging.debug('UnderlineBlock.parse @ tex: %s', tex[:5]+'...' )
-		params, left_tex = CommandParser.parse_options(tex,
+		options, left_tex = CommandParser.parse_options(tex,
 			[('text','{','}')])
-		text = params['text']
+		text = options['text']
 		block = UnderlineBlock(text, parent_block)
 		#now we parse the content just to be sure
 		ch_blocks = parser.parse_instructions(
