@@ -188,8 +188,9 @@ class Parser:
             #with the star param
             env_options = {'env':env, 'star':star}
             #we can call the parser hooks.
-            #N.B.: the tex passed to parser hook is the CONTENT STRIPPED
+            #N.B.: the tex passed to parser hook is the CONTENT LSTRIPPED
             #of the environment, without \begin{} and \end{} part.
+            #The lstrip is necessary to parse possible options.
             block = self.call_parser_hook(env,'env', 
                     content.lstrip(), parent_block, env_options)
             logging.info('BLOCK @ %s%s', 
