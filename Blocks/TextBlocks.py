@@ -34,6 +34,7 @@ class TextBlock(Block):
 
 class AccentedLetterBlock(Block):
     
+    @staticmethod
     def parse_accents(parser, tex, parent_block, options):
         accent_type = options['cmd']
         logging.debug('AccentedLetterBlock.parse @ ')
