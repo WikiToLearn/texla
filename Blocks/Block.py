@@ -18,7 +18,7 @@ class Block:
 	'''
 
 	@staticmethod
-	def parse(parser, tex, parent_block, options={}):
+	def parse(parser, tex, parent_block, params={}):
 		'''
 		The method must return a tuple with the created 
 		Block and the last used index of tex string.'''
@@ -43,6 +43,7 @@ class Block:
 		self.attributes = {'N_chblocks':0}
 		#list for childrend blocks
 		self.ch_blocks = []
+		self.N_chblocks = 0
 		#Section level:
 		#by default the level is the same of parent block
 		self.section_level = self.parent_block.section_level 
@@ -56,6 +57,7 @@ class Block:
 		It MUST NOT be called from outside, expecially the parser
 		'''
 		self.ch_blocks.append(block)
+		self.N_chblocks +=1
 		self.attributes['N_chblocks']+=1
 
 	def add_children_blocks(self, blocks):
@@ -64,7 +66,24 @@ class Block:
 		It MUST NOT be called from outside, expecially the parser
 		'''
 		self.ch_blocks += blocks
+		self.N_chblocks +=1
 		self.attributes['N_chblocks']+=len(blocks)
+
+	def change_parent_block(self, new_parent):
+		'''This function changes the parent of the
+		block. It changes parent object, id, and tree_depth.
+		The section level is not changes for consistency.
+		All children are updated.
+		'''
+		self.parent_block = new_parent
+		#rebuiding id
+		self.id = new_parent.id + '-' + utility.get_random_string(3)
+		#the section level is not changed,
+		#but tree_depth is updated
+		self.tree_depth = new_parent. tree_depth + 1
+		#now childrens are updated
+		for ch in self.ch_blocks:
+			ch.change_parent_block(self)
 
 	def __str__(self):
 		return '<Block:{}, ID:{}>'.format( self.block_name, self.id)
@@ -79,6 +98,7 @@ class Block:
 		json += (' '*level + '{\n')
 		json += (' '*levelb + '"ID":"'+ self.id+'",\n')
 		json += (' '*levelb + '"block_name":"'+ self.block_name+'",\n')
+		json += (' '*levelb + '"tree_depth":"'+ str(self.tree_depth)+'",\n')
 		for k,v in self.attributes.items():
 			json += (' '*levelb + '"'+k+ '":"'+str(v)+ '",\n' )
 		json += (' '*levelb + '"children_blocks":[\n')
