@@ -55,7 +55,8 @@ def get_command_options(tex):
 	parenthesis from tex. Tex must start with a parenthesis
 	([ or {). The funcion is useful to remove a command's
 	parenthesis without knowing their structure.
-	The function return (matched parenthesis, left tex )
+	The function return (matched parenthesis, left tex, 
+	starting index of left tex )
 	'''
 	#now we extract the tokens
 	toks = get_parenthesis(tex)
@@ -63,7 +64,7 @@ def get_command_options(tex):
 	for t, cont ,e in toks:
 		if t != 'out':
 			result+= t+cont+e
-	return (result, tex[len(result):])
+	return (result, tex[len(result):], len(result))
 
 
 def get_parenthesis(tex):

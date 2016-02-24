@@ -1,6 +1,7 @@
 import os
 import re
 import logging
+import PreParser
 import Blocks
 import Blocks.utility as utility  
 from Blocks.DocumentBlock import DocumentBlock
@@ -16,6 +17,9 @@ class Parser:
 
     def parse(self,tex):
         ###TODO:preparsing
+        tex = PreParser.preparse(tex)
+        logging.debug('Preparsed TEX @ #######\n'+\
+            '%s \n#######', tex)
         #reading title...
         #reading author...
 

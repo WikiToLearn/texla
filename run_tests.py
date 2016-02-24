@@ -98,7 +98,7 @@ class CommandParserTest(unittest.TestCase):
 	def test_get_command_options(self):
 		a = '[boh]{test{test}}[{boh}a] left tex'
 		self.assertEqual(CommandParser.get_command_options(a),
-			('[boh]{test{test}}[{boh}a]', ' left tex'))
+			('[boh]{test{test}}[{boh}a]', ' left tex',25))
 
 
 
