@@ -36,6 +36,7 @@ class RefBlock(Block):
 	def __init__(self, ref, ref_type, parent_block):
 		super().__init__(ref_type, ref, parent_block)
 		self.ref = ref
+		self.ref_type = ref_type
 		self.attributes['ref_type'] = ref_type
 		self.attributes['ref'] = ref
 
