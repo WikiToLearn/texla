@@ -3,7 +3,7 @@ import re
 import logging
 import PreParser
 import Blocks
-import Blocks.utility as utility  
+import Blocks.utility as utility
 from Blocks.DocumentBlock import DocumentBlock
 
 '''Commands that changes directly the subsequent letter'''
@@ -32,7 +32,7 @@ class Parser:
         logging.debug('PARSER @ got content of Document')
         #creating root block
         self.root_block = DocumentBlock('',{})
-        #beginning of parsing 
+        #beginning of parsing
         options = {} #for now we don't have options
         blocks = self.parse_sections(content, -1, self.root_block,options)
         return blocks
@@ -43,7 +43,7 @@ class Parser:
         This parser function search for sections splitting inside tex.
         The level of sections searched is indicated by sec_level option.
         The function calls the parser_hooks of every section block.
-        When all sections levels are searched the control 
+        When all sections levels are searched the control
         pass to parse_instructions().
         It returns a list of blocks parsed as tuples.
         '''
@@ -63,7 +63,7 @@ class Parser:
             if outside_sec != '':
                 #this tex has to be parser but with a sectioning
                 #level greater than one
-                pblocks+=self.parse_sections(outside_sec, 
+                pblocks+=self.parse_sections(outside_sec,
                         level+1, parent_block, options)
             #now the sections found are processed
             for tok in toks:
@@ -75,11 +75,11 @@ class Parser:
                 #the tuple with the result is saved
                 pblocks.append(self.call_parser_hook(level_key,
                         'env', tok, parent_block, sec_params))
-                logging.info('BLOCK @ %s%s', 
+                logging.info('BLOCK @ %s%s',
                     "\t"*pblocks[-1].tree_depth,
                     str(pblocks[-1]))
         else:
-            #if we have searched for all section levels 
+            #if we have searched for all section levels
             #we continue with instructions
             #First we STRIP the tex and check if tex is not void
             new_tex = tex.strip()
@@ -87,28 +87,28 @@ class Parser:
                 pblocks += self.parse_instructions(new_tex,
                         parent_block, options)
         #found block are returned to main cycle
-        return pblocks      
+        return pblocks
 
 
     def parse_instructions(self, tex, parent_block, options):
         '''This function is the MAIN ENTRY POINT for parsing.
         It scan the tex from left to right. It searches for
         \\ or $. When an instruction is found (a pattern starting
-        with \\ or $), the right parser funcion is called. 
+        with \\ or $), the right parser funcion is called.
         These functions take care to parse the command,
         create the block calling parser_hooks, and to return
-        the block and the tex left to parse. Then the remaing 
+        the block and the tex left to parse. Then the remaing
         tex starts a new cycle in parse_instructions() recursively.
-        It returnes a list of parsed blocks. 
+        It returnes a list of parsed blocks.
 
         The categories of instrucions parsed are:
         -math: starts with $, $$ or \[ \(
         -environments: (start with \begin)
         -letters commands: they are special commands
-            listed in letters_commands. They are 
+            listed in letters_commands. They are
             parsed separately
         -normal commands: like \cmd{text}
-        '''  
+        '''
         #list of blocks parsed
         pblocks = []
         #checking if tex is void
@@ -120,8 +120,8 @@ class Parser:
         left_tex = ''
         if slash == -1 and dollar == -1:
             #it's plain text
-            pblocks.append(self.parse_plain_text(tex, 
-                    parent_block)) 
+            pblocks.append(self.parse_plain_text(tex,
+                    parent_block))
             return pblocks
         #what's the first token: cmd,env or math
         elif (slash < dollar and slash!=-1 and slash!=-1) or dollar==-1:
@@ -151,7 +151,7 @@ class Parser:
             #block saved
             pblocks.append(block)
         else:
-            #test before is plain text. 
+            #test before is plain text.
             before_tex = tex[:dollar]
             tex_tp = tex[dollar:]
             if len(before_tex) > 0:
@@ -170,10 +170,10 @@ class Parser:
         '''
         This function handles the parsing of environments.
         It parses the name of the environment and if it's starred.
-        Then utility.get_environment() is used to extract 
+        Then utility.get_environment() is used to extract
         the complete environment, handling nested envs.
         The content is sent to parser_hook for the specific parsing.
-        The parser_hook decides also if the content of the env 
+        The parser_hook decides also if the content of the env
         must be parsed recursively.
         A new block is created and returned with the tex
         remained to parse.
@@ -195,9 +195,9 @@ class Parser:
             #N.B.: the tex passed to parser hook is the CONTENT LSTRIPPED
             #of the environment, without \begin{} and \end{} part.
             #The lstrip is necessary to parse possible options.
-            block = self.call_parser_hook(env,'env', 
+            block = self.call_parser_hook(env,'env',
                     content.lstrip(), parent_block, env_params)
-            logging.info('BLOCK @ %s%s', 
+            logging.info('BLOCK @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
             #we return the block and left_tex
@@ -205,8 +205,7 @@ class Parser:
         else:
             #it's an error
             logging.error('PARSER.parse_enviroment @ env NOT FOUND')
-            
-            
+
 
     def parse_math(self, tex, parent_block, options):
         '''
@@ -230,9 +229,9 @@ class Parser:
                 content = m.group('m')
                 left_tex = tex[m.end():]
         params = {'env': env}
-        block = self.call_parser_hook(env,'env', 
+        block = self.call_parser_hook(env,'env',
                 content, parent_block, params)
-        logging.info('BLOCK @ %s%s', 
+        logging.info('BLOCK @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
         return (block, left_tex)
@@ -243,8 +242,8 @@ class Parser:
         This function handles the parsing of normal
         commands. It catches the command's name and if it's
         starred. Removed the \cmd part, the tex is passed
-        to the right parser_hook that manages the real 
-        parsing of commands options. The parser_hook decides 
+        to the right parser_hook that manages the real
+        parsing of commands options. The parser_hook decides
         also if the content of the command must be parsed
         recursively.
         It returns the block and the left tex that must
@@ -270,7 +269,7 @@ class Parser:
                 #a list.  The first element is the parsed Block.
                 block, left_tex = self.call_parser_hook(matched_cmd,
                         'cmd', tex_to_parse, parent_block,params)
-                logging.info('BLOCK @ %s%s', 
+                logging.info('BLOCK @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
             else:
@@ -286,7 +285,7 @@ class Parser:
                 #parser_hook call
                 block, left_tex = self.call_parser_hook(matched_cmd,
                         'cmd', tex_to_parse, parent_block,params)
-                logging.info('BLOCK @ %s%s', 
+                logging.info('BLOCK @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
             return (block, left_tex)
@@ -307,10 +306,10 @@ class Parser:
         \`a: grave accent
         \~a \=a \^a other changes on the letter
 
-        The function parse that commands and call 
+        The function parse that commands and call
         parser_hook as the normal parse_command() function.
-        Althought, the letter influenced by the command is 
-        inserted in a {} so that special command could 
+        Althought, the letter influenced by the command is
+        inserted in a {} so that special command could
         be treated like normal commands with hooks.
         It returns the block and the left tex to parse.
         '''
@@ -324,7 +323,7 @@ class Parser:
             tex_to_parse = tex[2:].lstrip()
             block, left_tex =  self.call_parser_hook(cmd,
                     'cmd', tex_to_parse, parent_block,params)
-        else: 
+        else:
             #we have to catch the next letter
             re_letter = re.compile(r'\\' + cmd + r'\s*(?P<letter>\w)')
             letter_m = re_letter.match(tex)
@@ -342,12 +341,12 @@ class Parser:
     def parse_plain_text(self, tex, parent_block):
         '''
         This function create the block for plain text.
-        It doesn't return any left tex. 
+        It doesn't return any left tex.
         '''
         params = {'env':'text'}
-        block = self.call_parser_hook('text','env', 
+        block = self.call_parser_hook('text','env',
                 tex, parent_block,params)
-        logging.info('BLOCK @ %s%s', 
+        logging.info('BLOCK @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
         return block
@@ -355,13 +354,13 @@ class Parser:
 
     def call_parser_hook(self, hook, type, tex, parent_block, params={}):
         '''
-        This function checks if the required parser_hook 
+        This function checks if the required parser_hook
         is avaiable, if not it calls th default hook.
         The function ask for type of call (env or cmd)
-        to be able of asking the right default hooks, 
+        to be able of asking the right default hooks,
         in case the hook in not avaiable.
-        Params is a dictionary of options for the parser. It 
-        usually contains che env or cmd parsed and if it's 
+        Params is a dictionary of options for the parser. It
+        usually contains che env or cmd parsed and if it's
         starred.
         It returns directly the output of parser_hook.
         '''
@@ -376,5 +375,3 @@ class Parser:
             elif type == 'env':
                 return Blocks.parser_hooks['default_env'](
                     self, tex, parent_block, params)
-
-

@@ -11,7 +11,7 @@ class Block:
 	-attributes: a dictionary for description of the block.
 		All useful parser data go into attributes
 	-ch_blocks: a list of children_blocks
-	-section_level: the position of the block compared to 
+	-section_level: the position of the block compared to
 		sectioning levels defined in utility.py
 
 	Derived Block could add more attributes.
@@ -20,19 +20,19 @@ class Block:
 	@staticmethod
 	def parse(parser, tex, parent_block, params={}):
 		'''
-		The method must return a tuple with the created 
+		The method must return a tuple with the created
 		Block and the last used index of tex string.'''
 		pass
 
-	
+
 	def __init__(self, block_name, content, parent_block):
 		'''
-		Base constructor for Block. 
-		It saves the parent_block and block name and create  
-		the new id for the new block. It creates data structures 
+		Base constructor for Block.
+		It saves the parent_block and block name and create
+		the new id for the new block. It creates data structures
 		like the attributed dictionary and children nodes list.
-		It always saves a content variable. 
-		By default, it sets the section_level of the block 
+		It always saves a content variable.
+		By default, it sets the section_level of the block
 		to that of the parend_block.
 		'''
 		self.block_name = block_name
@@ -46,11 +46,11 @@ class Block:
 		self.N_chblocks = 0
 		#Section level:
 		#by default the level is the same of parent block
-		self.section_level = self.parent_block.section_level 
+		self.section_level = self.parent_block.section_level
 		#depth in the tree
 		self.tree_depth = self.parent_block.tree_depth+1
 
-	
+
 	def add_child_block(self, block):
 		'''
 		IMPORTANT: this function is called by the self.parse fuction.
@@ -90,10 +90,10 @@ class Block:
 
 	def to_json(self, level=0):
 		'''
-		This functions create a json ouput that 
+		This functions create a json ouput that
 		represents the tree of subblocks of the called block.
 		'''
-		json = '' 
+		json = ''
 		levelb = level+3
 		json += (' '*level + '{\n')
 		json += (' '*levelb + '"ID":"'+ self.id+'",\n')
@@ -107,5 +107,3 @@ class Block:
 		json += (' '*levelb+'],\n')
 		json += (' '*level + '}\n')
 		return json
-
-
