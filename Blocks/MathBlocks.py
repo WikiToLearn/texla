@@ -21,7 +21,7 @@ class MathBlock(Block):
         #creating and adding labels blocks
         for l in labels:
             lblock = LabelBlock(l, block)
-            logging.info('BLOCK @ %s%s', 
+            logging.info('BLOCK @ %s%s',
                     "\t"*lblock.tree_depth, str(lblock))
             block.add_child_block(lblock)
         return block
@@ -39,9 +39,9 @@ class MathBlock(Block):
     @staticmethod
     def parse_labels(tex):
         '''
-        The function get labels from math. 
+        The function get labels from math.
         Multiple labels in math are allowed.
-        It creates a list of Label mathced and removes 
+        It creates a list of Label mathced and removes
         them from the tex.
         It returns the modified tex and list of labels.
         '''
@@ -81,12 +81,3 @@ parser_hooks = {
     'ensuremath' : MathBlock.parse_ensure_math,
     'empheq' : MathBlock.parse_math_env
 }
-
-
-
-
-
-
-
-
-

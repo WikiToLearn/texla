@@ -6,11 +6,22 @@ from Blocks import utility
 
 
 def preparse(tex):
+    '''
+    Entrypoint for preparsing of tex
+    '''
+    tex = remove_comments(tex)
+    print(tex)
     tex = parse_macros(tex)
     return tex
 
 
 def parse_macros(tex):
+    '''
+    Preparsing of macros:
+    \newcommand are searched and macro objects
+    created. Then the occurrences of the macro
+    are replaced with the tex from the macro.
+    '''
     #regex for newcommand
     new_re = re.compile(r'\\newcommand')
     macros = {}
@@ -23,9 +34,9 @@ def parse_macros(tex):
         macro = MacroParser.Macro.parse_macro(opt_tex[0])
         macros[macro.name] = macro
         log[macro.name] = 0
-        tex_to_parse = tex_to_parse.replace(tex[match.start(): 
+        tex_to_parse = tex_to_parse.replace(tex[match.start():
                 match.end()+opt_tex[2]],'')
-    #now we can search for occurrence of the macro, 
+    #now we can search for occurrence of the macro,
     #get the options, and replace the tex
     preparsed_tex = tex_to_parse
     macros_found = 0
@@ -66,7 +77,7 @@ def parse_macros(tex):
             macros_found = 0
             #the cycle continues
         else:
-            break  
+            break
     #logging
     for m in log:
         logging.info('MACRO preparsed @ name: %s, %s occurrences',
@@ -74,4 +85,11 @@ def parse_macros(tex):
     return preparsed_tex
 
 
-
+def remove_comments(tex):
+    '''
+    This function removes comments from the tex.
+    '''
+    com_re = re.compile(r'(%.*)\n')
+    for match in com_re.finditer(tex):
+        tex = tex.replace(match.group(1), '')
+    return tex

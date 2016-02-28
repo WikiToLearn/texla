@@ -14,7 +14,7 @@ class FootnoteBlock(Block):
 		#we first create the Block
 		block = FootnoteBlock(content, parent_block)
 		logging.debug('FootnoteBlock.parse @')
-		#now we parse the content 
+		#now we parse the content
 		children_blocks = parser.parse_instructions(
 			content, block, {})
 		#now we can add the children nodes
@@ -32,7 +32,7 @@ class QuotationBlock(Block):
 		#we first create the Block
 		block = QuotationBlock(tex, params['env'], parent_block)
 		logging.debug('QuotationBlock.parse @')
-		#now we parse the content 
+		#now we parse the content
 		children_blocks = parser.parse_instructions(
 			tex, block, {})
 		#now we can add the children nodes
