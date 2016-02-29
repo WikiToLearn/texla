@@ -29,7 +29,6 @@ class ListBlock(Block):
         ch_blocks = parser.parse_instructions(
                 tex, parent_block,{})
         #now we search for item blocks
-        self.ciao = 3
         item_blocks = []
         for i,bl in enumerate(ch_blocks):
             if isinstance(bl,ItemBlock):

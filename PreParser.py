@@ -3,6 +3,7 @@ import logging
 from Blocks import CommandParser
 from Blocks import MacroParser
 from Blocks import utility
+from Blocks import TheoremBlocks
 
 
 def preparse(tex):
@@ -10,8 +11,10 @@ def preparse(tex):
     Entrypoint for preparsing of tex
     '''
     tex = remove_comments(tex)
-    print(tex)
     tex = parse_macros(tex)
+    tex , theorems_dict = preparseTheorems(tex)
+    o = open('preparsed','w')
+    o.write(tex)
     return tex
 
 
@@ -80,7 +83,7 @@ def parse_macros(tex):
             break
     #logging
     for m in log:
-        logging.info('MACRO preparsed @ name: %s, %s occurrences',
+        logging.info('PREPARSER @ macro: %s, %s occurrences',
                     m, log[m])
     return preparsed_tex
 
@@ -93,3 +96,35 @@ def remove_comments(tex):
     for match in com_re.finditer(tex):
         tex = tex.replace(match.group(1), '')
     return tex
+
+def preparseTheorems(tex):
+    '''Function that searches \newtheorems command in tex
+    source to find the theorems environments used.
+    It memorizes them and it normalize them with
+    our theorem env.
+    '''
+    th_dict = {}
+    p = re.compile(r'\\newtheorem(?P<star>[*]?)')
+    for match in p.finditer(tex):
+        t = tex[match.end():]
+        data = CommandParser.parse_options(t,
+               [('name','{','}'),('counter','[',']'),
+                ('definition','{','}'),('numberby','[',']')])
+        if match.group('star') != '':
+            data[0]['star'] = True
+        else:
+            data[0]['star'] = False
+        the = TheoremBlocks.Theorem(**data[0])
+        logging.info('PREPARSER @ theorem: %s', the.name)
+        th_dict[the.name] = the
+    #now we search for every theorem \beging{th_id} and \end{th_id}
+    #and we substitue them with \begin{theorem}{th_id} and \begin{theorem}
+    #to use out theorem environment
+    for key in th_dict:
+        tag_open = u'\\begin{'+key+'}'
+        new_tag_open = u'\\begin{theorem}{'+key+'}'
+        tex = tex.replace(tag_open, new_tag_open)
+        tag_close = u'\\end{'+key+'}'
+        new_tag_close = u'\\end{theorem}'
+        tex = tex.replace(tag_close, new_tag_close)
+    return (tex, th_dict)

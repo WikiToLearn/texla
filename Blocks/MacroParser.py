@@ -28,7 +28,6 @@ class Macro:
 
         #now we split the definition around args
         #inserction
-        print(things['name'], things['definition'])
         toks = re.split(r'#(\d+)', things['definition'])
         content = []
         #we insert into content a list of text tokens and

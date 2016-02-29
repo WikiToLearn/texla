@@ -9,7 +9,7 @@ of parser__hooks
 parser_hooks={}
 
 not_import = ('__init__.py', 'utility.py', 'DocumentBlock.py',
-    'CommandParser.py')
+    'CommandParser.py', 'MacroParser.py')
 
 for module in os.listdir("Blocks"):
     #utility module is not imported under Blocks
@@ -24,4 +24,3 @@ for module in os.listdir("Blocks"):
                 parser_hooks[key] = value
 logging.info('Supported commands/environments:\n%s',
     '\n'.join(['@ '+key for key in sorted(parser_hooks.keys())]))
-    

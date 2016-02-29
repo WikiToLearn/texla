@@ -14,12 +14,12 @@ def parse_options(tex, grammar):
 	The grammar is a list of tuples that defines the possible
 	option for the command:
 	[(opt_name, '{', '}' ), (opt_name2, '[', ']'),...  ].
-	The function search for matches from left to right. 
+	The function search for matches from left to right.
 	A list of options is extracted from the tex, then 
 	a match is performed on the grammar: if the first grammar rule
-	doesn't match the second one is checked, and so on for 
+	doesn't match the second one is checked, and so on for
 	all parsed parenthesis.
-	The function returns a dictionary with the matched 
+	The function returns a dictionary with the matched
 	options.
 	'''
 	prt = get_parenthesis(tex)
@@ -55,7 +55,7 @@ def get_command_options(tex):
 	parenthesis from tex. Tex must start with a parenthesis
 	([ or {). The funcion is useful to remove a command's
 	parenthesis without knowing their structure.
-	The function return (matched parenthesis, left tex, 
+	The function return (matched parenthesis, left tex,
 	starting index of left tex )
 	'''
 	#now we extract the tokens
@@ -107,16 +107,16 @@ def get_command_greedy(tex):
 	This function removes the first command found in
 	the string (the string must start with the command).
 	It removes all its parenthesis in a greedy way.
-	If the string is '\emph[option]{text}\emph{..}' it removes the 
-	first command. 
+	If the string is '\emph[option]{text}\emph{..}' it removes the
+	first command.
 	It returns a tuple with the extracted command name, the command content
-	with options, the remaining	tex and it's starting index). 
+	with options, the remaining	tex and it's starting index).
 	Example: (cmd,  cmd_tex, left_tex, left_tex starting index)
-	If there are no commands it returns the tex as 
+	If there are no commands it returns the tex as
 	(tex, '', '', len(tex)) for consistency.
 	'''
 	logging.debug('COMMAND_PARSER.get_command_greedy @ tex: %s', tex)
-	#first of all we remove the cmd 
+	#first of all we remove the cmd
 	re_cmd = re.compile(r'\\(?P<cmd>.*?)[\[\{]')
 	#we match the fist command
 	mat = re_cmd.match(tex)
@@ -127,10 +127,8 @@ def get_command_greedy(tex):
 	left_tex = tex[mat.end('cmd'):]
 	#now we extract the tokens
 	toks = get_parenthesis(left_tex)
-	result = '\\'+cmd 
+	result = '\\'+cmd
 	for t, cont ,e in toks:
 		if t != 'out':
 			result+= t+cont+e
 	return (cmd, result, tex[len(result):], len(result))
-
-
