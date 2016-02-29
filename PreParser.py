@@ -12,7 +12,7 @@ def preparse(tex):
     '''
     tex = remove_comments(tex)
     tex = parse_macros(tex)
-    tex , theorems_dict = preparseTheorems(tex)
+    tex = preparseTheorems(tex)
     o = open('preparsed','w')
     o.write(tex)
     return tex
@@ -110,7 +110,7 @@ def preparseTheorems(tex):
         data = CommandParser.parse_options(t,
                [('name','{','}'),('counter','[',']'),
                 ('definition','{','}'),('numberby','[',']')])
-        if match.group('star') != '':
+        if match.group('star') != None:
             data[0]['star'] = True
         else:
             data[0]['star'] = False
@@ -127,4 +127,6 @@ def preparseTheorems(tex):
         tag_close = u'\\end{'+key+'}'
         new_tag_close = u'\\end{theorem}'
         tex = tex.replace(tag_close, new_tag_close)
-    return (tex, th_dict)
+    #parsed theorems are saved in TheoremBlocks moduile
+    TheoremBlocks.parsed_theorems = th_dict
+    return tex
