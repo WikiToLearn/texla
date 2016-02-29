@@ -53,7 +53,28 @@ class TheoremBlock(Block):
         self.attributes['definition'] = theorem.definition
         self.attributes['star'] = theorem.star
 
+class ProofBlock(Block):
+    '''Block that represents a proof.'''
+
+    @staticmethod
+    def parse(parser, tex, parent_block, params):
+        data ,left_tex = CommandParser.parse_options(tex,
+                    [('title','[',']')])
+        title = data['title']
+        block = ProofBlock(title, left_tex, parent_block)
+        ch_blocks = parser.parse_instructions(left_tex,
+                        block, {})
+        block.add_children_blocks(ch_blocks)
+        logging.debug('ProofBlock.parse @ title: %s', title)
+        return block
+
+    def __init__(self, title, content, parent_block):
+        super().__init__('proof',content,parent_block)
+        self.title = title
+        self.attributes['title'] = title
+
 
 parser_hooks = {
-    'theorem' : TheoremBlock.parse
+    'theorem' : TheoremBlock.parse,
+    'proof' : ProofBlock.parse
 }
