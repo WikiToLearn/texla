@@ -1,7 +1,6 @@
 import re
 import Blocks
-from Blocks import CommandParser
-from Blocks import utility
+from Blocks.Utilities import *
 import unittest
 
 class CommandParserTest(unittest.TestCase):
@@ -10,7 +9,7 @@ class CommandParserTest(unittest.TestCase):
 		grammar = [('opt','[',']'),('content','{','}')]
 		self.assertEqual(CommandParser.parse_options(a, grammar),
 			({'opt':'option','content':'text'}, 'other text'))
-	
+
 	def test_grammar_command_near_command(self):
 		a = '[option]{text}\cmd{other text}'
 		grammar = [('opt','[',']'),('content','{','}')]
@@ -68,24 +67,24 @@ class CommandParserTest(unittest.TestCase):
 
 	def test_get_parenthesis_nested(self):
 		a = '[a][b]{abc\command{}[]}[d]{boh[]} tests'
-		self.assertEqual(CommandParser.get_parenthesis(a)[:-1], 
+		self.assertEqual(CommandParser.get_parenthesis(a)[:-1],
 			[('[','a',']'),('[','b',']'),('{','abc\command{}[]','}'),
-			('[','d',']'),('{','boh[]','}')]) 
+			('[','d',']'),('{','boh[]','}')])
 		self.assertEqual(CommandParser.get_parenthesis(a)[-1:],
 			[('out',' tests','')])
 
 	def test_get_parenthesis_env(self):
 		a =  '{test $x=y$ text \\begin{align*}A'+\
 			'\end{align*} text}'
-		self.assertEqual(CommandParser.get_parenthesis(a), 
+		self.assertEqual(CommandParser.get_parenthesis(a),
 			[('{','test $x=y$ text \\begin{align*}A'+\
-			'\end{align*} text','}'),('out','','')]) 
+			'\end{align*} text','}'),('out','','')])
 
 	def test_get_parenthesis_near_command(self):
 		a = '[a][b]{abc\command{}[]}[d]{boh[]}\cmd2{tests}'
-		self.assertEqual(CommandParser.get_parenthesis(a)[:-1], 
+		self.assertEqual(CommandParser.get_parenthesis(a)[:-1],
 			[('[','a',']'),('[','b',']'),('{','abc\command{}[]','}'),
-			('[','d',']'),('{','boh[]','}')]) 
+			('[','d',']'),('{','boh[]','}')])
 		self.assertEqual(CommandParser.get_parenthesis(a)[-1:],
 			[('out','\cmd2{tests}','')])
 
@@ -106,19 +105,19 @@ class UtilityTest(unittest.TestCase):
 	def test_get_environment_content(self):
 		a = '\\begin{A} test \\begin{A}\nt\n\\end{A}'+\
 			'test\ntest\n\\end{A} other test'
-		self.assertEqual(utility.get_environment_content(a,'A'),
+		self.assertEqual(EnvironmentParser.get_environment_content(a,'A'),
 			' test \\begin{A}\nt\n\\end{A}test\ntest\n')
 
 	def test_get_environment_content_left(self):
 		a = 'test \\begin{A} test \\begin{A}\nt\n\\end{A}'+\
 			'test\ntest\n\\end{A} other test'
-		self.assertEqual(utility.get_environment_content(a,'A'),
+		self.assertEqual(EnvironmentParser.get_environment_content(a,'A'),
 			' test \\begin{A}\nt\n\\end{A}test\ntest\n')
 
 	def test_get_environment(self):
 		a = 'test \\begin{A} test \\begin{A}\nt\n\\end{A}'+\
 			'test\ntest\n\\end{A} other test'
-		r = utility.get_environment(a,'A')
+		r = EnvironmentParser.get_environment(a,'A')
 		s = r[0]
 		e = r[1]
 		c = r[2]

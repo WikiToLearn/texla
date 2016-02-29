@@ -1,30 +1,18 @@
-import random
 import re
 import collections
 import logging
 import string
 
-section_level = {
-   -1 : 'root',
-	0 : 'part',
-	1 : 'chapter',
-	2 : 'section',
-	3 : 'subsection',
-	4 : 'subsubsection',
-	5 : 'paragraph',
-	6 : 'subparagraph'
-}
-
-def get_random_string(N):
-	return ''.join(random.SystemRandom().choice(string.ascii_lowercase + \
-		string.digits) for _ in range(N))
-
+'''
+This module provides some utility function for environments
+parsing
+'''
 
 def get_environment(tex, env):
 	'''
 	This functions extract the env environment in a greedy way.
 	It finds nested environment with same env.
-	It return the start and end pos of the environment 
+	It return the start and end pos of the environment
 	and the string matched with \\begin and \\end
 	'''
 	begin = '\\begin{(?: *)' + env+'(?: *)}'
@@ -64,7 +52,7 @@ def get_environment(tex, env):
 
 def get_environment_content(tex,env):
 	'''
-	This funciont returns the content of the environment 
+	This funciont returns the content of the environment
 	in a greedy way
 	'''
 	begin = '\\begin{'+ env+'}'

@@ -1,6 +1,5 @@
 import logging
-from . import utility
-from . import CommandParser
+from .Utilities import *
 from .Block import *
 
 class ListBlock(Block):

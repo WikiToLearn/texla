@@ -1,7 +1,6 @@
 import logging
 import re
-from . import utility
-from . import CommandParser
+from .Utilities import *
 from .Block import *
 
 '''Dictionary of parsed Theorems.
@@ -50,7 +49,7 @@ class TheoremBlock(Block):
         self.title = title
         self.attributes['title'] = title
         self.attributes['th_name'] = theorem.name
-        self.attributes['description'] = theorem.description
+        self.attributes['definition'] = theorem.definition
         self.attributes['star'] = theorem.star
 
 

@@ -1,6 +1,5 @@
 import logging
-from . import utility
-from . import CommandParser
+from .Utilities import *
 from .Block import *
 
 class AlignmentBlock(Block):
@@ -12,7 +11,7 @@ class AlignmentBlock(Block):
 		#we first create the Block
 		block = AlignmentBlock(params['env'], tex, parent_block)
 		logging.debug('AlignmentBlock.parse @ type: %s', params['env'])
-		#now we parse the content 
+		#now we parse the content
 		children_blocks = parser.parse_instructions(tex, block, {})
 		#now we can add the children nodes
 		block.add_children_blocks(children_blocks)
@@ -24,7 +23,7 @@ class AlignmentBlock(Block):
 		self.attributes['align_type'] = align_type
 
 	def __str__(self):
-		return '<Block:{}, ID:{}, alignment:{}>'.format( 
+		return '<Block:{}, ID:{}, alignment:{}>'.format(
 			self.block_name, self.id, self.attributes['align_type'])
 
 
@@ -33,5 +32,3 @@ parser_hooks = {
 	'flushright' : AlignmentBlock.parse,
 	'center' : AlignmentBlock.parse
 }
-
-

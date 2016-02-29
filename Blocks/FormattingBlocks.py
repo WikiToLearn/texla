@@ -1,5 +1,5 @@
 import logging
-from . import CommandParser
+from .Utilities import *
 from .Block import *
 
 class EmphBlock(Block):
@@ -42,7 +42,7 @@ class UnderlineBlock(Block):
 		super().__init__('underline',text,parent_block)
 		self.attributes['text'] = text
 		self.attributes['text_lenght'] = len(text)
-        
+
 
 parser_hooks = {
 	'emph': EmphBlock.parse,

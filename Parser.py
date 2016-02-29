@@ -3,7 +3,7 @@ import re
 import logging
 import PreParser
 import Blocks
-import Blocks.utility as utility
+from Blocks.Utilities import *
 from Blocks.DocumentBlock import DocumentBlock
 
 '''Commands that changes directly the subsequent letter'''
@@ -186,7 +186,8 @@ class Parser:
             star = True if match.group('star')!='' else False
             env_tot = env + '\*' if star else env
             #now we extract the env greedy
-            s,e,content = utility.get_environment(tex,env_tot)
+            s,e,content = EnvironmentParser.get_environment(
+                                            tex,env_tot)
             #the name of catched env is inserted in params
             #with the star param
             env_params = {'env':env, 'star':star}

@@ -1,6 +1,5 @@
 import logging
-from . import utility
-from . import CommandParser
+from .Utilities import *
 from .Block import *
 
 class LabelBlock(Block):
@@ -17,7 +16,7 @@ class LabelBlock(Block):
 
 	def __init__(self, label, parent_block):
 		super().__init__('label',label, parent_block)
-		self.label = label 
+		self.label = label
 		self.attributes['label'] = label
 
 class RefBlock(Block):

@@ -1,7 +1,6 @@
 '''Default Block'''
 import logging
-from . import utility
-from . import CommandParser
+from .Utilities import *
 from .Block import *
 
 class DefaultBlock(Block):
@@ -48,7 +47,7 @@ class DefaultBlock(Block):
 		-level: sections level
 		-parent_block
 		'''
-		#base constructor for Block. It created the id 
+		#base constructor for Block. It created the id
 		#nd basic data structures
 		super().__init__('default-'+block_name, tex, parent_block)
 		#the tex is added also as attribute

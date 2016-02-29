@@ -1,7 +1,6 @@
 import logging
 import re
-from . import utility
-from . import CommandParser
+from .Utilities import *
 from .ReferenceBlocks import LabelBlock
 from .Block import *
 

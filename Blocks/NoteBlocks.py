@@ -1,5 +1,5 @@
 import logging
-from . import CommandParser
+from .Utilities import *
 from .Block import *
 
 class FootnoteBlock(Block):

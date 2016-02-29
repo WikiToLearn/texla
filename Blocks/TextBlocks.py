@@ -1,7 +1,6 @@
 import re
 import logging
-from . import utility
-from . import CommandParser
+from .Utilities import *
 from .Block import *
 
 class TextBlock(Block):
@@ -10,7 +9,7 @@ class TextBlock(Block):
     def parse_plain_text(parser ,tex, parent_block, params):
         '''Plain text is seen as and env. It has only to return
         the block'''
-        logging.debug('TextBlock.parse_plain_text @ %s', 
+        logging.debug('TextBlock.parse_plain_text @ %s',
             tex[:10].strip()+'...')
         #first of all we can create the new block
         text_block = TextBlock(tex, parent_block)
@@ -33,7 +32,7 @@ class TextBlock(Block):
 
 
 class AccentedLetterBlock(Block):
-    
+
     @staticmethod
     def parse_accents(parser, tex, parent_block, params):
         accent_type = params['cmd']
@@ -45,7 +44,7 @@ class AccentedLetterBlock(Block):
         letter = params['letter'].strip()
         block = AccentedLetterBlock(letter, accent_type, parent_block)
         return (block, left_tex)
-        
+
     def __init__(self, letter, accent_type, parent_block):
         super().__init__('accented_letter',letter, parent_block)
         self.attributes['letter'] = letter
@@ -53,7 +52,7 @@ class AccentedLetterBlock(Block):
 
     def __str__(self):
         return '<Block:{}, ID:{}, accent:{}>'.format(
-            self.block_name, self.id, 
+            self.block_name, self.id,
             self.attributes['accent_type'])
 
 

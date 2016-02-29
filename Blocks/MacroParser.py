@@ -1,5 +1,5 @@
 import re
-from . import CommandParser
+from .Utilities import *
 
 class Macro:
     '''This class represents a Latex macro, a

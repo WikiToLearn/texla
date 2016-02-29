@@ -1,8 +1,6 @@
 import re
 import logging
-from Blocks import CommandParser
-from Blocks import MacroParser
-from Blocks import utility
+from Blocks.Utilities import *
 from Blocks import TheoremBlocks
 
 
