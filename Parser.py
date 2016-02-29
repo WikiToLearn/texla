@@ -227,8 +227,9 @@ class Parser:
             if m != None:
                 content = m.group('m')
                 left_tex = tex[m.end():]
-        params = {'env': env}
-        block = self.call_parser_hook(env,'env',
+                matched_env = env
+        params = {'env': matched_env}
+        block = self.call_parser_hook(matched_env,'env',
                 content, parent_block, params)
         logging.info('BLOCK @ %s%s',
                     "\t"*block.tree_depth,
