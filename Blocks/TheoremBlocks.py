@@ -1,7 +1,7 @@
 import logging
 import re
 from .Utilities import *
-from .Block import *
+from .Block import Block
 
 '''Dictionary of parsed Theorems.
 These data will be useful during the rendering of occurrences
@@ -41,6 +41,7 @@ class TheoremBlock(Block):
         ch_blocks = parser.parse_instructions(left_tex,
                         block, {})
         block.add_children_blocks(ch_blocks)
+        logging.debug('TheoremBlock.parse @ name: %s',name)
         return block
 
     def __init__(self, theorem, title, content, parent_block):

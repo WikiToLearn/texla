@@ -1,6 +1,6 @@
 import logging
 from .Utilities import *
-from .Block import *
+from .Block import Block
 
 class FootnoteBlock(Block):
 	'''This class handles \footnote command'''

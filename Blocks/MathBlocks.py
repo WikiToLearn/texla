@@ -2,7 +2,7 @@ import logging
 import re
 from .Utilities import *
 from .ReferenceBlocks import LabelBlock
-from .Block import *
+from .Block import Block
 
 class MathBlock(Block):
 

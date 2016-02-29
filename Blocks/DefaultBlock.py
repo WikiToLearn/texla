@@ -1,7 +1,7 @@
 '''Default Block'''
 import logging
 from .Utilities import *
-from .Block import *
+from .Block import Block
 
 class DefaultBlock(Block):
 	''' This Block is used when the parser doesn't find
