@@ -16,12 +16,12 @@ class SectionBlock(Block):
         #the regex MUST MATCH if not the parse wouldn't be called
         title = m.group('title')
         index_title = m.group('index_title')
-        numbered = (m.group('ast')==None)
+        star = (m.group('ast')!=None)
         logging.debug('SectionBlock.parse @ level: %s, title: %s',
             level_key, title)
         #first of all we can create the new block
         sec_block = SectionBlock(title, index_title,
-            numbered, sec_level, parent_block)
+            star, sec_level, parent_block)
         #now we can trigger the parsing of the content
         #of the section to get the children blocks.
         content = tex[m.end():]
