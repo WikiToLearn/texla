@@ -35,7 +35,8 @@ class Parser:
         #beginning of parsing
         options = {} #for now we don't have options
         blocks = self.parse_sections(content, -1, self.root_block,options)
-        return blocks
+        self.root_block.add_children_blocks(blocks)
+        return self.root_block
 
 
     def parse_sections(self, tex, level, parent_block, options):
