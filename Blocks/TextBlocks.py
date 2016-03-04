@@ -70,6 +70,18 @@ class NewlineBlock(Block):
         self.attributes['star'] = star
 
 
+class SpecialCharacter(Block):
+
+    def parse(parser, tex, parent_block, params):
+        logging.debug('SpecialCharacter.parse @ ')
+        block = SpecialCharacter(params['cmd'], parent_block)
+        return (block, tex)
+
+    def __init__(self, char, parent_block):
+        super().__init__('special-character',char, parent_block)
+        self.attributes['character'] = char
+
+
 parser_hooks = {
     'text': TextBlock.parse_plain_text,
     "'": AccentedLetterBlock.parse_accents,
@@ -80,5 +92,7 @@ parser_hooks = {
     "=" : AccentedLetterBlock.parse_accents,
     "." : AccentedLetterBlock.parse_accents,
     '\\': NewlineBlock.parse_newline,
+    '%' : SpecialCharacter.parse,
+    '&' : SpecialCharacter.parse,
     'newline': NewlineBlock.parse_newline
     }

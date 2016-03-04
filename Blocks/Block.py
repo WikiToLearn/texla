@@ -40,7 +40,7 @@ class Block:
 		self.parent_block = parent_block
 		self.id = parent_block.id + '-' + utility.get_random_string(3)
 		#dictionary for attributes
-		self.attributes = {'N_chblocks':0}
+		self.attributes = {'N_chblocks' : 0}
 		#list for childrend blocks
 		self.ch_blocks = []
 		self.N_chblocks = 0

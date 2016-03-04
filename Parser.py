@@ -8,6 +8,7 @@ from Blocks.DocumentBlock import DocumentBlock
 
 '''Commands that changes directly the subsequent letter'''
 letters_commands = ("'","`",'"','~','^','=','.')
+special_characters = ('%','&')
 
 class Parser:
 
@@ -139,9 +140,14 @@ class Parser:
             elif tex_tp[1:6] == 'begin':
                 block, left_tex = self.parse_enviroment(
                     tex_tp, parent_block, options)
-            #we have if we have letters commands
+            #we check if we have letters commands
             elif tex_tp[1] in letters_commands:
                 block, left_tex = self.parse_letter_command(
+                    tex_tp, parent_block, options)
+            #we check if we have special characters
+            elif tex_tp[1] in special_characters:
+                print(tex_tp[1])
+                block, left_tex = self.parse_special_character(
                     tex_tp, parent_block, options)
             else:
                 #finally we have a normal command
@@ -293,6 +299,7 @@ class Parser:
         else:
             #it's an error
             logging.error('PARSER.parse_command @ command NOT FOUND')
+            print(tex[:20])
 
 
 
@@ -317,6 +324,7 @@ class Parser:
         #first of all we get the command
         cmd = tex[1]
         params = {'cmd':cmd, 'star':False}
+        #then it is a letter command
         #check if the letter is inside a {}
         r = re.compile(r'\\' + cmd + r'\s*\{(.*?)\}')
         match = r.match(tex)
@@ -334,6 +342,20 @@ class Parser:
                     tex[letter_m.end():]
             block, left_tex =  self.call_parser_hook(cmd,
                     'cmd', tex_to_parse, parent_block, params)
+        logging.info('BLOCK @ %s%s', "\t"*block.tree_depth,
+                    str(block))
+        return (block, left_tex)
+
+    def parse_special_character(self, tex, parent_block,options):
+        '''
+        This function parse special commands like \% or \&.
+        The mechanism is the same ad special_commands, but options
+        are not searched.
+        '''
+        cmd = tex[1]
+        params = {'cmd':cmd, 'star':False}
+        block, left_tex =  self.call_parser_hook(cmd,
+                'cmd', tex[1:], parent_block, params)
         logging.info('BLOCK @ %s%s', "\t"*block.tree_depth,
                     str(block))
         return (block, left_tex)

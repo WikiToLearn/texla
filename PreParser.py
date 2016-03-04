@@ -90,10 +90,12 @@ def remove_comments(tex):
     '''
     This function removes comments from the tex.
     '''
-    com_re = re.compile(r'(%.*)\n')
+    com_re = re.compile(r'(?<!\\)(%.*)\n')
+    final_tex  = tex
     for match in com_re.finditer(tex):
-        tex = tex.replace(match.group(1), '')
-    return tex
+        print(match, match.groups(), match.group(1))
+        final_tex = final_tex.replace(match.group(1), '')
+    return final_tex
 
 def preparseTheorems(tex):
     '''Function that searches \newtheorems command in tex
