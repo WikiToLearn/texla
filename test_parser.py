@@ -25,7 +25,7 @@ logging.info('Started')
 from Parser import Parser
 
 p = Parser()
-a = open('tests/test_sections.tex','r').read()
+a = open('test.tex','r').read()
 result = p.parse(a)
 f = open('tree','w')
 json = result.to_json(0)

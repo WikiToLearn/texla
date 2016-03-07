@@ -300,7 +300,6 @@ class Parser:
         else:
             #it's an error
             logging.error('PARSER.parse_command @ command NOT FOUND')
-            print(tex[:20])
 
 
 
