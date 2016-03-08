@@ -9,14 +9,15 @@ class VerbatimBlock(Block):
     @staticmethod
     def parse_verbatim(parser, tex, parent_block, params):
         #we first create the Block
-        block = VerbatimBlock(tex, parent_block)
+        block = VerbatimBlock(tex, params['star'], parent_block)
         logging.debug('VerbatimBlock.parse_env @')
         #there are no children 'cause it's verbatim
         return block
 
-    def __init__(self, content, parent_block):
+    def __init__(self, content,star, parent_block):
         super().__init__('verbatim', content, parent_block)
         self.attributes['content'] = content
+        self.attributes['star'] = star
 
 parser_hooks = {
     'verbatim' : VerbatimBlock.parse_verbatim
