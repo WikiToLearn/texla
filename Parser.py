@@ -17,9 +17,12 @@ class Parser:
 
     def parse(self,tex):
         ###TODO:preparsing
-        tex = PreParser.preparse(tex)
+        tex, data = PreParser.preparse(tex)
+        self.data = data
         logging.debug('Preparsed TEX @ #######\n'+\
             '%s \n#######', tex)
+
+
         #reading title...
         #reading author...
 
@@ -95,10 +98,10 @@ class Parser:
         '''This function is the MAIN ENTRY POINT for parsing.
         It scan the tex from left to right. It searches for
         \\ or $. When an instruction is found (a pattern starting
-        with \\ or $), the right parser funcion is called.
+        with \\ or $), the right parser function is called.
         These functions take care to parse the command,
         create the block calling parser_hooks, and to return
-        the block and the tex left to parse. Then the remaing
+        the block and the tex left to parse. Then the remaining
         tex starts a new cycle in parse_instructions() recursively.
         It returnes a list of parsed blocks.
 
