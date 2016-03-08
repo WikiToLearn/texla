@@ -22,12 +22,9 @@ class Parser:
         logging.debug('Preparsed TEX @ #######\n'+\
             '%s \n#######', tex)
 
-
-        #reading title...
-        #reading author...
-
         #Getting content of document
-        r_doc = re.compile(r'\\begin(?P<options>\[.*?\])?{document}(?P<content>.*?)\\end{document}', re.DOTALL)
+        r_doc = re.compile(r'\\begin(?P<options>\[.*?\])?{document}'+
+                           r'(?P<content>.*?)\\end{document}', re.DOTALL)
         m_doc = r_doc.search(tex)
         #getting content
         content = m_doc.group("content")
