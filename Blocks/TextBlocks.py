@@ -70,6 +70,21 @@ class NewlineBlock(Block):
         self.attributes['star'] = star
 
 
+
+class NewPageBlock(Block):
+
+    @staticmethod
+    def parse_newpage(parser, tex, parent_block, params):
+        block = NewPageBlock(params['star'],
+                 parent_block)
+        logging.debug('NewPageBlock.parse_newpage @ cmd: %s',params['cmd'])
+        return (block,tex)
+
+    def __init__(self, star, parent_block):
+        super().__init__('newpage','', parent_block)
+        self.attributes['star']=star
+
+
 class SpecialCharacter(Block):
 
     def parse(parser, tex, parent_block, params):
@@ -94,5 +109,6 @@ parser_hooks = {
     '\\': NewlineBlock.parse_newline,
     '%' : SpecialCharacter.parse,
     '&' : SpecialCharacter.parse,
-    'newline': NewlineBlock.parse_newline
+    'newline': NewlineBlock.parse_newline,
+    'newpage' : NewPageBlock.parse_newpage
     }
