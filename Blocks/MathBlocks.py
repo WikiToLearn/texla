@@ -78,5 +78,6 @@ parser_hooks = {
     'alignat' : MathBlock.parse_math_env,
     'gather' : MathBlock.parse_math_env,
     'ensuremath' : MathBlock.parse_ensure_math,
-    'empheq' : MathBlock.parse_math_env
+    'empheq' : MathBlock.parse_math_env,
+    'math': MathBlock.parse_math_env
 }
