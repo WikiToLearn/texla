@@ -4,11 +4,13 @@ from .Block import Block
 
 class FigureBlock(Block):
     '''Permission to place the float:
-        h here at the very place in the text where it occurred. This is useful mainly for small floats.
-        t at the top of a page
-        b at the bottom of a page
-        p on a special page containing only floats.
-        ! without considering most of the internal parametersa, which could otherwhise stop this float from being placed.
+    h here at the very place in the text where it occurred.
+    This is useful mainly for small floats.
+    t at the top of a page
+    b at the bottom of a page
+    p on a special page containing only floats.
+    ! without considering most of the internal parametersa,
+    which could otherwhise stop this float from being placed.
     '''
 
     @staticmethod
@@ -32,25 +34,28 @@ class FigureBlock(Block):
 
 
 class IncludeGraphics(Block):
-    
+
     @staticmethod
     def parse(parser, tex, parent_block, params):
-        options, left_tex = CommandParser.parse_options(tex,[('img_info','[',']'), ('img_name','{','}')])
+        options, left_tex = CommandParser.parse_options(tex,
+                [('img_info','[',']'), ('img_name','{','}')])
         ar_img_info = {}
         if options['img_info']:
-            str_splits = options['img_info'].split(',', options['img_info'].count(','))
+            str_splits = options['img_info'].split(
+                ',', options['img_info'].count(','))
             for str_split in str_splits:
                 spl = str_split.split('=', 1);
                 ar_img_info[spl[0].strip(' ')] = spl[1].strip(' ')
             logging.info('FigureBlock.parse_env @ ar_img_info: %s', ar_img_info)
-        block = IncludeGraphics(options['img_name'], ar_img_info, left_tex, parent_block)
+        block = IncludeGraphics(options['img_name'],
+                ar_img_info, left_tex, parent_block)
         return (block, left_tex)
-    
+
     def __init__(self, img_name, ar_img_info, tex, parent_block):
         super().__init__('graphics', tex, parent_block)
         self.attributes['img_name'] = img_name
         self.attributes['img_options'] = ar_img_info
-            
+
 parser_hooks = {
     'figure' : FigureBlock.parse_env,
     'includegraphics' :  IncludeGraphics.parse
