@@ -32,7 +32,7 @@ def parse_macros(tex):
     new_re = re.compile(r'\\newcommand')
     macros = {}
     log = {}
-    tex_to_parse = tex
+    tex_to_parse = tex[:]
     for match in new_re.finditer(tex):
         #first we get the options
         opt_tex = CommandParser.get_command_options(
@@ -44,7 +44,7 @@ def parse_macros(tex):
                                             match.end() + opt_tex[2]], '')
     #now we can search for occurrence of the macro,
     #get the options, and replace the tex
-    preparsed_tex = tex_to_parse
+    preparsed_tex = tex_to_parse[:]
     macros_found = 0
     #we reiterate the process until no macros are found.
     #This is useful for macros using other macros.
