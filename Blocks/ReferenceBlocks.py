@@ -45,7 +45,7 @@ class RefBlock(Block):
 
     def __str__(self):
         return '<Block:{}, ID:{}, label:{}>'.format(
-             self.block_name, self.id, self.label)
+             self.block_name, self.id, self.ref)
 
 
 parser_hooks = {

@@ -14,8 +14,8 @@ def preparse(tex):
     tex = remove_comments(tex)
     tex = parse_macros(tex)
     tex = preparseTheorems(tex)
-    
-    
+
+
     o = open('preparsed', 'w')
     o.write(tex)
     return (tex, data)
@@ -143,23 +143,17 @@ def preparse_header(tex):
     headerBlock['title'] = ''
     headerBlock['date'] = ''
     headerBlock['author'] = ''
-    
     mat = re.search(r'\\title{(.*?)}', tex)
     if mat:
         headerBlock['title'] = mat.group(1)
-    
     mat = re.search(r'\\date{(.*?)}', tex)
     if mat:
         headerBlock['date'] = mat.group(1)
-        
     mat = re.search(r'\\author{(.*?)}', tex)
     if mat:
         headerBlock['author'] = mat.group(1)
-        
-    logging.info('PREPARSER @ preparse_header \ntitle: %s\ndate: '\
-            '%s\nauthor: %s', headerBlock['title'], headerBlock['date'], 
+    logging.info('PREPARSER @ preparse_header ')
+    logging.debug('\ntitle: %s\ndate: '\
+            '%s\nauthor: %s', headerBlock['title'], headerBlock['date'],
             headerBlock['author'])
-    
     return headerBlock
-
-

@@ -22,9 +22,7 @@ class HeaderBlock(Block):
         self.attributes['date'] = date
 
 
-                  
+
 parser_hooks = {
     'maketitle': HeaderBlock.parse,
-
 }
-
