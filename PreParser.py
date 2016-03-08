@@ -121,11 +121,11 @@ def preparseTheorems(tex):
     #and we substitue them with \begin{theorem}{th_id} and \begin{theorem}
     #to use out theorem environment
     for key in th_dict:
-        tag_open = r'\\begin{'+key+'}'
-        new_tag_open = r'\\begin{theorem}{'+key+'}'
+        tag_open = '\\begin{'+key+'}'
+        new_tag_open = '\\begin{theorem}{'+key+'}'
         tex = tex.replace(tag_open, new_tag_open)
-        tag_close = r'\\end{'+key+'}'
-        new_tag_close = r'\\end{theorem}'
+        tag_close = '\\end{'+key+'}'
+        new_tag_close = '\\end{theorem}'
         tex = tex.replace(tag_close, new_tag_close)
     #parsed theorems are saved in TheoremBlocks moduile
     TheoremBlocks.parsed_theorems = th_dict
