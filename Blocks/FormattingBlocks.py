@@ -1,50 +1,43 @@
 import logging
 from .Utilities import *
 from .Block import Block
-
-class EmphBlock(Block):
+	
+#general class for every type of text format
+class FormattingText(Block):
 
 	@staticmethod
 	def parse(parser, tex, parent_block, params):
-		logging.debug('EmphBlock.parse @ tex: %s', tex[:5]+'...' )
+		logging.debug('FormattingText.parse @ tex:', tex )
 		options, left_tex = CommandParser.parse_options(tex,
 			[('text','{','}')])
 		text = options['text']
-		block = EmphBlock(text, parent_block)
-		#now we parse the content just to be sure
+		block = FormattingText(params['cmd'], text, parent_block)
 		ch_blocks = parser.parse_instructions(
 				text, block, {})
 		block.add_children_blocks(ch_blocks)
 		return (block, left_tex)
-
-	def __init__(self, text, parent_block):
-		super().__init__('emph',text,parent_block)
+			
+	def __init__(self, format_type, text, parent_block):
+		logging.debug('format type:', format_type )
+		super().__init__('formatting_text',text,parent_block)
 		self.attributes['text'] = text
 		self.attributes['text_lenght'] = len(text)
-
-
-class UnderlineBlock(Block):
-
-	@staticmethod
-	def parse(parser, tex, parent_block, params):
-		logging.debug('UnderlineBlock.parse @ tex: %s', tex[:5]+'...' )
-		options, left_tex = CommandParser.parse_options(tex,
-			[('text','{','}')])
-		text = options['text']
-		block = UnderlineBlock(text, parent_block)
-		#now we parse the content just to be sure
-		ch_blocks = parser.parse_instructions(
-				text, block, {})
-		block.add_children_blocks(ch_blocks)
-		return (block, left_tex)
-
-	def __init__(self, text, parent_block):
-		super().__init__('underline',text,parent_block)
-		self.attributes['text'] = text
-		self.attributes['text_lenght'] = len(text)
-
-
+		self.attributes['format_type'] = format_type
+	
 parser_hooks = {
-	'emph': EmphBlock.parse,
-	'underline' : UnderlineBlock.parse
+	#fonts
+	'underline' : FormattingText.parse,
+	'textrm' : FormattingText.parse,
+	'texttt' : FormattingText.parse,
+	'textmd' : FormattingText.parse,
+	'textup' : FormattingText.parse,
+	'textsl' : FormattingText.parse,
+	'emph' : FormattingText.parse,
+	'textsf' : FormattingText.parse,
+	'textbf' : FormattingText.parse,
+	'textit' : FormattingText.parse,
+	'textsc' : FormattingText.parse,
+	'textnormal' : FormattingText.parse
+	#fontsize
+	
 }
