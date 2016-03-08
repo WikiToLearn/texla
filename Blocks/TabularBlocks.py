@@ -83,8 +83,31 @@ class HlineBlock(Block):
         super().__init__('hline','',parent_block)
 
 
+class ClineBlock(Block):
+
+    @staticmethod
+    def parse(parser, tex, parent_block, params):
+        options, left_text = CommandParser.parse_options(
+            tex, [('range','{','}')])
+
+        clinerange = options['range']
+        start = clinerange.split('-')[0]
+        end = clinerange.split('-')[1]
+
+        block = ClineBlock(start, end, parent_block)
+        logging.debug('Cline.parse @ cmd: %s',
+                    params['cmd'])
+        return (block, tex)
+
+
+    def __init__(self, start, end, parent_block):
+        super().__init__('cline','',parent_block)
+        self.attributes['start'] = start
+        self.attributes['end'] = end
+
 
 parser_hooks = {
     'tabular' : TabularBlock.parse,
-    'hline' : HlineBlock.parse
+    'hline' : HlineBlock.parse,
+    'cline' : ClineBlock.parse
 }
