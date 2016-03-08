@@ -73,7 +73,7 @@ class Block:
         It MUST NOT be called from outside, expecially the parser
         '''
         self.ch_blocks += blocks
-        self.N_chblocks +=1
+        self.N_chblocks +=len(blocks)
         self.attributes['N_chblocks']+=len(blocks)
 
     def change_parent_block(self, new_parent):
