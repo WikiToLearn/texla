@@ -17,9 +17,12 @@ class Parser:
 
     def parse(self,tex):
         ###TODO:preparsing
-        tex = PreParser.preparse(tex)
+        tex, data = PreParser.preparse(tex)
+        self.data = data
         logging.debug('Preparsed TEX @ #######\n'+\
             '%s \n#######', tex)
+
+
         #reading title...
         #reading author...
 
