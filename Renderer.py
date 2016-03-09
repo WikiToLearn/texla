@@ -15,7 +15,7 @@ class Renderer():
         '''This function registers a hook for renderer'''
         self.render_hooks[name] = hook
 
-    def render_children_blocks(self, block, collapse=False):
+    def render_children_blocks(self, block, collapse=True):
         output = []
         for bl in block.ch_blocks:
             #searching for renderer_hook
