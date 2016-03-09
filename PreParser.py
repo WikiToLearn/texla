@@ -1,5 +1,5 @@
-from Blocks import TheoremBlocks
-from Blocks.Utilities import *
+from .Blocks import TheoremBlocks
+from .Blocks.Utilities import *
 import logging
 import re
 

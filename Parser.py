@@ -1,10 +1,10 @@
 import os
 import re
 import logging
-import PreParser
-import Blocks
-from Blocks.Utilities import *
-from Blocks.DocumentBlock import DocumentBlock
+from . import PreParser
+from . import Blocks
+from .Blocks.Utilities import *
+from .Blocks.DocumentBlock import DocumentBlock
 
 '''Commands that changes directly the subsequent letter'''
 letters_commands = ("'","`",'"','~','^','=','.')
@@ -31,7 +31,7 @@ class Parser:
         options = m_doc.group("options")
         logging.debug('PARSER @ got content of Document')
         #creating root block
-        self.root_block = DocumentBlock('',{})
+        self.root_block = DocumentBlock(self.data['title'],{})
         #beginning of parsing
         options = {} #for now we don't have options
         blocks = self.parse_sections(content, -1, self.root_block,options)
