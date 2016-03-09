@@ -8,7 +8,7 @@ from .Blocks.DocumentBlock import DocumentBlock
 
 '''Commands that changes directly the subsequent letter'''
 letters_commands = ("'","`",'"','~','^','=','.')
-special_characters = ('%','&')
+special_characters = ('%','&','$','{','}','#','_')
 
 class Parser:
 

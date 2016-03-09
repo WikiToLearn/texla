@@ -85,7 +85,7 @@ class NewPageBlock(Block):
         self.attributes['star']=star
 
 
-class SpecialCharacter(Block):
+class SpecialCharacterBlock(Block):
 
     def parse(parser, tex, parent_block, params):
         logging.debug('SpecialCharacter.parse @ ')
@@ -107,8 +107,13 @@ parser_hooks = {
     "=" : AccentedLetterBlock.parse_accents,
     "." : AccentedLetterBlock.parse_accents,
     '\\': NewlineBlock.parse_newline,
-    '%' : SpecialCharacter.parse,
-    '&' : SpecialCharacter.parse,
+    '%' : SpecialCharacterBlock.parse,
+    '&' : SpecialCharacterBlock.parse,
+    '{' : SpecialCharacterBlock.parse,
+    '}' : SpecialCharacterBlock.parse,
+    '#' : SpecialCharacterBlock.parse,
+    '_' : SpecialCharacterBlock.parse,
+    '&' : SpecialCharacterBlock.parse,
     'newline': NewlineBlock.parse_newline,
     'newpage' : NewPageBlock.parse_newpage
     }
