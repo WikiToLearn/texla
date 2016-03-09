@@ -23,6 +23,8 @@ class FormattingText(Block):
 		self.attributes['text'] = text
 		self.attributes['text_lenght'] = len(text)
 		self.attributes['format_type'] = format_type
+
+
 	
 parser_hooks = {
 	#fonts
@@ -37,7 +39,9 @@ parser_hooks = {
 	'textbf' : FormattingText.parse,
 	'textit' : FormattingText.parse,
 	'textsc' : FormattingText.parse,
-	'textnormal' : FormattingText.parse
+	'textnormal' : FormattingText.parse,
+	'textsuperscript' : FormattingText.parse,
+	'textsubscript' : FormattingText.parse
 	#fontsize
 	
 }
