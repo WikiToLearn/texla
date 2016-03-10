@@ -26,7 +26,7 @@ class Renderer():
                 #default hook is mandatory
                 output.append((bl.block_name,
                        self.render_hooks['default'](bl)))
-        print(output)
+        logging.debug('Render.ch_blocks @ %s', output)
         if collapse:
             return ''.join([x[1] for x in output])
         else:
