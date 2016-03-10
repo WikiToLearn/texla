@@ -94,7 +94,7 @@ class SpecialCharacterBlock(Block):
         return (block, tex)
 
     def __init__(self, char, parent_block):
-        super().__init__('special-character',char, parent_block)
+        super().__init__(char,char, parent_block)
         self.attributes['character'] = char
 
 

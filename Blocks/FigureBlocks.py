@@ -29,11 +29,11 @@ class FigureBlock(Block):
 
 
     def __init__(self, placement_specifier, tex, parent_block):
-        super().__init__('figure_block', tex, parent_block)
+        super().__init__('figure', tex, parent_block)
         self.attributes['placement_specifier'] = placement_specifier
 
 
-class IncludeGraphics(Block):
+class IncludeGraphicsBlock(Block):
 
     @staticmethod
     def parse(parser, tex, parent_block, params):
@@ -47,16 +47,16 @@ class IncludeGraphics(Block):
                 spl = str_split.split('=', 1);
                 ar_img_info[spl[0].strip(' ')] = spl[1].strip(' ')
             logging.info('FigureBlock.parse_env @ ar_img_info: %s', ar_img_info)
-        block = IncludeGraphics(options['img_name'],
+        block = IncludeGraphicsBlock(options['img_name'],
                 ar_img_info, left_tex, parent_block)
         return (block, left_tex)
 
     def __init__(self, img_name, ar_img_info, tex, parent_block):
-        super().__init__('graphics', tex, parent_block)
+        super().__init__('includegraphics', tex, parent_block)
         self.attributes['img_name'] = img_name
         self.attributes['img_options'] = ar_img_info
 
 parser_hooks = {
     'figure' : FigureBlock.parse_env,
-    'includegraphics' :  IncludeGraphics.parse
+    'includegraphics' :  IncludeGraphicsBlock.parse
 }
