@@ -88,8 +88,9 @@ class NewPageBlock(Block):
 class SpecialCharacterBlock(Block):
 
     def parse(parser, tex, parent_block, params):
-        logging.debug('SpecialCharacter.parse @ ')
-        block = SpecialCharacter(params['cmd'], parent_block)
+        logging.debug('SpecialCharacter.parse @ char: %s ',
+                        params['cmd'])
+        block = SpecialCharacterBlock(params['cmd'], parent_block)
         return (block, tex)
 
     def __init__(self, char, parent_block):
@@ -113,7 +114,7 @@ parser_hooks = {
     '}' : SpecialCharacterBlock.parse,
     '#' : SpecialCharacterBlock.parse,
     '_' : SpecialCharacterBlock.parse,
-    '&' : SpecialCharacterBlock.parse,
+    '$' : SpecialCharacterBlock.parse,
     'newline': NewlineBlock.parse_newline,
     'newpage' : NewPageBlock.parse_newpage
     }

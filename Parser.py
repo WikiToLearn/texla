@@ -147,7 +147,6 @@ class Parser:
                     tex_tp, parent_block, options)
             #we check if we have special characters
             elif tex_tp[1] in special_characters:
-                print(tex_tp[1])
                 block, left_tex = self.parse_special_character(
                     tex_tp, parent_block, options)
             else:
@@ -355,7 +354,7 @@ class Parser:
         cmd = tex[1]
         params = {'cmd':cmd, 'star':False}
         block, left_tex =  self.call_parser_hook(cmd,
-                'cmd', tex[1:], parent_block, params)
+                'cmd', tex[2:], parent_block, params)
         logging.info('BLOCK @ %s%s', "\t"*block.tree_depth,
                     str(block))
         return (block, left_tex)
