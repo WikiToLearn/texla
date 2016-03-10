@@ -1,7 +1,7 @@
 import logging
 from .Utilities import *
 from .Block import Block
-	
+
 #general class for every type of text format
 class FormattingText(Block):
 
@@ -16,16 +16,16 @@ class FormattingText(Block):
 				text, block, {})
 		block.add_children_blocks(ch_blocks)
 		return (block, left_tex)
-			
+
 	def __init__(self, format_type, text, parent_block):
 		logging.debug('format type:', format_type )
-		super().__init__('formatting_text',text,parent_block)
+		super().__init__(format_type,text,parent_block)
 		self.attributes['text'] = text
 		self.attributes['text_lenght'] = len(text)
 		self.attributes['format_type'] = format_type
 
 
-	
+
 parser_hooks = {
 	#fonts
 	'underline' : FormattingText.parse,
@@ -43,5 +43,5 @@ parser_hooks = {
 	'textsuperscript' : FormattingText.parse,
 	'textsubscript' : FormattingText.parse
 	#fontsize
-	
+
 }

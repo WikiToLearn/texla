@@ -20,15 +20,15 @@ class Renderer():
         for bl in block.ch_blocks:
             #searching for renderer_hook
             if bl.block_name in self.render_hooks:
-                loggin
                 output.append((bl.block_name,
                        self.render_hooks[bl.block_name](bl)))
             else:
                 #default hook is mandatory
                 output.append((bl.block_name,
                        self.render_hooks['default'](bl)))
+        print(output)
         if collapse:
-            return ''.join([x[1] for x in l])
+            return ''.join([x[1] for x in output])
         else:
             return output
 
