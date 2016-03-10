@@ -1,4 +1,4 @@
-from . import Blocks
+from ..Parser import Blocks
 import logging
 
 class Renderer():
