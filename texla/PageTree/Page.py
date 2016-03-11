@@ -35,43 +35,33 @@ class Page(object):
     def addSubpage(self, ind):
         self.subpages.append(ind)
 
-    ''' This method insert the text of subpages in this page if his level is
-    greater than the level parameter.
-    It requires the dictionary of pages.'''
-    def collapseText(self, ids_to_collapse ,pages_dict, subpage_index=False):
+    def after_render(self):
+        '''This function does some fixes after rendering'''
+        self.text += '\n<references/>'
+
+
+    def collapseSubpages(self, pages_dict, level=0):
+        ''' This method insert the text of subpages in this
+        page and returns the complete text.
+        It requires the dictionary of pages.'''
         #first of all the text is fixed
         self.fix_text_characters()
         #start collapsing
-        if self.id not in ids_to_collapse:
-            for subpage in self.subpages:
-                pages_dict[subpage].collapseText(max_level,pages_dict)
-            #the subpages'index is created if not level =-1 and if the
-            #page has text
-            if self.text != '':
-                #added refs tags to show footnotes
-                self.text+='\n<references/>'
-                if subpage_index:
-                    if self.subpages and self.level !=-1:
-                        self.text +='\n{{noprint-pdf|\n=='+self.keywords['subpages']+'=='
-                        for p in self.subpages:
-                            if pages_dict[p].text != '':
-                                self.text += '\n*[['+p+'|'+pages_dict[p].title_name+']]'
-                        self.text+= '\n}}'
-        else:
-            #we have to managed the text
-            for subpage in self.subpages:
-                t = pages_dict[subpage].collapseText(max_level,pages_dict)
-                #add text
-                self.text+= '\n'+t
-            if self.level ==max_level:
-                #added refs tags to show footnotes
-                self.text+='\n<references/>'
-            elif self.level>max_level:
-                #Creation of current page'title
-                tit = '\n'+'='*(self.level-max_level+1)+self.title_name+'='*(self.level-max_level+1)
-                self.text = tit+ "\n"+ self.text
-                #return the text
-                return self.text
+        #we have to managed the text
+        for subpage in self.subpages:
+            t = pages_dict[subpage].collapseSubpages(pages_dict, level+1)
+            #add text
+            self.text+= '\n'+t
+        if level == 0:
+            #added refs tags to show footnotes
+            self.text+='\n<references/>'
+        elif:
+            #Creation of current page'title
+            tit = '\n'+'='*(level)+self.title_name+
+                    '='*(level)
+            self.text = tit+ "\n"+ self.text
+            #return the text
+            return self.text
 
     ''' This method collapse internal url of pages in mediawiki_url'''
     def collapseMediaURL(self,max_level,pages_dict,
@@ -128,6 +118,24 @@ class Page(object):
                     self.text = self.text.replace('\\ref{'+label+'}',' ')
             except Exception:
                 print("REF_ERROR: "+ label)
+
+
+	def fix_text_characters(self):
+        '''Utility function to fix apostrophes and other characters
+    inside the text of the page'''
+		#fix for double apostrophes quotes
+		s = re.findall(u'(\`\`)\s?(.*?)\s?(\'\')', self.text, re.DOTALL)
+		for item in s:
+			self.text = self.text.replace(unicode(item[0]),'"')
+		 	self.text = self.text.replace(unicode(item[2]),'"')
+		s2 = re.findall(u'(\‘\‘)\s?(.*?)\s?(\’\’)', self.text, re.DOTALL)
+		for item2 in s2:
+			self.text = self.text.replace(unicode(item2[0]),'"')
+		 	self.text = self.text.replace(unicode(item2[2]),'"')
+		#apostrophe fixed
+		self.text = self.text.replace(u'’',u"'")
+		self.text = self.text.replace(u'`',u"'")
+
 
     def get_json_dictionary(self, pages):
         '''This function return the json dictionary of the page
