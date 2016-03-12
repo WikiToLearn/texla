@@ -1,47 +1,56 @@
+import log
 import logging
-import sys
-
-loglevel = sys.argv[1].split('=')[1]
-if len(sys.argv)>2:
-	output =  sys.argv[2].split('=')[1] in ('True','true','Y','y','yes','Yes')
-else:
-	output = False
-
-numeric_level = getattr(logging, loglevel.upper(), None)
-if not isinstance(numeric_level, int):
-    raise ValueError('Invalid log level: %s' % loglevel)
-
-if output:
-	logging.basicConfig(filename='tree.log',
-		format='%(levelname)s:%(message)s',
-		level=numeric_level)
-else:
-	logging.basicConfig(
-		format='%(levelname)s:%(message)s',
-		level=numeric_level)
-logging.info('Started')
-
+import os, random, string
 from texla.Parser import Parser
 from texla.Renderers.MediaWikiRenderer import MediaWikiRenderer
 from flask import Flask, request, session
 
+dir_path = os.environ.get('TEXLA_SESSIONS_PATH','sessions')
+
 app = Flask('texla server')
-app.secret_key = 'crisbalculo'
+app.secret_key = 'tunale_culo'
 
 
-@app.route('/putlatex', methods = ['POST'])
-def putlatex():
+@app.route('/uploadlatex', methods=['POST'])
+def upload_latex():
     if request.method == 'POST':
+        session_id = create_session()
+        logging.info('Session created @ %s',session_id)
         latex = request.form['latex']
-        logging.info('latex @ %s', latex)
-        p = Parser()
-        tree = p.parse(latex)
+        title = request.form['doc_title']
+        session_path = os.path.join(dir_path,session_id)
+        f = open(os.path.join(session_path,'text.tex'),'w')
+        f.write(latex)
+        f.close()
+        #starting parsing
+        parser = Parser()
+        block_tree = parser.parse(latex)
         #rendering
-        rend = MediaWikiRenderer({'doc_title':'Prova','output_path':"test.mw",
-                                'keywords':'', 'base_path':''})
-        rend.start_rendering(tree)
-        json =  rend.tree.get_tree_json()
-        return json
+        configs = { 'doc_title':title,
+                   'output_path': session_path,
+                    'keywords':'',
+                    'base_path':'' }
+        rend = MediaWikiRenderer(configs)
+        rend.start_rendering(block_tree)
+        json_tree = rend.tree.get_tree_json()
+        #saving trees
+        f = open(os.path.join(session_path,'json_tree'),'w')
+        f.write(json_tree)
+        f.close()
+        g = open(os.path.join(session_path,'texla_tree'),'w')
+        g.write(block_tree.to_json())
+        g.close()
+        return json_tree
+
+
+def create_session():
+    session_id = get_random_string(10).upper()
+    os.makedirs(os.path.join(dir_path, session_id))
+    return session_id
+
+def get_random_string(N):
+	return ''.join(random.SystemRandom().choice(string.ascii_lowercase + \
+		string.digits) for _ in range(N))
 
 
 if __name__ == '__main__':
