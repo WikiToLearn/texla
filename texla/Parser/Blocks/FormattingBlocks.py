@@ -7,7 +7,7 @@ class FormattingText(Block):
 
 	@staticmethod
 	def parse(parser, tex, parent_block, params):
-		logging.debug('FormattingText.parse @ tex:', tex )
+		logging.debug('FormattingText.parse @ tex: %s', tex )
 		options, left_tex = CommandParser.parse_options(tex,
 			[('text','{','}')])
 		text = options['text']
@@ -18,7 +18,7 @@ class FormattingText(Block):
 		return (block, left_tex)
 
 	def __init__(self, format_type, text, parent_block):
-		logging.debug('format type:', format_type )
+		logging.debug('format type: %s', format_type )
 		super().__init__(format_type,text,parent_block)
 		self.attributes['text'] = text
 		self.attributes['text_lenght'] = len(text)
