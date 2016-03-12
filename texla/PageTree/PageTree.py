@@ -83,29 +83,6 @@ class PageTree (object):
         self.current_anchor = newurl
 
 
-    def getNormalizedUrl(self,title):
-        '''Function that removes math from title'''
-        mre = re.search(r'(?<![\$])\$([^$]+)\$(?!\$)|'+
-                        r'(?<![\$])\$\$([^$]+)\$\$(?!\$)|'+
-                        r'\\\((.*?)\\\)|\\\[(.*?)\\\]',
-                        title,re.DOTALL)
-        if mre:
-            math = mre.group(1)
-            #reading the normalized urls dict
-            if math in self.normalized_urls:
-                return title.replace(mre.group(0),
-                    self.normalized_urls[math])
-            else:
-                tit = str(input("\n@Normalize title: "+ title+" --->  ")).strip()
-                #saving the normalized urls
-                self.normalized_urls[math]= tit
-                #saving it to file
-                self.nurls_file.write(math+'@@@'+tit+'\n')
-                return title.replace(mre.group(0),tit)
-        else:
-            return title
-
-
     def addText(self,text):
         '''This method insert text in the current page '''
         self.pages[self.current_url].addText(text)

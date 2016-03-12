@@ -37,7 +37,10 @@ class Page(object):
 
     def after_render(self):
         '''This function does some fixes after rendering'''
-        self.text += '\n<references/>'
+        if '<ref>' in self.text:
+            self.text += '\n<references/>'
+        #check math inside titles
+        self.math_inside_title = self.is_math_inside_title()
 
 
     def collapseSubpages(self, pages_dict, level=0):
@@ -136,6 +139,16 @@ class Page(object):
         self.text = self.text.replace(u'’',u"'")
         self.text = self.text.replace(u'`',u"'")
 
+    def is_math_inside_title(self):
+        '''This function checkes if there is math inside titles'''
+        mre = re.search(r'(?<![\$])\$([^$]+)\$(?!\$)|'+
+                        r'(?<![\$])\$\$([^$]+)\$\$(?!\$)|'+
+                        r'\\\((.*?)\\\)|\\\[(.*?)\\\]',
+                        self.title,re.DOTALL)
+        if mre:
+            return True
+        else:
+            return False
 
     def get_json_dictionary(self, pages):
         '''This function return the json dictionary of the page
