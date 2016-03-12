@@ -140,12 +140,21 @@ class PageTree (object):
             self.root_url].get_json_dictionary(self.pages),
             indent=3)
 
-    ''' This method collapse the text contained in subpages
-    in the pages with level > level_min.
-    The pages with level<level_min is inserted an index of subpages.
-    After text collapsing the mediawiki url for each page is
-    computed as needed. Label references are updated'''
-    def collapseText(self,level_max):
+    def after_render(self):
+        '''This function does some fixes after rendering'''
+        for page in self.pages.values():
+            page.after_render()
+
+
+    def collapseSubpages(self, pages_to_collpase, subpages_index):
+        ''' This method collapse the text contained in subpages
+        in the pages
+        The pages with level<level_min is inserted an index of subpages.
+        After text collapsing the mediawiki url for each page is
+        computed as needed. Label references are updated'''
+        for p in pages_to_collpase:
+            self.pages[p].collapseText(pages_dict)
+
         self.collapse_level = level_max
         #collapsing text
         self.pages[self.root_url].collapseText(level_max,self.pages)

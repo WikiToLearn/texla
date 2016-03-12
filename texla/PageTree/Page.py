@@ -55,9 +55,9 @@ class Page(object):
         if level == 0:
             #added refs tags to show footnotes
             self.text+='\n<references/>'
-        elif:
+        else:
             #Creation of current page'title
-            tit = '\n'+'='*(level)+self.title_name+
+            tit = '\n'+'='*(level)+self.title_name+ \
                     '='*(level)
             self.text = tit+ "\n"+ self.text
             #return the text
@@ -120,21 +120,21 @@ class Page(object):
                 print("REF_ERROR: "+ label)
 
 
-	def fix_text_characters(self):
+    def fix_text_characters(self):
         '''Utility function to fix apostrophes and other characters
     inside the text of the page'''
-		#fix for double apostrophes quotes
-		s = re.findall(u'(\`\`)\s?(.*?)\s?(\'\')', self.text, re.DOTALL)
-		for item in s:
-			self.text = self.text.replace(unicode(item[0]),'"')
-		 	self.text = self.text.replace(unicode(item[2]),'"')
-		s2 = re.findall(u'(\‘\‘)\s?(.*?)\s?(\’\’)', self.text, re.DOTALL)
-		for item2 in s2:
-			self.text = self.text.replace(unicode(item2[0]),'"')
-		 	self.text = self.text.replace(unicode(item2[2]),'"')
-		#apostrophe fixed
-		self.text = self.text.replace(u'’',u"'")
-		self.text = self.text.replace(u'`',u"'")
+        #fix for double apostrophes quotes
+        s = re.findall(u'(\`\`)\s?(.*?)\s?(\'\')', self.text, re.DOTALL)
+        for item in s:
+            self.text = self.text.replace(unicode(item[0]),'"')
+            self.text = self.text.replace(unicode(item[2]),'"')
+        s2 = re.findall(u'(\‘\‘)\s?(.*?)\s?(\’\’)', self.text, re.DOTALL)
+        for item2 in s2:
+            self.text = self.text.replace(unicode(item2[0]),'"')
+            self.text = self.text.replace(unicode(item2[2]),'"')
+        #apostrophe fixed
+        self.text = self.text.replace(u'’',u"'")
+        self.text = self.text.replace(u'`',u"'")
 
 
     def get_json_dictionary(self, pages):
@@ -144,6 +144,10 @@ class Page(object):
         s['ID'] = self.id
         s['title'] = self.title
         s['level'] = self.level
+        if self.level>2:
+            s['is_page'] = False
+        else:
+            s['is_page'] = True
         s['text'] = self.text
         s['children'] = []
         for page in self.subpages:

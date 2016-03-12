@@ -98,6 +98,8 @@ class MediaWikiRenderer(Renderer):
     def start_rendering(self, root_block):
         #starting rendering from root-block
         self.render_block(root_block)
+        #after rendering
+        self.tree.after_render()
 
 
     ########################################
@@ -265,10 +267,10 @@ class MediaWikiRenderer(Renderer):
         self.used_tag(block.block_name)
         logging.info('Render @ block: ' + block.block_name)
         self.list_level+='*'
+        s = []
         for item in block.ch_blocks:
-            s = []
             s.append(self.list_level)
-            s.append(self.render_children_blocks(block))
+            s.append(self.render_children_blocks(item))
             s.append("\n")
         self.list_level = self.list_level[:-1]
         return ''.join(s)
@@ -277,10 +279,10 @@ class MediaWikiRenderer(Renderer):
         self.used_tag(block.block_name)
         logging.info('Render @ block: ' + block.block_name)
         self.list_level+='#'
+        s = []
         for item in block.ch_blocks:
-            s = []
             s.append(self.list_level)
-            s.append(self.render_children_blocks(block))
+            s.append(self.render_children_blocks(item))
             s.append("\n")
         self.list_level = self.list_level[:-1]
         return ''.join(s)
@@ -288,12 +290,12 @@ class MediaWikiRenderer(Renderer):
     def r_description(self, block):
         self.used_tag(block.block_name)
         logging.info('Render @ block: ' + block.block_name)
+        s = []
         for item in block.ch_blocks:
-            s = []
             s.append(';')
             s.append(item.attributes['word'])
             s.append(':')
-            s.append(self.render_children_blocks(block))
+            s.append(self.render_children_blocks(item))
             s.append("\n")
         return ''.join(s)
 

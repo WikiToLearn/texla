@@ -17,10 +17,10 @@ for module in os.listdir('texla/Parser/Blocks'):
         continue
     if module.endswith('.py'):
         m = importlib.import_module('texla.Parser.Blocks.'+ module[:-3])
-        logging.info('BLOCKS_MODULE @ imported %s', m.__name__)
+        logging.debug('BLOCKS_MODULE @ imported %s', m.__name__)
         if hasattr(m,"parser_hooks"):
             for key,value  in m.parser_hooks.items():
-                logging.info('BLOCKS_HOOK @ parser_hook: %s | %s', key, value)
+                logging.debug('BLOCKS_HOOK @ parser_hook: %s | %s', key, value)
                 parser_hooks[key] = value
-logging.info('Supported commands/environments:\n%s',
+logging.debug('Supported commands/environments:\n%s',
     '\n'.join(['@ '+key for key in sorted(parser_hooks.keys())]))
