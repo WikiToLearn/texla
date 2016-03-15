@@ -77,6 +77,12 @@ class MediaWikiRenderer(Renderer):
         #dictionary for tag usage
         self.used_tags = {}
 
+    def start_rendering(self, root_block):
+        '''starting rendering from root-block'''
+        self.render_block(root_block)
+        #after rendering
+        self.tree.after_render()
+
 
     #Utils for debug
     def used_tag(self,tag):
@@ -94,12 +100,6 @@ class MediaWikiRenderer(Renderer):
         text = self.render_children_blocks(block)
         #text is the tex outside sections
         self.tree.addText(text)
-
-    def start_rendering(self, root_block):
-        #starting rendering from root-block
-        self.render_block(root_block)
-        #after rendering
-        self.tree.after_render()
 
 
     ########################################
@@ -138,8 +138,6 @@ class MediaWikiRenderer(Renderer):
         section_name = block.attributes['section_name']
         #remove the \n insiede title
         title = re.sub('\\n*','',title)
-        #adding index to parent
-        self.tree.addToSubpageIndex(title)
         #creation of the new page
         self.tree.createPage(title,section_name)
         #content processing

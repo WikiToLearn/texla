@@ -1,24 +1,22 @@
 # -*- coding: utf-8 -*-
 import re
+import logging
 from ..Parser.Blocks.Utilities import *
 
 
-class Page(object):
+class Page():
     ''' Class that manages the pages content.
     Data members of Page
     -self.id = randon id of the page
     -self.title is the title normalized for urls
-    -self.title_name is the original title (could contains math)
-    -self.subpages contains the list of the subpages
+    -self.subpages contains the list of the subpages objects
     -self.level memorize the level of the page.(root=-1))
     -self.url contains the unique internal url of the page
     -self.type is 'root',part,chapter,section,subsection,subsubection,paragraph.
     -self.keywords is a dictionary with localized keywords for output'''
-    def __init__(self,title,title_name,url,page_type,level, keywords ):
-        self.id = utility.get_random_string(5)
+    def __init__(self,title, page_type, level, keywords ):
+        self.id = utility.get_random_string(8)
         self.title = title
-        self.title_name = title_name
-        self.url = url
         self.type = page_type
         self.keywords = keywords
         #contains the page text
@@ -32,18 +30,15 @@ class Page(object):
     def addText(self,text):
         self.text = text
 
-    def addSubpage(self, ind):
-        self.subpages.append(ind)
+    def addSubpage(self, page):
+        self.subpages.append(page)
 
     def after_render(self):
         '''This function does some fixes after rendering'''
-        if '<ref>' in self.text:
-            self.text += '\n<references/>'
         #check math inside titles
         self.math_inside_title = self.is_math_inside_title()
 
-
-    def collapseSubpages(self, pages_dict, level=0):
+    def collapseSubpages(self, level=0):
         ''' This method insert the text of subpages in this
         page and returns the complete text.
         It requires the dictionary of pages.'''
@@ -52,80 +47,54 @@ class Page(object):
         #start collapsing
         #we have to managed the text
         for subpage in self.subpages:
-            t = pages_dict[subpage].collapseSubpages(pages_dict, level+1)
+            t = subpage.collapseSubpages(level+1)
             #add text
             self.text+= '\n'+t
-        if level == 0:
+        if level == 0 and ('<ref>' in self.text):
             #added refs tags to show footnotes
             self.text+='\n<references/>'
         else:
             #Creation of current page'title
-            tit = '\n'+'='*(level)+self.title_name+ \
+            tit = '\n'+'='*(level)+self.title+ \
                     '='*(level)
             self.text = tit+ "\n"+ self.text
+            #marking as collpased
+            self.collpased = True
             #return the text
             return self.text
 
-    ''' This method collapse internal url of pages in mediawiki_url'''
-    def collapseMediaURL(self,max_level,pages_dict,
-                        mediaurl_dic,last_url,url_dic):
-        if(self.level<max_level):
-            last_url = self.url
-            #saving mediaurl
-            mediaurl_dic[self.url] = self.media_url = self.url
-            #managing subspace
-            for subpage in self.subpages:
-                pages_dict[subpage].collapseMediaURL(
-                    max_level,pages_dict,\
-                    mediaurl_dic,last_url,url_dic)
+    def collapseURL(self, base_url):
+        '''This functions creates the url of the pages
+        checking if it was collpased'''
+        if collpased:
+            self.url = base_url + '#' + self.title
+            for p in self.subpages:
+                p.collapseURL(base_url)
         else:
-            if self.level==max_level:
-                last_url = self.url
-                #saving mediawikiurl
-                self.media_url= self.url
-                mediaurl_dic[self.url] = self.media_url
-            else:
-                #creation of media-wiki url
-                murl = last_url+'#'+self.title
-                if murl in url_dic:
-                    nused = url_dic[murl]
-                    murl+= '_'+str(nused+1)
-                    url_dic[murl]+=1
-                #saving mediawiki url
-                self.media_url= murl
-                mediaurl_dic[self.url]=murl
-            #managing subpages
-            for subpage in self.subpages:
-                pages_dict[subpage].collapseMediaURL(
-                    max_level, pages_dict,
-                    mediaurl_dic,last_url,url_dic)
+            self.url = base_url + '/' + self.title
+            for p in self.subpages:
+                p.collapseURL(self.url)
 
-
-    '''This method insert the right mediawikiurl in
-    the \ref tags after the collapsing'''
     def fixReferences(self, labels, pages):
+        '''This method insert the right mediawikiurl in
+        the \ref tags after the collapsing'''
         for label in re.findall(r'\\ref{(.*?)}', self.text):
             #convert label to int
             try:
-                label_n = int(label)
-                if label_n == -1:
-                    #ref not foung
-                    self.text = self.text.replace('\\ref{'+label+'}',
-                            "'''MISSING REF'''")
-                    continue
-                page = pages[labels[label_n]]
+                page = pages[labels[label]]
                 if page.url != self.url:
                     self.text = self.text.replace('\\ref{'+label+'}',\
-                        ' ([[' + page.url + '|'+ page.title_name + ']]) ')
+                        ' ([[' + page.url + '|'+ page.title + ']]) ')
                 else:
                     self.text = self.text.replace('\\ref{'+label+'}',' ')
             except Exception:
-                print("REF_ERROR: "+ label)
-
+                self.text = self.text.replace('\\ref{'+label+'}',
+                                        "''MISSING REF'''")
+                logging.error("REF_ERROR: "+ label)
 
     def fix_text_characters(self):
         '''Utility function to fix apostrophes and other characters
-    inside the text of the page'''
+        inside the text of the page'''
         #fix for double apostrophes quotes
         s = re.findall(u'(\`\`)\s?(.*?)\s?(\'\')', self.text, re.DOTALL)
         for item in s:
@@ -164,17 +133,14 @@ class Page(object):
         s['text'] = self.text
         s['children'] = []
         for page in self.subpages:
-            s['children'].append(pages[
-                page].get_json_dictionary(pages))
+            s['children'].append(page.get_json_dictionary(pages))
         return s
 
 
     def __str__(self):
         s =[]
         s.append('title='+self.title)
-        s.append('title_name='+self.title_name)
         s.append('url='+self.url)
-        s.append('media_url='+ self.media_url)
         s.append('subpages='+str(self.subpages))
         s.append('level='+str(self.level))
         return '  '.join(s)
