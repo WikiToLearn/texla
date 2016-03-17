@@ -61,20 +61,25 @@ class PageTree():
 
     def get_tree_json(self):
         '''This function return the json tree'''
-        return json.dumps(self.pages[
-            self.root_id].get_json_dictionary(self.pages),
-            indent=3)
+        return self.pages[
+            self.root_id].get_json_dictionary(self.pages)
 
     def after_render(self):
         '''This function does some fixes after rendering'''
         for page in self.pages.values():
             page.after_render()
 
-    def collapseSubpages(self, pages_to_collpase, subpages_index):
+    def change_title(self, page_id, title):
+        self.pages[page_id].title = title
+
+    def collapseSubpages(self, pagesid_to_collapse):
         ''' This method collapse the text contained in subpages
         in the pages marked in pages_to_collapse.'''
-        for page in pages_to_collapse:
-            page.collapseText()
+        for p in pages_to_collapse:
+            self.pages[p].collapseSubpages()
+
+    def collapseSubpages(self, page_id):
+        self.pages[page_id].collapseSubpages()
 
     def collpaseURLs(self):
         '''This function collpases the urls of the pages'''
@@ -142,12 +147,3 @@ class PageTree():
             if p.level==0:
                 index.append('}}\n{{ForceBreak}}\n')
         return u''.join(index)
-
-
-
-
-
-
-
-
-pass
