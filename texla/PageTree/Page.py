@@ -64,8 +64,8 @@ class Page():
             return self.text
 
     def collapseURL(self, base_url):
-        '''This functions creates the url of the pages
-        checking if it was collpased'''
+        '''This functions creates the url of the page
+        checking if it is collpased'''
         if collpased:
             self.url = base_url + '#' + self.title
             for p in self.subpages:
@@ -98,12 +98,12 @@ class Page():
         #fix for double apostrophes quotes
         s = re.findall(u'(\`\`)\s?(.*?)\s?(\'\')', self.text, re.DOTALL)
         for item in s:
-            self.text = self.text.replace(unicode(item[0]),'"')
-            self.text = self.text.replace(unicode(item[2]),'"')
+            self.text = self.text.replace(item[0],'"')
+            self.text = self.text.replace(item[2],'"')
         s2 = re.findall(u'(\‘\‘)\s?(.*?)\s?(\’\’)', self.text, re.DOTALL)
         for item2 in s2:
-            self.text = self.text.replace(unicode(item2[0]),'"')
-            self.text = self.text.replace(unicode(item2[2]),'"')
+            self.text = self.text.replace(item2[0],'"')
+            self.text = self.text.replace(item2[2],'"')
         #apostrophe fixed
         self.text = self.text.replace(u'’',u"'")
         self.text = self.text.replace(u'`',u"'")

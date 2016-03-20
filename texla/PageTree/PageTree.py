@@ -72,6 +72,12 @@ class PageTree():
     def change_title(self, page_id, title):
         self.pages[page_id].title = title
 
+    def collapseSubpages_level(self, level):
+        ''' All the pages with the right level are collpased'''
+        for p in self.pages:
+            if p.level = level:
+                p.collapseSubpages()
+
     def collapseSubpages(self, pagesid_to_collapse):
         ''' This method collapse the text contained in subpages
         in the pages marked in pages_to_collapse.'''
@@ -79,10 +85,13 @@ class PageTree():
             self.pages[p].collapseSubpages()
 
     def collapseSubpages(self, page_id):
+        '''This function collapse the requested page'''s
         self.pages[page_id].collapseSubpages()
 
     def collpaseURLs(self):
-        '''This function collpases the urls of the pages'''
+        '''This function creates the urls of the pages,
+        checking is they are collapsed or not. If they are collpased
+        the url is parent_page#title.'''
         self.pages[self.root_id].collpaseURL(
                         configs['base_path'])
 
