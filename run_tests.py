@@ -1,6 +1,6 @@
 import re
-import Blocks
-from Blocks.Utilities import *
+import texla.Parser.Blocks
+from texla.Parser.Blocks.Utilities import *
 import unittest
 
 class CommandParserTest(unittest.TestCase):

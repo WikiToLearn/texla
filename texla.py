@@ -1,43 +1,39 @@
 import logging
 import sys
-
-loglevel = sys.argv[1].split('=')[1]
-if len(sys.argv)>2:
-	output =  sys.argv[2].split('=')[1] in ('True','true','Y','y','yes','Yes')
-else:
-	output = False
-
-numeric_level = getattr(logging, loglevel.upper(), None)
-if not isinstance(numeric_level, int):
-    raise ValueError('Invalid log level: %s' % loglevel)
-
-if output:
-	logging.basicConfig(filename='tree.log',
-		format='%(levelname)s:%(message)s',
-		level=numeric_level)
-else:
-	logging.basicConfig(
-		format='%(levelname)s:%(message)s',
-		level=numeric_level)
-logging.info('Started')
+import json
+import log
 
 from texla.Parser import Parser
 from texla.Renderers.MediaWikiRenderer import MediaWikiRenderer
 
-p = Parser()
-a = open('test.tex','r').read()
-tree = p.parse(a)
-f = open('tree','w')
-json = tree.to_json(0)
-f.write(json)
 
-logging.info('########STARTING RENDERING########')
+def execute_texla_mediawiki(config):
+    logging.info('######## STARTING PARSING ########')
+    p = Parser()
+    a = open(config['input_path'], 'r').read()
+    tree = p.parse(a)
+    f = open(config['output_path'] + '.tree', 'w')
+    json_tree = tree.to_json(0)
+    f.write(json_tree)
+    logging.info('######## STARTING RENDERING ########')
+    #rendering
+    rend = MediaWikiRenderer(config)
+    rend.start_rendering(tree)
+    o = open(config['output_path']+'.mw', 'w')
+    o.write(json.dumps(rend.tree.get_tree_json(), indent=3))
+    logging.info('Finished')
 
-#rendering
-rend = MediaWikiRenderer({'doc_title':'Prova','output_path':"test.mw",
-                        'keywords':'', 'base_path':''})
-rend.start_rendering(tree)
 
-o = open('output.mw','w')
-o.write(rend.tree.get_tree_json())
-logging.info('Finished')
+if __name__ == '__main__':
+    #reading JSON configs
+    p = json.loads(open('configs.txt').read())
+    config = p
+    config['collapse_level'] = int(p['collapse_level'])
+    config['export_single_pages'] = bool(int(p['export_single_pages']))
+    config['create_index'] = bool(int(p['create_index']))
+    config['print_preparsed_tex'] = bool(int(p['print_preparsed_tex']))
+    #loading localized keywords
+    config['keywords'] = json.loads(open('lang.txt').read())[config['lang']]
+    #executing process for alla renderers
+    if config['renderer'] == 'mediawiki':
+        execute_texla_mediawiki(config)

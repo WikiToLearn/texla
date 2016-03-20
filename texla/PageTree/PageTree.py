@@ -75,7 +75,7 @@ class PageTree():
     def collapseSubpages_level(self, level):
         ''' All the pages with the right level are collpased'''
         for p in self.pages:
-            if p.level = level:
+            if p.level == level:
                 p.collapseSubpages()
 
     def collapseSubpages(self, pagesid_to_collapse):
@@ -85,7 +85,7 @@ class PageTree():
             self.pages[p].collapseSubpages()
 
     def collapseSubpages(self, page_id):
-        '''This function collapse the requested page'''s
+        '''This function collapse the requested page'''
         self.pages[page_id].collapseSubpages()
 
     def collpaseURLs(self):
