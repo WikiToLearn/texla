@@ -1,0 +1,14 @@
+{
+"it":{
+	"chapters":"Capitoli",
+	"subpages":"Sottopagine",
+	"intro":"Introduzione",
+	"proof":"Dimostrazione"
+	},
+"en":{
+	"chapters":"Chapters",
+	"subpages":"Subpages",
+	"intro":"Introduction",
+	"proof":"Proof"
+	}
+}
