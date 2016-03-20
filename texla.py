@@ -21,6 +21,11 @@ def execute_texla_mediawiki(config):
     rend.start_rendering(tree)
     o = open(config['output_path']+'.mw', 'w')
     o.write(json.dumps(rend.tree.get_tree_json(), indent=3))
+    #collpasing
+    logging.info('######## STARTING POST-PROCESSING ########')
+    tree = rend.tree
+    tree.collapseSubpages_level(config['collapse_level'])
+    tree.collapseURLs()
     logging.info('Finished')
 
 

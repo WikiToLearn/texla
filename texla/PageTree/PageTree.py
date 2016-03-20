@@ -73,8 +73,8 @@ class PageTree():
         self.pages[page_id].title = title
 
     def collapseSubpages_level(self, level):
-        ''' All the pages with the right level are collpased'''
-        for p in self.pages:
+        ''' All the pages with the right level are collapsed'''
+        for p in self.pages.values():
             if p.level == level:
                 p.collapseSubpages()
 
@@ -85,15 +85,15 @@ class PageTree():
             self.pages[p].collapseSubpages()
 
     def collapseSubpages(self, page_id):
-        '''This function collapse the requested page'''s
+        '''This function collapse the requested page'''
         self.pages[page_id].collapseSubpages()
 
-    def collpaseURLs(self):
+    def collapseURLs(self):
         '''This function creates the urls of the pages,
-        checking is they are collapsed or not. If they are collpased
+        checking is they are collapsed or not. If they are collapsed
         the url is parent_page#title.'''
-        self.pages[self.root_id].collpaseURL(
-                        configs['base_path'])
+        self.pages[self.root_id].collapseURL(
+                        self.configs['base_path'])
 
     def fixReferences(self):
         for page in self.pages.values():

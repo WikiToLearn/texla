@@ -21,6 +21,7 @@ class Page():
         self.keywords = keywords
         #contains the page text
         self.text = ''
+        self.collapsed = False
         '''list of subpages urls'''
         self.subpages = []
         self.level = level
@@ -50,23 +51,24 @@ class Page():
             t = subpage.collapseSubpages(level+1)
             #add text
             self.text+= '\n'+t
-        if level == 0 and ('<ref>' in self.text):
-            #added refs tags to show footnotes
-            self.text+='\n<references/>'
+        if level == 0:
+            if '<ref>' in self.text:
+                #added refs tags to show footnotes
+                self.text+='\n<references/>'
         else:
             #Creation of current page'title
             tit = '\n'+'='*(level)+self.title+ \
                     '='*(level)
             self.text = tit+ "\n"+ self.text
-            #marking as collpased
-            self.collpased = True
+            #marking as collapsed
+            self.collapsed = True
             #return the text
             return self.text
 
     def collapseURL(self, base_url):
         '''This functions creates the url of the page
-        checking if it is collpased'''
-        if collpased:
+        checking if it is collapsed'''
+        if self.collapsed:
             self.url = base_url + '#' + self.title
             for p in self.subpages:
                 p.collapseURL(base_url)
