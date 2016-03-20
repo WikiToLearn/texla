@@ -2,14 +2,14 @@ import logging
 from .Utilities import *
 from .Block import Block
 
-class NoOptCommand(Block):
+class NoOptCommandBlock(Block):
     '''This class is for generic commands without options'''
 
     @staticmethod
     def parse(parser, tex, parent_block, params):
-        block = NoOptCommand(params['cmd'],params['star'],
+        block = NoOptCommandBlock(params['cmd'],params['star'],
         		parent_block)
-        logging.debug('NoOptCommand.parse @ cmd: %s',
+        logging.debug('NoOptCommandBlock.parse @ cmd: %s',
         			params['cmd'])
         return (block,tex)
 
@@ -18,8 +18,8 @@ class NoOptCommand(Block):
         self.attributes['star']=star
 
 parser_hooks = {
-	'frontmatter' : NoOptCommand.parse,
-	'mainmatter' : NoOptCommand.parse,
-	'appendix' : NoOptCommand.parse,
-	'backmatter' : NoOptCommand.parse
+	'frontmatter' : NoOptCommandBlock.parse,
+	'mainmatter' : NoOptCommandBlock.parse,
+	'appendix' : NoOptCommandBlock.parse,
+	'backmatter' : NoOptCommandBlock.parse
 }
