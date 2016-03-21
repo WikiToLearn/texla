@@ -1,0 +1,3 @@
+*.pyc
+.directory
+__pycache__
