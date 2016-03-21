@@ -5,6 +5,7 @@ import log
 
 from texla.Parser import Parser
 from texla.Renderers.MediaWikiRenderer import MediaWikiRenderer
+import texla.PageTree.Exporter as exporter
 
 
 def execute_texla_mediawiki(config):
@@ -19,13 +20,20 @@ def execute_texla_mediawiki(config):
     #rendering
     rend = MediaWikiRenderer(config)
     rend.start_rendering(tree)
-    o = open(config['output_path']+'.mw', 'w')
+    o = open(config['output_path'] + '.json', 'w')
     o.write(json.dumps(rend.tree.get_tree_json(), indent=3))
     #collpasing
     logging.info('######## STARTING POST-PROCESSING ########')
     tree = rend.tree
     tree.collapseSubpages_level(config['collapse_level'])
     tree.collapseURLs()
+    logging.info('######## STARTING EXPORTING ########')
+    exporter.exportPages(tree.pages, config['output_path'] + '.mw',
+                         config['export_format'])
+    if config['export_single_pages']:
+        exporter.export_singlePages(tree.pages,
+                                    config['output_path'] + '_pages',
+                                    config['export_format'])
     logging.info('Finished')
 
 
