@@ -110,7 +110,8 @@ class PageTree():
         |esercizi= \n|dispense=\n|testi=}}\n'
 
         #book export: link
-        base_page.text+= '{{libro|Project:Libri/'+self.doc_title+\
+        book_url = self.doc_title.replace(' ','_')
+        base_page.text+= '{{libro|Project:Libri/'+ book_url+\
                 '|'+ self.doc_title + '}}\n'
         #book export: setting title
         self.book_export_index.append('==' + self.doc_title + '==')
