@@ -28,6 +28,8 @@ def execute_texla_mediawiki(config):
     tree.collapseSubpages_level(config['collapse_level'])
     tree.collapseURLs()
     logging.info('######## STARTING EXPORTING ########')
+    if config['create_index']:
+        tree.createIndex()
     exporter.exportPages(tree.pages, config['output_path'] + '.mw',
                          config['export_format'])
     if config['export_single_pages']:

@@ -100,10 +100,10 @@ class PageTree():
     '''index for book export page'''
     book_export_index = ['{{libro_salvato | setting-papersize = a4\
                  | setting-toc = auto | setting-columns = 1}}']
-    '''Method that creates the index in the root page and the
-    index for book export page'''
 
-    def createIndex(self, max_level):
+    def createIndex(self):
+        '''Method that creates the index for the uncollapsed
+        pages'''
         ind = ''
         base_page = self.pages[self.root_id]
         base_page.text += '{{RiferimentiEsterni \
@@ -116,21 +116,23 @@ class PageTree():
         self.book_export_index.append('==' + self.doc_title + '==')
         #creating root index
         base_page.text += '\n\n==' + self.keywords['chapters'] + '==\n'
-        base_page.text += self._createIndex(self.pages[self.root_id], '',
-                                            max_level)
+        base_page.text += self._createIndex(self.pages[self.root_id], '')
         #creating book export page
         book_title = 'Project:Libri_' + self.doc_title
-        book_export_page = Page(book_title, book_title,
-                                'Project:Libri/' + self.doc_title, 'root', -1,
+        book_export_page = Page('Project:Libri_' + self.doc_title, 'root', -1,
                                 None)
+        book_export_page.url = self.configs['base_path']+ \
+                                '/Project:Libri/' + self.doc_title
         #inserting index text
         book_export_page.addText(u'\n'.join(self.book_export_index))
         #the export book page is inserted in the pages dict and index
         self.pages['Project:Libri/' + self.doc_title] = book_export_page
 
-    def _createIndex(self, page, ind, max_level):
+    def _createIndex(self, page, ind):
         index = []
         for p in page.subpages:
+            if p.collapsed:
+                continue
             #managing chapters
             if p.level == 0:
                 index.append('{{Section\n|sectionTitle=')
@@ -149,8 +151,7 @@ class PageTree():
             else:
                 index.append(ind + p.title + '\n')
             #next level
-            if (self.pages[page].level < max_level - 1):
-                index.append(self._createIndex(p, ind + '*', max_level))
+            index.append(self._createIndex(p, ind + '*'))
             #closing chapter
             if p.level == 0:
                 index.append('}}\n{{ForceBreak}}\n')

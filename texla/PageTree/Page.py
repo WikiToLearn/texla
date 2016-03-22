@@ -25,8 +25,6 @@ class Page():
         '''list of subpages urls'''
         self.subpages = []
         self.level = level
-        #calculated during collapsing
-        self.media_url = ''
 
     def addText(self,text):
         self.text = text
