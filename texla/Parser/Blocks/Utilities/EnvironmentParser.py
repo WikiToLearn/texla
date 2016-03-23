@@ -13,7 +13,7 @@ def get_environment(tex, env):
 	This functions extract the env environment in a greedy way.
 	It finds nested environment with same env.
 	It return the start and end pos of the environment
-	and the string matched with \\begin and \\end
+	and the string matched inside \\begin and \\end
 	'''
 	begin = '\\begin{(?: *)' + env+'(?: *)}'
 	end = '\\end{(?: *)'+ env + '(?: *)}'
