@@ -15,7 +15,7 @@ class BreakBlock(Block):
             priority = int(options['priority'])
 
         block = BreakBlock(params['cmd'],
-                prioity ,tex, parent_block)
+                priority ,tex, parent_block)
         logging.debug('BreakBlock.parse')
         return (block, left_text)
 
