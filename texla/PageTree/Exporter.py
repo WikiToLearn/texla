@@ -41,14 +41,15 @@ def exportText_single_pages(pages, base_path=''):
     for page in pages.values():
         pf.write('# [[' + page.url + ']]\n')
         if not page.collapsed:
-            text = []
-            text.append('##########')
-            text.append('\'\'\'' + page.url + '\'\'\'')
-            text.append(page.text)
-            text.append('@@@@@@@@@@')
-            path = base_path + '/' + page.title + ".txt"
-            path = path.encode('utf-8')
-            f = open(path, 'w')
-            f.write('\n'.join(text))
-            f.close()
+            if page.text != "":
+                text = []
+                text.append('##########')
+                text.append('\'\'\'' + page.url + '\'\'\'')
+                text.append(page.text)
+                text.append('@@@@@@@@@@')
+                path = base_path + '/' + page.title + ".txt"
+                path = path.encode('utf-8')
+                f = open(path, 'w')
+                f.write('\n'.join(text))
+                f.close()
     pf.close()

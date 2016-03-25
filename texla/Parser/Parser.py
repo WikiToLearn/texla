@@ -151,6 +151,7 @@ class Parser:
                     tex_tp, parent_block, options)
             else:
                 #finally we have a normal command
+                print(tex)
                 block, left_tex = self.parse_command(
                     tex_tp, parent_block, options)
             #block saved
@@ -226,10 +227,10 @@ class Parser:
         display_re2 = re.compile(r'\\\[(?P<m>.*?)\\\]', re.DOTALL)
         #searching for match
         matches = []
-        matches.append((inline_re.match(tex),'inline_math'))
-        matches.append((display_re.match(tex),'display_math'))
-        matches.append((inline_re2.match(tex),'inline_math'))
-        matches.append((display_re2.match(tex),'display_math'))
+        matches.append((inline_re.match(tex),'inlinemath'))
+        matches.append((display_re.match(tex),'displaymath'))
+        matches.append((inline_re2.match(tex),'inlinemath'))
+        matches.append((display_re2.match(tex),'displaymath'))
         for m, env in matches:
             if m != None:
                 content = m.group('m')

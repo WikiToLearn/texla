@@ -1,6 +1,7 @@
 import logging
 from .Renderer import Renderer
 from ..PageTree.PageTree import *
+from . import MathCheck
 
 
 class MediaWikiRenderer(Renderer):
@@ -53,6 +54,9 @@ class MediaWikiRenderer(Renderer):
             'subsubsection': self.sectioning,
             'paragraph': self.sectioning,
             'subparagraph': self.sectioning,
+            #math
+            'displaymath' : self.r_display_math,
+            'equation' : self.r_display_math,
             #lists
             'itemize': self.r_itemize,
             'enumerate': self.r_enumerate,
@@ -109,18 +113,12 @@ class MediaWikiRenderer(Renderer):
     #TEXT
 
     def r_text(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         return block.attributes['text']
 
     def r_newline(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         return '\n'
 
     def r_newpage(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         return '\n\n'
 
     #########################################
@@ -142,21 +140,32 @@ class MediaWikiRenderer(Renderer):
         return ''
 
     #########################################
+    #MATH
+
+    def r_display_math(self, block):
+        s = block.attributes['content']
+        s = MathCheck.math_check(s)
+        return '<dmath>'+ s + '</dmath>'
+
+    def r_inline_math(self, block):
+        s = block.attributes['content']
+        s = MathCheck.math_check(s)
+        return '<math>' + s + '</math>'
+
+    def r_align(self, block):
+        pass
+
+
+    #########################################
     #FORMATTING
 
     def r_special_command(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         return block.attributes['character']
 
     def r_dots(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         return '...'
 
     def r_textbf(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append("\'\'\'")
         s.append(self.render_children_blocks(block))
@@ -164,8 +173,6 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_textit(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append("\'\'")
         s.append(self.render_children_blocks(block))
@@ -173,13 +180,9 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_textsc(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         return self.render_children_blocks(block).upper()
 
     def r_superscript(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append('<sup>')
         s.append(self.render_children_blocks(block))
@@ -187,8 +190,6 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_subscript(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append('<sub>')
         s.append(self.render_children_blocks(block))
@@ -196,8 +197,6 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_abstract(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append('{{abstract|')
         s.append(self.render_children_blocks(block))
@@ -205,16 +204,12 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_break(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         return ''
 
     #########################################
     #ALIGNMENT
 
     def r_center(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append('{{center|')
         s.append(self.render_children_blocks(block))
@@ -222,8 +217,6 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_centering(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append('(')
         s.append(self.render_children_blocks(block))
@@ -231,8 +224,6 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_flushleft(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append('{{left|')
         s.append(self.render_children_blocks(block))
@@ -240,8 +231,6 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_flushright(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append('{{right|')
         s.append(self.render_children_blocks(block))
@@ -252,8 +241,6 @@ class MediaWikiRenderer(Renderer):
     #LISTS
 
     def r_itemize(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         self.list_level += '*'
         s = []
         for item in block.ch_blocks:
@@ -264,8 +251,6 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_enumerate(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         self.list_level += '#'
         s = []
         for item in block.ch_blocks:
@@ -276,8 +261,6 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_description(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         for item in block.ch_blocks:
             s.append(';')
@@ -291,8 +274,6 @@ class MediaWikiRenderer(Renderer):
     #QUOTES
 
     def r_quotes(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append('<blockquote>')
         s.append(self.render_children_blocks(block))
@@ -300,8 +281,6 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_verse(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append('<blockquote>')
         s.append('\n'.join(self.render_children_blocks(block).split('//')))
@@ -309,8 +288,6 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_footnote(self, block):
-        self.used_tag(block.block_name)
-        logging.info('Render @ block: ' + block.block_name)
         s = []
         s.append("<ref>")
         s.append(self.render_children_blocks(block))

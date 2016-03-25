@@ -21,11 +21,11 @@ class Renderer():
             #searching for renderer_hook
             if bl.block_name in self.render_hooks:
                 output.append((bl.block_name,
-                       self.render_hooks[bl.block_name](bl)))
+                       self.render_block(bl)))
             else:
                 #default hook is mandatory
                 output.append((bl.block_name,
-                       self.render_hooks['default'](bl)))
+                       self.render_block(bl)))
         logging.debug('Render.ch_blocks @ %s', output)
         if collapse:
             return ''.join([x[1] for x in output])
@@ -34,7 +34,11 @@ class Renderer():
 
     def render_block(self, bl):
         if bl.block_name in self.render_hooks:
+            self.used_tag(bl.block_name)
+            logging.info('Render @ block: ' + bl.block_name)
             return self.render_hooks[bl.block_name](bl)
         else:
             #default hook is mandatory
+            self.used_tag('default@'+bl.block_name)
+            logging.info('Render @ block: default@' + bl.block_name)
             return self.render_hooks['default'](bl)

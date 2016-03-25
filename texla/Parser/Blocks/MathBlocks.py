@@ -69,8 +69,8 @@ class MathBlock(Block):
 
 
 parser_hooks = {
-    'inline_math' : MathBlock.parse_math_env,
-    'display_math' : MathBlock.parse_math_env,
+    'inlinemath' : MathBlock.parse_math_env,
+    'displaymath' : MathBlock.parse_math_env,
     'equation' : MathBlock.parse_math_env,
     'align' : MathBlock.parse_math_env,
     'eqnarray' : MathBlock.parse_math_env,
