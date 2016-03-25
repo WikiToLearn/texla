@@ -9,14 +9,12 @@ class SectionBlock(Block):
     def parse(parser, tex, parent_block, params):
         sec_level = params['sec_level']
         level_key = params['level_key']
-        #we have to parse the section
-        sec_re = re.compile(r'\\'+level_key+ r'(?P<ast>[*])?(?: *)'+ \
-            r'(?:\[(?P<index_title>.*?)\])?{(?P<title>.*?)}')
-        m = sec_re.match(tex)
+        star = params['star']
+        options, left_tex = CommandParser.parse_options(
+                tex, [('index_title','[',']'),('title','{','}')])
         #the regex MUST MATCH if not the parse wouldn't be called
-        title = m.group('title')
-        index_title = m.group('index_title')
-        star = (m.group('ast')!=None)
+        title = options['title']
+        index_title = options['index_title']
         logging.debug('SectionBlock.parse @ level: %s, title: %s',
             level_key, title)
         #first of all we can create the new block
@@ -24,9 +22,8 @@ class SectionBlock(Block):
             star, sec_level, parent_block)
         #now we can trigger the parsing of the content
         #of the section to get the children blocks.
-        content = tex[m.end():]
         #the parser is called with options
-        chld_blocks = parser.parse_sections(content,
+        chld_blocks = parser.parse_sections(left_tex,
                 sec_level,sec_block, {})
         #now we have all child blocks. They are simply added
         #to the list. no further processing for sections

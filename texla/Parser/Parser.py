@@ -53,9 +53,7 @@ class Parser:
         if (level+1) < (len(utility.section_level)-1):
             #getting level key from utility to create regex
             level_key = utility.section_level[level+1]
-            sec_re = re.compile(r'\\'+ level_key + \
-                r'(?:[*])?(?: *)'+\
-                r'(?=[\{\[])')
+            sec_re = re.compile(r'\\'+ level_key)
             #the tex is splitted by the section key
             toks = sec_re.split(tex)
             #the first token is the tex outside sectioning
@@ -68,11 +66,16 @@ class Parser:
                         level+1, parent_block, options)
             #now the sections found are processed
             for tok in toks:
-                #readding splitted command
-                tok = '\\'+ level_key +tok
+                if tok.startswith('*'):
+                    star = True
+                    tok = tok[1:].lstrip()
+                else:
+                    star = False
+                    tok = tok.lstrip()
                 #we insert the level in the options
                 sec_params = { 'sec_level' : (level +1),
-                            'level_key' : level_key }
+                            'level_key' : level_key,
+                            'star' : star}
                 #the tuple with the result is saved
                 pblocks.append(self.call_parser_hook(level_key,
                         'env', tok, parent_block, sec_params))
@@ -151,7 +154,6 @@ class Parser:
                     tex_tp, parent_block, options)
             else:
                 #finally we have a normal command
-                print(tex)
                 block, left_tex = self.parse_command(
                     tex_tp, parent_block, options)
             #block saved
