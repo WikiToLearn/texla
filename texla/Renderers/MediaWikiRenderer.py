@@ -55,8 +55,11 @@ class MediaWikiRenderer(Renderer):
             'paragraph': self.sectioning,
             'subparagraph': self.sectioning,
             #math
-            'displaymath' : self.r_display_math,
-            'equation' : self.r_display_math,
+            'displaymath': self.r_display_math,
+            'equation': self.r_display_math,
+            'eqnarray': self.r_align,
+            'multline': self.r_align,
+            'alignat': self.r_align,
             #lists
             'itemize': self.r_itemize,
             'enumerate': self.r_enumerate,
@@ -75,9 +78,6 @@ class MediaWikiRenderer(Renderer):
         self.list_level = ''
         #parameter for theorem handling
         self.in_theorem = False
-        ####### TAGS ANALYSIS
-        #dictionary for tag usage
-        self.used_tags = {}
 
     def start_rendering(self, root_block):
         '''starting rendering from root-block'''
@@ -85,17 +85,8 @@ class MediaWikiRenderer(Renderer):
         #after rendering
         self.tree.after_render()
 
-    #Utils for debug
-    def used_tag(self, tag):
-        if tag in self.used_tags:
-            self.used_tags[tag] += 1
-        else:
-            self.used_tags[tag] = 1
-
     ####### ROOT BLOCK
     def r_document(self, block):
-        self.used_tag('DOCUMENT')
-        logging.info('Render @ block: ' + block.block_name)
         #we trigger the rendering of content
         text = self.render_children_blocks(block)
         #text is the tex outside sections
@@ -106,7 +97,6 @@ class MediaWikiRenderer(Renderer):
 
     def default(self, block):
         #we don't print anything
-        self.used_tag('DEFAULT@' + block.block_name)
         return ''
 
     #########################################
@@ -144,17 +134,28 @@ class MediaWikiRenderer(Renderer):
 
     def r_display_math(self, block):
         s = block.attributes['content']
+        #check math content
         s = MathCheck.math_check(s)
-        return '<dmath>'+ s + '</dmath>'
+        return '<dmath>' + s + '</dmath>'
 
     def r_inline_math(self, block):
         s = block.attributes['content']
+        #check math content
         s = MathCheck.math_check(s)
         return '<math>' + s + '</math>'
 
     def r_align(self, block):
-        pass
-
+        s = block.attributes['content']
+        s = s.replace('alignat', 'align')
+        s = s.replace('eqnarray', 'align')
+        s = s.replace('multline', 'align')
+        s = s.replace('align*', 'align')
+        s = s.replace('alignat*', 'align')
+        s = s.replace('eqnarray*', 'align')
+        s = s.replace('multline*', 'align')
+        #check math content
+        s = MathCheck.math_check(s)
+        return '<dmath type=align>' + s + '</dmath>'
 
     #########################################
     #FORMATTING

@@ -1,10 +1,11 @@
 from ..Parser import Blocks
 import logging
 
-class Renderer():
 
+class Renderer():
     def __init__(self):
         self.render_hooks = {}
+        self.used_tags = {}
 
     def register_render_hooks(self, hooks):
         '''This function registers the hooks for renderer'''
@@ -20,12 +21,10 @@ class Renderer():
         for bl in block.ch_blocks:
             #searching for renderer_hook
             if bl.block_name in self.render_hooks:
-                output.append((bl.block_name,
-                       self.render_block(bl)))
+                output.append((bl.block_name, self.render_block(bl)))
             else:
                 #default hook is mandatory
-                output.append((bl.block_name,
-                       self.render_block(bl)))
+                output.append((bl.block_name, self.render_block(bl)))
         logging.debug('Render.ch_blocks @ %s', output)
         if collapse:
             return ''.join([x[1] for x in output])
@@ -34,11 +33,18 @@ class Renderer():
 
     def render_block(self, bl):
         if bl.block_name in self.render_hooks:
-            self.used_tag(bl.block_name)
-            logging.info('Render @ block: ' + bl.block_name)
+            self.used_tag('ok      | ' + bl.block_name)
+            logging.debug('Render @ block: ' + bl.block_name)
             return self.render_hooks[bl.block_name](bl)
         else:
             #default hook is mandatory
-            self.used_tag('default@'+bl.block_name)
-            logging.info('Render @ block: default@' + bl.block_name)
+            self.used_tag('default | ' + bl.block_name)
+            logging.debug('Render @ block: default@' + bl.block_name)
             return self.render_hooks['default'](bl)
+
+    #Utils for debug
+    def used_tag(self, tag):
+        if tag in self.used_tags:
+            self.used_tags[tag] += 1
+        else:
+            self.used_tags[tag] = 1

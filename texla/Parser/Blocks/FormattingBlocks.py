@@ -29,6 +29,7 @@ class FormattingText(Block):
 parser_hooks = {
 	#fonts
 	'underline' : FormattingText.parse,
+    'uline' : FormattingText.parse,
 	'textrm' : FormattingText.parse,
 	'texttt' : FormattingText.parse,
 	'textmd' : FormattingText.parse,

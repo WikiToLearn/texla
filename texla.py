@@ -22,6 +22,8 @@ def execute_texla_mediawiki(config):
     rend.start_rendering(tree)
     o = open(config['output_path'] + '.json', 'w')
     o.write(json.dumps(rend.tree.get_tree_json(), indent=3))
+    p = open(config['output_path'] + '.debug', 'w')
+    p.write(json.dumps(rend.used_tags, indent=2))
     #collpasing
     logging.info('######## STARTING POST-PROCESSING ########')
     tree = rend.tree
