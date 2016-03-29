@@ -114,3 +114,11 @@ class Block:
         json += (' '*levelb+'],\n')
         json += (' '*level + '}\n')
         return json
+
+    def n_blocks(self):
+        '''This function returns the
+        number of all children blocks recursively.'''
+        n = len(self.ch_blocks)
+        for c in self.ch_blocks:
+            n+= c.n_blocks()
+        return n

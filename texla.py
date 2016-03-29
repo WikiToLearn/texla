@@ -15,6 +15,8 @@ def execute_texla_mediawiki(config):
     tree = p.parse(a)
     f = open(config['output_path'] + '.tree', 'w')
     json_tree = tree.to_json(0)
+    n_blocks = tree.n_blocks()
+    logging.info('PARSED %i Blocks', n_blocks)
     f.write(json_tree)
     logging.info('######## STARTING RENDERING ########')
     #rendering
