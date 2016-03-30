@@ -23,6 +23,7 @@ class MediaWikiRenderer(Renderer):
             'clearpage': self.r_newpage,
             'cleardoublepage': self.r_newpage,
             #formatting
+            'emph': self.r_textit,
             'centering': self.r_centering,
             'textbf': self.r_textbf,
             'textit': self.r_textit,
@@ -69,6 +70,12 @@ class MediaWikiRenderer(Renderer):
             'quote': self.r_quotes,
             'verse': self.r_verse,
             'footnote': self.r_footnote,
+            #labels
+            'label': self.r_label,
+            'ref': self.r_ref,
+            'vref': self.r_ref,
+            'pageref': self.r_ref,
+            'eqref': self.r_ref
         }
         #registering the hooks
         self.register_render_hooks(render_hooks)
@@ -158,6 +165,18 @@ class MediaWikiRenderer(Renderer):
         return '<dmath type=align>' + s + '</dmath>'
 
     #########################################
+    #LABELS and refs
+
+    def r_label(self, block):
+        label = block.attributes['label']
+        self.tree.addLabel(label)
+        return ''
+
+    def r_ref(self, block):
+        ref = block.attributes['ref']
+        return '\\ref{' + ref + '}'
+
+    #########################################
     #FORMATTING
 
     def r_special_command(self, block):
@@ -219,9 +238,9 @@ class MediaWikiRenderer(Renderer):
 
     def r_centering(self, block):
         s = []
-        s.append('(')
+        s.append('{{center')
         s.append(self.render_children_blocks(block))
-        s.append(')')
+        s.append('}}')
         return ''.join(s)
 
     def r_flushleft(self, block):

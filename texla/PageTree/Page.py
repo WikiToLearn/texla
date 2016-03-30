@@ -79,7 +79,6 @@ class Page():
         '''This method insert the right mediawikiurl in
         the \ref tags after the collapsing'''
         for label in re.findall(r'\\ref{(.*?)}', self.text):
-            #convert label to int
             try:
                 page = pages[labels[label]]
                 if page.url != self.url:
@@ -89,7 +88,7 @@ class Page():
                     self.text = self.text.replace('\\ref{'+label+'}',' ')
             except Exception:
                 self.text = self.text.replace('\\ref{'+label+'}',
-                                        "''MISSING REF'''")
+                                        "('''MISSING REF''')")
                 logging.error("REF_ERROR: "+ label)
 
     def fix_text_characters(self):

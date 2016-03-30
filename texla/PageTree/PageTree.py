@@ -90,12 +90,15 @@ class PageTree():
     def collapseURLs(self):
         '''This function creates the urls of the pages,
         checking is they are collapsed or not. If they are collapsed
-        the url is parent_page#title.'''
+        the url is parent_page#title.
+        Then the references are resolved to urls throught labes'''
         self.pages[self.root_id].collapseURL(self.configs['base_path'])
+        #fixing references
+        self.fixReferences()
 
     def fixReferences(self):
         for page in self.pages.values():
-            page.fixReferences(self.labels, self.pages)
+            page.fixReferences(self.labels,self.pages)
 
     '''index for book export page'''
     book_export_index = ['{{libro_salvato | setting-papersize = a4\
