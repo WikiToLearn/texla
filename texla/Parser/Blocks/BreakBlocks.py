@@ -24,7 +24,39 @@ class BreakBlock(Block):
         super().__init__(break_type, content, parent_block)
         self.attributes['priority'] = priority
 
+
+class NewlineBlock(Block):
+
+    def parse_newline(parser, tex, parent_block, params):
+        logging.debug('NewlineBlock.parse @ ')
+        block = NewlineBlock(params['star'], parent_block)
+        left_tex = CommandParser.parse_options(tex,[])[1]
+        return (block, left_tex)
+
+    def __init__(self, star, parent_block):
+        super().__init__('newline','\n', parent_block)
+        self.attributes['text'] = '\n'
+        self.attributes['star'] = star
+
+
+
+class NewPageBlock(Block):
+
+    @staticmethod
+    def parse_newpage(parser, tex, parent_block, params):
+        block = NewPageBlock(params['star'],
+                 parent_block)
+        logging.debug('NewPageBlock.parse_newpage @ cmd: %s',params['cmd'])
+        return (block,tex)
+
+    def __init__(self, star, parent_block):
+        super().__init__('newpage','', parent_block)
+        self.attributes['star']=star
+
+
 parser_hooks = {
+    'newline': NewlineBlock.parse_newline,
+    'newpage' : NewPageBlock.parse_newpage,
     'linebreak' : BreakBlock.parse,
     'pagebreak' : BreakBlock.parse,
     'nolinebreak' : BreakBlock.parse,

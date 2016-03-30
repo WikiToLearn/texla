@@ -56,34 +56,6 @@ class AccentedLetterBlock(Block):
             self.attributes['accent_type'])
 
 
-class NewlineBlock(Block):
-
-    def parse_newline(parser, tex, parent_block, params):
-        logging.debug('NewlineBlock.parse @ ')
-        block = NewlineBlock(params['star'], parent_block)
-        left_tex = CommandParser.parse_options(tex,[])[1]
-        return (block, left_tex)
-
-    def __init__(self, star, parent_block):
-        super().__init__('newline','\n', parent_block)
-        self.attributes['text'] = '\n'
-        self.attributes['star'] = star
-
-
-
-class NewPageBlock(Block):
-
-    @staticmethod
-    def parse_newpage(parser, tex, parent_block, params):
-        block = NewPageBlock(params['star'],
-                 parent_block)
-        logging.debug('NewPageBlock.parse_newpage @ cmd: %s',params['cmd'])
-        return (block,tex)
-
-    def __init__(self, star, parent_block):
-        super().__init__('newpage','', parent_block)
-        self.attributes['star']=star
-
 
 class SpecialCharacterBlock(Block):
 
@@ -114,7 +86,5 @@ parser_hooks = {
     '}' : SpecialCharacterBlock.parse,
     '#' : SpecialCharacterBlock.parse,
     '_' : SpecialCharacterBlock.parse,
-    '$' : SpecialCharacterBlock.parse,
-    'newline': NewlineBlock.parse_newline,
-    'newpage' : NewPageBlock.parse_newpage
+    '$' : SpecialCharacterBlock.parse
     }
