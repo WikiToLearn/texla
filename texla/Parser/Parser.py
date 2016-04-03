@@ -201,11 +201,11 @@ class Parser:
             #with the star param
             env_params = {'env':env, 'star':star}
             #we can call the parser hooks.
-            #N.B.: the tex passed to parser hook is the CONTENT LSTRIPPED
+            #N.B.: the tex passed to parser hook is the CONTENT STRIPPED
             #of the environment, without \begin{} and \end{} part.
-            #The lstrip is necessary to parse possible options.
+            #The strip is necessary to parse possible options.
             block = self.call_parser_hook(env,'env',
-                    content.lstrip(), parent_block, env_params)
+                    content.strip(), parent_block, env_params)
             logging.info('BLOCK @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
@@ -270,10 +270,10 @@ class Parser:
                 star = True if match.group('star')!='' else False
                 #we insert the matched options in the dict for hooks
                 params = {'cmd':matched_cmd, 'star':star}
-                #the text passed to hooks is LEFT-STRIPPED to remove
-                #spaces between commands and options.
+                #the text passed to hooks is STRIPPED to remove
+                #useless spaces.
                 #N.B the matched part is not sent to hook
-                tex_to_parse = tex[match.end():].lstrip()
+                tex_to_parse = tex[match.end():].strip()
                 #the matched command is parsed by the parser_hook
                 #and the remaining tex is returned as the second element of
                 #a list.  The first element is the parsed Block.
@@ -285,7 +285,7 @@ class Parser:
             else:
                 #we have a \\ command
                 matched_cmd = '\\'
-                tex_to_parse = tex[match.end():].lstrip()
+                tex_to_parse = tex[match.end():].strip()
                 #we insert the matched options in the dict for hooks
                 params = {'cmd':'\\', 'star':False}
                 #check if we have \\*
@@ -331,7 +331,7 @@ class Parser:
         r = re.compile(r'\\' + cmd + r'\s*\{(.*?)\}')
         match = r.match(tex)
         if match != None:
-            tex_to_parse = tex[2:].lstrip()
+            tex_to_parse = tex[2:].strip()
             block, left_tex =  self.call_parser_hook(cmd,
                     'cmd', tex_to_parse, parent_block,params)
         else:

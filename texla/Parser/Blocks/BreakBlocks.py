@@ -39,7 +39,6 @@ class NewlineBlock(Block):
         self.attributes['star'] = star
 
 
-
 class NewPageBlock(Block):
 
     @staticmethod
@@ -53,12 +52,23 @@ class NewPageBlock(Block):
         super().__init__('newpage','', parent_block)
         self.attributes['star']=star
 
+class ParBlock(Block):
+    ''' This block only represents a \n\n in the tex'''
+    @staticmethod
+    def parse(parser, tex, parent_block, params):
+        return (ParBlock(parent_block), tex)
+
+    def __init__(self, parent_block):
+        super().__init__('par','',parent_block)
+
 
 parser_hooks = {
+    '\\': NewlineBlock.parse_newline,
     'newline': NewlineBlock.parse_newline,
     'newpage' : NewPageBlock.parse_newpage,
     'linebreak' : BreakBlock.parse,
     'pagebreak' : BreakBlock.parse,
     'nolinebreak' : BreakBlock.parse,
-    'nopagebreak' : BreakBlock.parse
+    'nopagebreak' : BreakBlock.parse,
+    'par' : ParBlock.parse
     }

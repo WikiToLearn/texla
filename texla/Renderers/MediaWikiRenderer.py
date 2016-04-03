@@ -16,6 +16,7 @@ class MediaWikiRenderer(Renderer):
             'root-block': self.r_document,
             'default': self.default,
             #text
+            'par': self.r_par,
             'newpage': self.r_newpage,
             'newline': self.r_newline,
             '\\': self.r_newline,
@@ -110,12 +111,16 @@ class MediaWikiRenderer(Renderer):
     #TEXT
 
     def r_text(self, block):
-        return block.attributes['text']
+        text = block.attributes['text']
+        return text
 
     def r_newline(self, block):
         return '\n'
 
     def r_newpage(self, block):
+        return '\n\n'
+
+    def r_par(self, block):
         return '\n\n'
 
     #########################################
