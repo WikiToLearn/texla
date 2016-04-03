@@ -58,6 +58,7 @@ class MediaWikiRenderer(Renderer):
             'subparagraph': self.sectioning,
             #math
             'displaymath': self.r_display_math,
+            'inlinemath': self.r_inline_math,
             'equation': self.r_display_math,
             'eqnarray': self.r_align,
             'multline': self.r_align,
@@ -267,7 +268,7 @@ class MediaWikiRenderer(Renderer):
 
     def r_itemize(self, block):
         self.list_level += '*'
-        s = []
+        s = ['\n']
         for item in block.ch_blocks:
             s.append(self.list_level)
             s.append(self.render_children_blocks(item))
@@ -277,7 +278,7 @@ class MediaWikiRenderer(Renderer):
 
     def r_enumerate(self, block):
         self.list_level += '#'
-        s = []
+        s = ['\n']
         for item in block.ch_blocks:
             s.append(self.list_level)
             s.append(self.render_children_blocks(item))
@@ -286,7 +287,7 @@ class MediaWikiRenderer(Renderer):
         return ''.join(s)
 
     def r_description(self, block):
-        s = []
+        s = ['\n']
         for item in block.ch_blocks:
             s.append(';')
             s.append(item.attributes['word'])

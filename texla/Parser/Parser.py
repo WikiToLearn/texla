@@ -68,10 +68,10 @@ class Parser:
             for tok in toks:
                 if tok.startswith('*'):
                     star = True
-                    tok = tok[1:].lstrip()
+                    tok = tok[1:].strip()
                 else:
                     star = False
-                    tok = tok.lstrip()
+                    tok = tok.strip()
                 #we insert the level in the options
                 sec_params = { 'sec_level' : (level +1),
                             'level_key' : level_key,

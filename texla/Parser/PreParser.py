@@ -160,4 +160,4 @@ def preparse_header(tex):
 def preparse_par(tex):
     '''This function replace \n\n with a \\par to
     show that there's a change of par, understendable bye parser'''
-    return tex.replace('\n\n','\\par')
+    return tex.replace('\n\n','\\par ')

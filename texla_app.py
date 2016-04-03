@@ -77,7 +77,7 @@ def confirm_render(session_id):
             if page['is_page']:
                 page_tree.collapseSubpages(page['id'])
         #collapsing urls
-        page_tree.collpaseURLs()
+        page_tree.collapseURLs()
         #now export
 
 
@@ -85,7 +85,7 @@ def confirm_render(session_id):
 
 
 
-@app.route('/confirmrendering/page_trees')
+@app.route('/confirmrendering/sessions')
 def list_page_trees():
     return str([a for a in page_trees.keys()])
 
