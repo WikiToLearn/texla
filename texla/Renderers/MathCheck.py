@@ -13,19 +13,19 @@ def math_check(mtxt, env=''):
     #replacing split with align
     mtxt = mtxt.replace("split", "align")
     #removing \boxed command
-    mtxt = remove_command_greedy(mtxt, '\\boxed')
+    mtxt = remove_command_greedy(mtxt, 'boxed',False)
     #removing \ensuremath from macros
-    mtxt = remove_command_greedy(mtxt, '\\ensuremath')
+    mtxt = remove_command_greedy(mtxt, 'ensuremath', False)
     #removing tiny command
-    mtxt = remove_command_greedy(mtxt, '\\tiny')
+    mtxt = remove_command_greedy(mtxt, 'tiny',False)
     #replace hspace with \quad
-    mtxt = replace_command_greedy(mtxt, '\\hspace', '\\quad', True)
+    mtxt = replace_command_greedy(mtxt, 'hspace', 'quad', True)
     #replacing bb and bbm with boldmath
-    mtxt = replace_command_greedy(mtxt, '\\bm', '\\mathbf', False)
-    mtxt = replace_command_greedy(mtxt, '\\bbm', '\\mathbf', False)
-    mtxt = replace_command_greedy(mtxt, '\\mathscr', '\\mathcal', False)
+    mtxt = replace_command_greedy(mtxt, 'bm', 'mathbf', False)
+    mtxt = replace_command_greedy(mtxt, 'bbm', 'mathbf', False)
+    mtxt = replace_command_greedy(mtxt, 'mathscr', 'mathcal', False)
     #replace intertext with mbox
-    mtxt = replace_command_greedy(mtxt, '\\intertext', '\\mbox', False)
+    mtxt = replace_command_greedy(mtxt, 'intertext', 'mbox', False)
     #symbols
     mtxt = mtxt.replace('\\abs', '|')
     mtxt = mtxt.replace('\\lvert', '|')
@@ -46,7 +46,7 @@ def math_check(mtxt, env=''):
     #removing makebox[]{} command
     mtxt = re.sub(r'\\makebox\s*(\[(.*?)\])*\s?\{(.*?)\}', '', mtxt)
     #removing tag command
-    mtxt = remove_command_greedy(mtxt, '\\tag', True)
+    mtxt = remove_command_greedy(mtxt, 'tag', True)
     #apostrophe in math
     mtxt = mtxt.replace('”', "''")
     #environment specific changes
