@@ -113,6 +113,8 @@ class Parser:
             parsed separately
         -normal commands: like \cmd{text}
         '''
+        #first of all we strip the tex
+        tex = tex.strip()
         #list of blocks parsed
         pblocks = []
         #checking if tex is void
