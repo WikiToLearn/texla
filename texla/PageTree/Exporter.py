@@ -41,6 +41,7 @@ def exportText_single_pages(pages, base_path=''):
     for page in pages.values():
         pf.write('# [[' + page.url + ']]\n')
         if not page.collapsed:
+            #we don't export void pages
             if page.text != "":
                 text = []
                 text.append('##########')
