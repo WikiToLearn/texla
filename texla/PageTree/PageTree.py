@@ -158,18 +158,16 @@ class PageTree():
                 index.append('{{Section\n|sectionTitle=')
                 index.append(page.title + '\n')
                 index.append('|sectionText=\n')
+                #transcluding index for section
+                index.append('{{:'+ page.url+ '}}')
                 #book export index for chapters
                 book_export_index.append(';' + page.title)
-                #insering already created index for sectionText
+                #creating index for book
                 for p in page.get_subpages():
                     if not p.collapsed:
                         if len(p.text) > 0:
-                            index.append('*'*p.level+ \
-                                '[[' + p.url + '|' + p.title + ']]')
                             book_export_index.append(
                                 ':[[' + p.url + '|' + p.title + ']]')
-                        else:
-                            index.append('*'*p.level+ p.title )
                 #closing section
                 index.append('}}\n{{ForceBreak}}\n')
         base_page.text += '\n'.join(index)
