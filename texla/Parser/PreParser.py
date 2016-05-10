@@ -111,15 +111,16 @@ def preparse_theorems(tex):
     for match in p.finditer(tex):
         t = tex[match.end():]
         data = CommandParser.parse_options(
-            t, [('name', '{', '}'), ('counter', '[', ']'),
+            t, [('th_type', '{', '}'), ('counter', '[', ']'),
                 ('definition', '{', '}'), ('numberby', '[', ']')])
-        if match.group('star') != None:
+        if match.group('star') != "":
             data[0]['star'] = True
         else:
             data[0]['star'] = False
+        print(data[0]['star'])
         the = TheoremBlocks.Theorem(**data[0])
-        logging.info('PREPARSER @ theorem: %s', the.name)
-        th_dict[the.name] = the
+        logging.info('PREPARSER @ theorem: %s', the.th_type)
+        th_dict[the.th_type] = the
     #now we search for every theorem \beging{th_id} and \end{th_id}
     #and we substitue them with \begin{theorem}{th_id} and \begin{theorem}
     #to use out theorem environment

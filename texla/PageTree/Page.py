@@ -22,12 +22,12 @@ class Page():
         #contains the page text
         self.text = ''
         self.collapsed = False
-        '''list of subpages urls'''
+        #list of subpages urls
         self.subpages = []
         self.level = level
 
     def addText(self,text):
-        self.text = text
+        self.text = text.strip()
 
     def addSubpage(self, page):
         self.subpages.append(page)
@@ -39,8 +39,7 @@ class Page():
 
     def collapseSubpages(self, level=0):
         ''' This method insert the text of subpages in this
-        page and returns the complete text.
-        It requires the dictionary of pages.'''
+        page and returns the complete text.'''
         #first of all the text is fixed
         self.fix_text_characters()
         #start collapsing

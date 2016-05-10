@@ -13,9 +13,9 @@ class Theorem():
     ''' This object represents a theorem defined
     by the user'''
 
-    def __init__(self, name, definition,star,
+    def __init__(self, th_type, definition,star,
                  counter,numberby, title=''):
-        self.name = name
+        self.th_type = th_type
         self.definition = definition
         self.star = star
         self.counter = counter
@@ -47,9 +47,9 @@ class TheoremBlock(Block):
     def __init__(self, theorem, title, content, parent_block):
         super().__init__('theorem', content, parent_block)
         self.theorem = theorem
-        self.title = title
+        self.th_type = theorem.th_type
         self.attributes['title'] = title
-        self.attributes['th_name'] = theorem.name
+        self.attributes['type'] = theorem.th_type
         self.attributes['definition'] = theorem.definition
         self.attributes['star'] = theorem.star
 

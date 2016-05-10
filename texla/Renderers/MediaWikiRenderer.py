@@ -3,90 +3,24 @@ from .Renderer import Renderer
 from ..PageTree.PageTree import *
 from . import MathCheck
 
-
 class MediaWikiRenderer(Renderer):
+
     def __init__(self, configs):
         super().__init__()
         self.configs = {}
         self.doc_title = configs['doc_title']
-        self.used_tag
-        #register renderer_hook
-        render_hooks = {
-            #root
-            'root-block': self.r_document,
-            'default': self.default,
-            #text
-            'par': self.r_par,
-            'newpage': self.r_newpage,
-            'newline': self.r_newline,
-            '\\': self.r_newline,
-            'text': self.r_text,
-            'clearpage': self.r_newpage,
-            'cleardoublepage': self.r_newpage,
-            #formatting
-            'emph': self.r_textit,
-            'centering': self.r_centering,
-            'textbf': self.r_textbf,
-            'textit': self.r_textit,
-            'textsc': self.r_textsc,
-            'textsuperscript': self.r_superscript,
-            'textsubscript': self.r_subscript,
-            '%': self.r_special_command,
-            '&': self.r_special_command,
-            '$': self.r_special_command,
-            '{': self.r_special_command,
-            '}': self.r_special_command,
-            '#': self.r_special_command,
-            '_': self.r_special_command,
-            'dots': self.r_dots,
-            'ldots': self.r_dots,
-            'flushright': self.r_flushright,
-            'flushleft': self.r_flushleft,
-            'center': self.r_center,
-            'abstract': self.r_abstract,
-            'linebreak': self.r_break,
-            'pagebreak': self.r_break,
-            'nolinebreak': self.r_break,
-            'nopagebreak': self.r_break,
-            #sectioning
-            'part': self.sectioning,
-            'chapter': self.sectioning,
-            'section': self.sectioning,
-            'subsection': self.sectioning,
-            'subsubsection': self.sectioning,
-            'paragraph': self.sectioning,
-            'subparagraph': self.sectioning,
-            #math
-            'displaymath': self.r_display_math,
-            'inlinemath': self.r_inline_math,
-            'equation': self.r_display_math,
-            'eqnarray': self.r_align,
-            'multline': self.r_align,
-            'alignat': self.r_align,
-            #lists
-            'itemize': self.r_itemize,
-            'enumerate': self.r_enumerate,
-            'description': self.r_description,
-            #quotes
-            'quotation': self.r_quotes,
-            'quote': self.r_quotes,
-            'verse': self.r_verse,
-            'footnote': self.r_footnote,
-            #labels
-            'label': self.r_label,
-            'ref': self.r_ref,
-            'vref': self.r_ref,
-            'pageref': self.r_ref,
-            'eqref': self.r_ref
-        }
         #registering the hooks
-        self.register_render_hooks(render_hooks)
+        self.register_render_hooks(self.get_render_hooks())
         #tree object
         self.tree = PageTree(configs)
         #parameter for list formatting
         self.list_level = ''
-        #parameter for theorem handling
+        #parameters for theorem handling
         self.in_theorem = False
+        self.th_numbering = {}
+
+    ########################################
+    #STARTING POINT
 
     def start_rendering(self, root_block):
         '''starting rendering from root-block'''
@@ -251,14 +185,14 @@ class MediaWikiRenderer(Renderer):
 
     def r_flushleft(self, block):
         s = []
-        s.append('{{left|')
+        s.append('{{flushleft|')
         s.append(self.render_children_blocks(block))
         s.append('}}')
         return ''.join(s)
 
     def r_flushright(self, block):
         s = []
-        s.append('{{right|')
+        s.append('{{flushright|')
         s.append(self.render_children_blocks(block))
         s.append('}}')
         return ''.join(s)
@@ -319,3 +253,130 @@ class MediaWikiRenderer(Renderer):
         s.append(self.render_children_blocks(block))
         s.append("</ref>")
         return ''.join(s)
+
+    #########################################
+    #Theorems
+
+    def r_theorem(self, block):
+        #the label in theorems is not working for now
+        th_title = block.attributes['title']
+        th_definition = bloc.attributes['definition']
+        if not block.attributes['star']:
+            if block.th_type in self.th_numbering:
+                num = self.th_numbering[block.th_type] +1
+            else:
+                num = 1
+            
+            th_title += " - " + th_title
+        self.th_numbering[block.th_type] = num
+        s = []
+        if th_definition.lower() == 'teorema':
+        #adding content to page through a template
+            s.append("{{Teorema|titolo=" + \
+                    th_title+"|")
+        elif th_definition.lower() == 'definizione':
+            s.append("{{Definizione|titolo=" + \
+                    th_title+"|")
+        elif th_definition.lower() == 'proposizione':
+            s.append("{{Proposizione|titolo=" + \
+                    th_title+"|")
+        elif th_definition.lower() == 'lemma':
+            s.append("{{Lemma|title=" + \
+                    th_title+"|")
+        elif th_definition.lower() == 'corollario':
+            s.append("{{Corollario|titolo=" + \
+                    th_title+"|")
+        elif th_definition.lower()[:-2] == 'eserciz':
+            s.append("{{Esercizio|titolo=" + \
+                    th_title+"|")
+        elif th_definition.lower()[:-1] == 'osservazion':
+            s.append("{{Osservazione|titolo=" + \
+                    th_title+"|")
+        elif th_definition.lower()[:-2] == 'esemp':
+            s.append("{{Esempio|titolo=" + \
+                    th_title+"|")
+        elif th_definition.lower() == 'dimostrazione':
+            s.append("{{Dimostrazione|titolo=" + \
+                    th_title+"|")
+        else:
+            s.append("{{Environment|name="+ th_name + \
+                    "|title=" + th_title +\
+                    "|content=")
+
+
+
+
+
+
+
+    def get_render_hooks(self):
+        '''Render hooks'''
+        render_hooks = {
+            #root
+            'root-block': self.r_document,
+            'default': self.default,
+            #text
+            'par': self.r_par,
+            'newpage': self.r_newpage,
+            'newline': self.r_newline,
+            '\\': self.r_newline,
+            'text': self.r_text,
+            'clearpage': self.r_newpage,
+            'cleardoublepage': self.r_newpage,
+            #formatting
+            'emph': self.r_textit,
+            'centering': self.r_centering,
+            'textbf': self.r_textbf,
+            'textit': self.r_textit,
+            'textsc': self.r_textsc,
+            'textsuperscript': self.r_superscript,
+            'textsubscript': self.r_subscript,
+            '%': self.r_special_command,
+            '&': self.r_special_command,
+            '$': self.r_special_command,
+            '{': self.r_special_command,
+            '}': self.r_special_command,
+            '#': self.r_special_command,
+            '_': self.r_special_command,
+            'dots': self.r_dots,
+            'ldots': self.r_dots,
+            'flushright': self.r_flushright,
+            'flushleft': self.r_flushleft,
+            'center': self.r_center,
+            'abstract': self.r_abstract,
+            'linebreak': self.r_break,
+            'pagebreak': self.r_break,
+            'nolinebreak': self.r_break,
+            'nopagebreak': self.r_break,
+            #sectioning
+            'part': self.sectioning,
+            'chapter': self.sectioning,
+            'section': self.sectioning,
+            'subsection': self.sectioning,
+            'subsubsection': self.sectioning,
+            'paragraph': self.sectioning,
+            'subparagraph': self.sectioning,
+            #math
+            'displaymath': self.r_display_math,
+            'inlinemath': self.r_inline_math,
+            'equation': self.r_display_math,
+            'eqnarray': self.r_align,
+            'multline': self.r_align,
+            'alignat': self.r_align,
+            #lists
+            'itemize': self.r_itemize,
+            'enumerate': self.r_enumerate,
+            'description': self.r_description,
+            #quotes
+            'quotation': self.r_quotes,
+            'quote': self.r_quotes,
+            'verse': self.r_verse,
+            'footnote': self.r_footnote,
+            #labels
+            'label': self.r_label,
+            'ref': self.r_ref,
+            'vref': self.r_ref,
+            'pageref': self.r_ref,
+            'eqref': self.r_ref
+        }
+        return render_hooks

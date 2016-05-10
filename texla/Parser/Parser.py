@@ -267,7 +267,7 @@ class Parser:
         match = re_cmd.match(tex)
         if match!=None:
             #managing match
-            if match.group('cmd') != None:
+            if match.group('cmd') != "":
                 matched_cmd = match.group('cmd')
                 star = True if match.group('star')!='' else False
                 #we insert the matched options in the dict for hooks

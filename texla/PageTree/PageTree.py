@@ -144,6 +144,7 @@ class PageTree():
                 index.append('|sectionText=\n')
                 #book export index for chapters
                 self.book_export_index.append(';' + p.title)
+                #we don't add void pages
                 if p.text != '':
                     index.append('*[['+ p.url+'|'+\
                                     self.keywords['intro']+ ']]\n')
