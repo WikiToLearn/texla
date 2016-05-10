@@ -29,11 +29,13 @@ def execute_texla_mediawiki(config):
     #collpasing
     logging.info('######## STARTING POST-PROCESSING ########')
     tree = rend.tree
-    tree.collapseSubpages_level(config['collapse_level'])
-    tree.collapseURLs()
+    tree.collapse_tree(config['collapse_level'])
+    oc = open(config['output_path'] + '-coll.json', 'w')
+    oc.write(json.dumps(rend.tree.get_tree_json(), indent=3))
     logging.info('######## STARTING EXPORTING ########')
     if config['create_index']:
-        tree.createIndex()
+        tree.create_indexes()
+
     exporter.exportPages(tree.pages, config['output_path'] + '.mw',
                          config['export_format'])
     if config['export_single_pages']:

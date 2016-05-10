@@ -257,51 +257,51 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #Theorems
 
-    def r_theorem(self, block):
-        #the label in theorems is not working for now
-        th_title = block.attributes['title']
-        th_definition = bloc.attributes['definition']
-        if not block.attributes['star']:
-            if block.th_type in self.th_numbering:
-                num = self.th_numbering[block.th_type] +1
-            else:
-                num = 1
-            
-            th_title += " - " + th_title
-        self.th_numbering[block.th_type] = num
-        s = []
-        if th_definition.lower() == 'teorema':
-        #adding content to page through a template
-            s.append("{{Teorema|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower() == 'definizione':
-            s.append("{{Definizione|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower() == 'proposizione':
-            s.append("{{Proposizione|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower() == 'lemma':
-            s.append("{{Lemma|title=" + \
-                    th_title+"|")
-        elif th_definition.lower() == 'corollario':
-            s.append("{{Corollario|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower()[:-2] == 'eserciz':
-            s.append("{{Esercizio|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower()[:-1] == 'osservazion':
-            s.append("{{Osservazione|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower()[:-2] == 'esemp':
-            s.append("{{Esempio|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower() == 'dimostrazione':
-            s.append("{{Dimostrazione|titolo=" + \
-                    th_title+"|")
-        else:
-            s.append("{{Environment|name="+ th_name + \
-                    "|title=" + th_title +\
-                    "|content=")
+    # def r_theorem(self, block):
+    #     #the label in theorems is not working for now
+    #     th_title = block.attributes['title']
+    #     th_definition = bloc.attributes['definition']
+    #     if not block.attributes['star']:
+    #         if block.th_type in self.th_numbering:
+    #             num = self.th_numbering[block.th_type] +1
+    #         else:
+    #             num = 1
+    #
+    #         th_title += " - " + th_title
+    #     self.th_numbering[block.th_type] = num
+    #     s = []
+    #     if th_definition.lower() == 'teorema':
+    #     #adding content to page through a template
+    #         s.append("{{Teorema|titolo=" + \
+    #                 th_title+"|")
+    #     elif th_definition.lower() == 'definizione':
+    #         s.append("{{Definizione|titolo=" + \
+    #                 th_title+"|")
+    #     elif th_definition.lower() == 'proposizione':
+    #         s.append("{{Proposizione|titolo=" + \
+    #                 th_title+"|")
+    #     elif th_definition.lower() == 'lemma':
+    #         s.append("{{Lemma|title=" + \
+    #                 th_title+"|")
+    #     elif th_definition.lower() == 'corollario':
+    #         s.append("{{Corollario|titolo=" + \
+    #                 th_title+"|")
+    #     elif th_definition.lower()[:-2] == 'eserciz':
+    #         s.append("{{Esercizio|titolo=" + \
+    #                 th_title+"|")
+    #     elif th_definition.lower()[:-1] == 'osservazion':
+    #         s.append("{{Osservazione|titolo=" + \
+    #                 th_title+"|")
+    #     elif th_definition.lower()[:-2] == 'esemp':
+    #         s.append("{{Esempio|titolo=" + \
+    #                 th_title+"|")
+    #     elif th_definition.lower() == 'dimostrazione':
+    #         s.append("{{Dimostrazione|titolo=" + \
+    #                 th_title+"|")
+    #     else:
+    #         s.append("{{Environment|name="+ th_name + \
+    #                 "|title=" + th_title +\
+    #                 "|content=")
 
 
 

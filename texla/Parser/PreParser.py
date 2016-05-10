@@ -117,7 +117,6 @@ def preparse_theorems(tex):
             data[0]['star'] = True
         else:
             data[0]['star'] = False
-        print(data[0]['star'])
         the = TheoremBlocks.Theorem(**data[0])
         logging.info('PREPARSER @ theorem: %s', the.th_type)
         th_dict[the.th_type] = the

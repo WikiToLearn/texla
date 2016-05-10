@@ -2,12 +2,12 @@
 from string import *
 import re, json
 from ..Parser.Blocks.Utilities import EnvironmentParser
-'''This function remove a command like \command{content}
- even if it contains nested brakets. If delete_content=False it leaves
- the content of the command without the command, otherwise it deletes all'''
 
 
 def remove_command_greedy(tex, command, delete_content=False):
+    '''This function remove a command like \command{content}
+     even if it contains nested brakets. If delete_content=False it leaves
+     the content of the command without the command, otherwise it deletes all'''
     r = re.search(r'\\' + command, tex)
     result = ''
     if r:
@@ -36,17 +36,16 @@ def remove_command_greedy(tex, command, delete_content=False):
     return result
 
 
-''' This function replace a command with the repl par. It must be used
-with command with {}, not with declaration. It understands nested brakets.
-If rm_content is true che content of the command and {} are removed'''
-
-
 def replace_command_greedy(tex,
                            command,
                            repl,
                            rm_content=False,
                            left_delim='{',
                            right_delim='}'):
+
+    ''' This function replace a command with the repl par. It must be used
+    with command with {}, not with declaration. It understands nested brakets.
+    If rm_content is true che content of the command and {} are removed'''
     r = re.search(r'\\' + command, tex)
     result = ''
     if r:
@@ -75,11 +74,9 @@ def replace_command_greedy(tex,
     return result
 
 
-'''This function get the content of the first occurence of the command
-\command{content}'''
-
-
 def get_content_greedy(tex, command):
+    '''This function get the content of the first occurence of the command
+    \command{content}'''
     r = re.search(r'\\' + command, tex)
     if r:
         right = tex[r.end():].lstrip()
@@ -111,12 +108,9 @@ def environment_split(tex, env):
     content = re.split(pattern, tex, flags=re.DOTALL)
     return content
 
-
-'''Function that returns a tuple. The text is split according to
-the occurence of the specified command'''
-
-
 def command_split(tex, com, remove_options=False):
+    '''Function that returns a tuple. The text is split according to
+    the occurence of the specified command'''
     pattern = r'\\' + com
     content = re.split(pattern, tex, flags=re.DOTALL)
     return content

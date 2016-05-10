@@ -22,7 +22,7 @@ class Page():
         #contains the page text
         self.text = ''
         self.collapsed = False
-        #list of subpages urls
+        #list of subpages objects
         self.subpages = []
         self.level = level
 
@@ -32,16 +32,28 @@ class Page():
     def addSubpage(self, page):
         self.subpages.append(page)
 
+    def addSubpage_top(self, page):
+        self.subpages.insert(0,page)
+
+    def get_subpages(self):
+        '''This function gets all the subpages
+        of the current pages walking the subtree'''
+        subpag = self.subpages[:]
+        for p in self.subpages:
+            subpag += p.get_subpages()
+        return subpag
+
+
     def after_render(self):
         '''This function does some fixes after rendering'''
+        #first of all the text is fixed
+        self.fix_text_characters()
         #check math inside titles
         self.math_inside_title = self.is_math_inside_title()
 
     def collapseSubpages(self, level=0):
         ''' This method insert the text of subpages in this
         page and returns the complete text.'''
-        #first of all the text is fixed
-        self.fix_text_characters()
         #start collapsing
         #we have to managed the text
         for subpage in self.subpages:
@@ -64,13 +76,17 @@ class Page():
 
     def collapseURL(self, base_url):
         '''This functions creates the url of the page
-        checking if it is collapsed'''
+        checking if it is collapsed. Then it continues
+        with the subpages'''
         if self.collapsed:
             self.url = base_url + '#' + self.title
             for p in self.subpages:
                 p.collapseURL(base_url)
         else:
-            self.url = base_url + '/' + self.title
+            if base_url != '':
+                self.url = base_url + '/' + self.title
+            else:
+                self.url = self.title
             for p in self.subpages:
                 p.collapseURL(self.url)
 
@@ -124,6 +140,7 @@ class Page():
         s['ID'] = self.id
         s['title'] = self.title
         s['level'] = self.level
+        s['collapsed'] = self.collapsed
         if self.level>2:
             s['is_page'] = False
         else:
@@ -141,4 +158,5 @@ class Page():
         s.append('url='+self.url)
         s.append('subpages='+str(self.subpages))
         s.append('level='+str(self.level))
+        s.append('collapsed='+ str(self.collapsed))
         return '  '.join(s)
