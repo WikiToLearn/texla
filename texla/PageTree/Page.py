@@ -38,8 +38,9 @@ class Page():
     def get_subpages(self):
         '''This function gets all the subpages
         of the current pages walking the subtree'''
-        subpag = self.subpages[:]
+        subpag = []
         for p in self.subpages:
+            subpag.append(p)
             subpag += p.get_subpages()
         return subpag
 
