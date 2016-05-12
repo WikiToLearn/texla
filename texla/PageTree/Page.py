@@ -24,26 +24,80 @@ class Page():
         self.collapsed = False
         #list of subpages objects
         self.subpages = []
+        self.parent = None
         self.level = level
 
     def addText(self,text):
         self.text = text.strip()
 
-    def addSubpage(self, page):
-        self.subpages.append(page)
+    def addSubpage(self, page, after=None):
+        '''This methods add a subpage
+        refreshing the levels of ALL subpages.
+        It sets also the parent of the subpage'''
+        if after:
+            i = self.subpages.index(after)
+            self.subpages.insert(i+1, page)
+        else:
+            self.subpages.append(page)
+        #setting level
+        page.refresh_level(self.level+1)
+        #setting parent
+        page.parent = self
+
+    def addSubpages(self, pages, after=None):
+        '''This function add a list of subpages,
+        setting levels and parent page.'''
+        if after:
+            i = self.subpages.index(after) +1
+            self.subpages = self.subpages[:i] + pages +\
+                            self.subpages[i:]
+        else:
+            self.subpages += pages
+        #setting level and parent of subpages
+        for p in pages:
+            p.refresh_level(self.level+1)
+            p.parent = self
 
     def addSubpage_top(self, page):
+        '''This function add a subpage before all the others.'''
         self.subpages.insert(0,page)
+        page.parent = self
+
+    def removeSubpage(self, page):
+        '''This function removes the subpage
+        recursively looking also at subpages'''
+        if page in self.subpages:
+            self.subpages.remove(page)
+            page.parent = None
+        else:
+            for p in self.subpages:
+                p.removeSubpage(page)
+
+    def isSubpage(self,page):
+        return page in self.subpages
 
     def get_subpages(self):
-        '''This function gets all the subpages
-        of the current pages walking the subtree'''
+        '''This function returns a list with all the subpages
+        of the current page walking the subtree
+        KEEPING THE ORDER (REALLY IMPORTANT):
+        -subpage:
+            --subsub1
+            --subsub2:
+                ---subsubsub
+        -subpage2...
+        => [subpage, subsub1, subsub2, subsubsub, subpage2, ...]'''
         subpag = []
         for p in self.subpages:
             subpag.append(p)
             subpag += p.get_subpages()
         return subpag
 
+    def refresh_level(self, new_level):
+        '''This function change the level of this page
+        refreshing recursively all the subpages'''
+        self.level = new_level
+        for p in self.subpages:
+            p.refresh_level(self.level+1)
 
     def after_render(self):
         '''This function does some fixes after rendering'''
@@ -151,6 +205,10 @@ class Page():
         for page in self.subpages:
             s['children'].append(page.get_json_dictionary(pages))
         return s
+
+    def get_str(self):
+        a = ' C' if self.collapsed else ''
+        return '----'*self.level +'> '+ self.title + a
 
 
     def __str__(self):

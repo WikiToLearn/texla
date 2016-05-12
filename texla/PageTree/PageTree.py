@@ -20,6 +20,7 @@ class PageTree():
         #ROOT PAGE
         ro = Page(self.doc_title, 'root', -1, self.keywords)
         self.root_id = ro.id
+        self.root_page = ro
         self.pages[self.root_id] = ro
         self.titles[self.root_id] = ro.title
         #indexes
@@ -61,7 +62,14 @@ class PageTree():
 
     def get_tree_json(self):
         '''This function return the json tree'''
-        return self.pages[self.root_id].get_json_dictionary(self.pages)
+        return self.root_page.get_json_dictionary(self.pages)
+
+    def get_tree_debug(self):
+        '''This function prints the tree for debug'''
+        s = []
+        for p in self.root_page.get_subpages():
+            s.append(p.get_str())
+        return('\n'.join(s))
 
     def after_render(self):
         '''This function does some fixes after rendering'''
@@ -72,48 +80,97 @@ class PageTree():
         self.pages[page_id].title = title
 
 
-    def collapse_tree(self, level):
-        '''This funcion contains all the tree collapsing
-        procedures in the order: subpages collapsing,
-        url collapsing, fixReferences.'''
-        self.collapseSubpages(level)
-        self.collapseURLs()
-        self.fixReferences()
+    def remove_page_from_tree(self, page, parent=None):
+        '''This function remove a page from the tree,
+        but doesn't delete it. The page remains in the self.pages
+        dictionary but not in the subpages of the pages in the tree.
+        If a parent page is passed the research for the removal
+        starts from that page with performance improvements'''
+        if parent:
+            parent.removeSubpage(page)
+        else:
+            self.root_page.removeSubpage(page)
 
-    def collapseSubpages(self, level):
-        ''' All the pages with the right level are collapsed'''
+
+    def collapse_tree(self, content_level, max_page_level):
+        '''This funcion contains all the tree collapsing
+        procedures in the order: subpages content collapsing,
+        subpages level collapsing,
+        url collapsing, fixReferences.'''
+        self.collapse_content_level(content_level)
+        self.collapse_page_level(max_page_level)
+        self.collapse_urls()
+        self.fix_references()
+
+    def collapse_content_level(self, max_level):
+        '''This functions collapse the content
+        of the pages at the choosen level. The content
+        of the pages with level higher than max_level
+        is moved up to the tree to the page with the max_level,
+        creating titles in the page text. The pages touched
+        are marked as collapsed=True.'''
         for p in self.pages.values():
-            if p.level == level:
+            if p.level == max_level:
                 p.collapseSubpages()
-        #now we have to fix the pages with higher level
+
+    def collapse_page_level(self, max_level):
+        '''This function fixes the level of the pages
+        in the index according to a max_level.
+        Pages with a level higher than the max_level are moved
+        up in the tree till the max_level. The order related
+        to parent pages is mantained. The PageTree is rewrited,
+        hierarchy and levels are fixed.
+        Moreover the level=0 is a special level and it's content
+        is moved to an intro page, because level=0 pages must
+        contain the index of their subpages.
+        '''
         #PAGES LEVEL = 0
         #If they contain text we have to create a new page
         #called introduction (localized)
-        pages_to_add = []
-        for p in self.pages.values():
-            if p.level == 0:
-                if len(p.text)>0:
-                    p_intro = Page(self.keywords['intro'],
-                                   'section',1, self.keywords)
-                    p_intro.text = p.text
-                    pages_to_add.append(p_intro)
-                    self.titles[p_intro.id] = p_intro.title
-                    p.addSubpage_top(p_intro)
-                    #erasing text from section page
-                    p.text = ''
-                    #we don't need to fix labels for now
-        #adding all introduction pages
-        for p in pages_to_add:
-            self.pages[p.id] = p
+        for p in [x for x in self.pages.values() if x.level==0]:
+            if len(p.text)>0:
+                #creating new page for text inside text page.
+                p_intro = Page(self.keywords['intro'],
+                               'section',1, self.keywords)
+                p_intro.text = p.text
+                #saving the intro page
+                self.pages[p_intro.id] = p_intro
+                self.titles[p_intro.id] = p_intro.title
+                p.addSubpage_top(p_intro)
+                #erasing text from section page
+                p.text = ''
+                #we don't need to fix labels for now
 
-    def collapseURLs(self):
+        #Now we move pages according to the max_level.
+        #pages not collapsed and with higher level then
+        #the max_level are moved as subpages of the
+        #nearest max_level page.
+        for p in [x for x in self.pages.values() if x.level==max_level]:
+            parent_page = p.parent
+            #list of subpages to move at the right level
+            subpages_to_add = []
+            #now we are cycling on the pages with level>max_level
+            for sp in p.get_subpages():
+                if not sp.collapsed:
+                    #removing page from the tree acting
+                    #directly on the parent page
+                    sp.parent.removeSubpage(sp)
+                    #saving the page for the movement
+                    subpages_to_add.append(sp)
+            #adding the list of moved subpages to the parent_page
+            #so getting the right level.
+            parent_page.addSubpages(subpages_to_add, p)
+            ###NB: remember that the subpages level
+            #is AUTOMATICALLY refreshed for all pages added.
+
+    def collapse_urls(self):
         '''This function creates the urls of the pages,
         checking is they are collapsed or not. If they are collapsed
         the url is parent_page#title.
         Then the references are resolved to urls throught labes'''
-        self.pages[self.root_id].collapseURL(self.configs['base_path'])
+        self.root_page.collapseURL(self.configs['base_path'])
 
-    def fixReferences(self):
+    def fix_references(self):
         '''This function fix the references inside the
         text with the right urls instead of urls'''
         for page in self.pages.values():
@@ -144,7 +201,7 @@ class PageTree():
     def create_book_index(self):
         '''This function create the book total index
         and the book export page index'''
-        base_page = self.pages[self.root_id]
+        base_page = self.root_page
         #book export: link
         book_url = self.doc_title.replace(' ','_')
         base_page.text+= '{{libro|Project:Libri/'+ book_url+\

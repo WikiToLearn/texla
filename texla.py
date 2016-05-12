@@ -26,10 +26,15 @@ def execute_texla_mediawiki(config):
     o.write(json.dumps(rend.tree.get_tree_json(), indent=3))
     p = open(config['output_path'] + '.debug', 'w')
     p.write(json.dumps(rend.used_tags, indent=2))
+    #print page tree before POST-PROCESSING
+    logging.info('PageTree:\n'+rend.tree.get_tree_debug())
     #collpasing
     logging.info('######## STARTING POST-PROCESSING ########')
     tree = rend.tree
-    tree.collapse_tree(config['collapse_level'])
+    tree.collapse_tree(config['collapse_content_level'],
+                       config['collapse_pages_level'])
+    #printing tree after POST-PROCESSING
+    logging.info('PageTree:\n'+rend.tree.get_tree_debug())
     oc = open(config['output_path'] + '-coll.json', 'w')
     oc.write(json.dumps(rend.tree.get_tree_json(), indent=3))
     logging.info('######## STARTING EXPORTING ########')
@@ -49,7 +54,8 @@ if __name__ == '__main__':
     #reading JSON configs
     p = json.loads(open('configs.txt').read())
     config = p
-    config['collapse_level'] = int(p['collapse_level'])
+    config['collapse_content_level'] = int(p['collapse_content_level'])
+    config['collapse_pages_level'] = int(p['collapse_pages_level'])
     config['export_single_pages'] = bool(int(p['export_single_pages']))
     config['create_index'] = bool(int(p['create_index']))
     config['print_preparsed_tex'] = bool(int(p['print_preparsed_tex']))

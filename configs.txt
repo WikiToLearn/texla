@@ -1,0 +1,14 @@
+{
+	"renderer": "mediawiki",
+	"input_path" : "test/test.tex",
+	"output_path" : "test/test",
+	"doc_title": "Test",
+	"base_path": "",
+	"collapse_content_level":2,
+    "collapse_pages_level":1,
+    "create_index": 1,
+	"export_format":"text",
+	"export_single_pages":1,
+	"print_preparsed_tex":1,
+	"lang":"it"
+}
