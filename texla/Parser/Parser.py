@@ -16,7 +16,6 @@ class Parser:
         pass
 
     def parse(self,tex):
-        ###TODO:preparsing
         tex, data = PreParser.preparse(tex)
         self.data = data
         logging.debug('Preparsed TEX @ #######\n'+\
@@ -189,7 +188,7 @@ class Parser:
         remained to parse.
         '''
         #we search for the first enviroment
-        re_env1 = re.compile(r'\\begin\{(?: *)(?P<env>\w*?)'+\
+        re_env1 = re.compile(r'\\begin(?: *)\{(?: *)(?P<env>\w*?)'+\
                             r'(?P<star>[*]?)(?: *)\}')
         match = re_env1.match(tex)
         if not match == None:
@@ -266,10 +265,13 @@ class Parser:
                     r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
         match = re_cmd.match(tex)
         if match!=None:
-            #managing match
-            if match.group('cmd') != "":
+            #managing match.
+            #checking if the part of the match with the regular
+            #command is present--> math.group != None!!!
+            if match.group('cmd') != None:
                 matched_cmd = match.group('cmd')
                 star = True if match.group('star')!='' else False
+                print(star)
                 #we insert the matched options in the dict for hooks
                 params = {'cmd':matched_cmd, 'star':star}
                 #the text passed to hooks is STRIPPED to remove
@@ -288,6 +290,7 @@ class Parser:
                 #we have a \\ command
                 matched_cmd = '\\'
                 tex_to_parse = tex[match.end():].strip()
+                print(tex_to_parse)
                 #we insert the matched options in the dict for hooks
                 params = {'cmd':'\\', 'star':False}
                 #check if we have \\*
