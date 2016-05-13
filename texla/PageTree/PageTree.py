@@ -27,10 +27,13 @@ class PageTree():
         self.pageid_stack = [ro.id]
         self.current_id = self.root_id
         self.current_anchor = self.root_id
+        #preparing data for normalized_urls
+        self.prepare_normalize_urls()
 
     def createPage(self, title, page_type):
         '''This method creates a new page and enters
         in his enviroment setting current variables'''
+        title = self.getNormalizedUrl(title)
         #finding level
         level = len(self.pageid_stack) - 1
         #create new page
@@ -59,6 +62,35 @@ class PageTree():
 
     def getRef(self, label):
         return self.urls[self.labels[label]]
+
+    def prepare_normalize_urls(self):
+        '''This function prepare the data for normalized urls.'''
+        #preparing dictionary
+        self.normalized_urls = {}
+        #initializing normalized_urls dict reading from file if exists
+        if os.path.exists(self.output_path+".titles"):
+            for line in open(self.output_path+".titles",'r'):
+                tok = line.split('@@@')
+                self.normalized_urls[tok[0]] = tok[1].strip()
+        #the file is used to save the dict of normalized urls
+        self.nurls_file = open(self.output_path+".titles",'a')
+
+    def getNormalizedUrl(self,title):
+        '''Function that removes math from title'''
+        r = re.compile(r'(?<![\$])\$(?P<m>[^$]+)\$(?!\$)', re.DOTALL)
+        for mre in r.finditer(title):
+            math = mre.group(1)
+            #reading the normalized urls dict
+            if math in self.normalized_urls:
+                title = title.replace(mre.group(0),self.normalized_urls[math])
+            else:
+                tit = str(input("\n@Normalize title: "+ title+" --->  ")).strip()
+                #saving the normalized urls
+                self.normalized_urls[math]= tit
+                #saving it to file
+                self.nurls_file.write(math+'@@@'+tit+'\n')
+                title =  title.replace(mre.group(0),tit)
+        return title
 
     def get_tree_json(self):
         '''This function return the json tree'''
@@ -210,6 +242,8 @@ class PageTree():
         index = []
         book_export_index = ['{{libro_salvato | setting-papersize = a4\
              | setting-toc = auto | setting-columns = 1}}']
+        #book export: setting title
+        book_export_index.append('==' + self.doc_title + '==')
         for page in self.pages.values():
             if page.level == 0:
                 index.append('{{Section\n|sectionTitle=')
@@ -230,8 +264,6 @@ class PageTree():
         base_page.text += '\n'.join(index)
 
         #creating book export page
-        #book export: setting title
-        book_export_index.append('==' + self.doc_title + '==')
         book_title = 'Project:Libri_' + book_url
         book_export_page = Page(book_title,
                                 'root', -1,None)
