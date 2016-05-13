@@ -277,51 +277,51 @@ class MediaWikiRenderer(Renderer):
         s = []
         if th_definition.lower() == 'teorema':
         #adding content to page through a template
-            s.append("{{Teorema|titolo=" + \
+            s.append("\n{{Teorema|titolo=" + \
                     th_title+"|")
         elif th_definition.lower() == 'definizione':
-            s.append("{{Definizione|titolo=" + \
+            s.append("\n{{Definizione|titolo=" + \
                     th_title+"|")
         elif th_definition.lower() == 'proposizione':
-            s.append("{{Proposizione|titolo=" + \
+            s.append("\n{{Proposizione|titolo=" + \
                     th_title+"|")
         elif th_definition.lower() == 'lemma':
-            s.append("{{Lemma|title=" + \
+            s.append("\n{{Lemma|title=" + \
                     th_title+"|")
         elif th_definition.lower() == 'corollario':
-            s.append("{{Corollario|titolo=" + \
+            s.append("\n{{Corollario|titolo=" + \
                     th_title+"|")
         elif th_definition.lower()[:-2] == 'eserciz':
-            s.append("{{Esercizio|titolo=" + \
+            s.append("\n{{Esercizio|titolo=" + \
                     th_title+"|")
         elif th_definition.lower()[:-1] == 'osservazion':
-            s.append("{{Osservazione|titolo=" + \
+            s.append("\n{{Osservazione|titolo=" + \
                     th_title+"|")
         elif th_definition.lower()[:-2] == 'esemp':
-            s.append("{{Esempio|titolo=" + \
+            s.append("\n{{Esempio|titolo=" + \
                     th_title+"|")
         elif th_definition.lower() == 'dimostrazione':
-            s.append("{{Dimostrazione|titolo=" + \
+            s.append("\n{{Dimostrazione|titolo=" + \
                     th_title+"|")
         else:
-            s.append("{{Environment|name="+ th_definition + \
+            s.append("\n{{Environment|name="+ th_definition + \
                     "|title=" + th_title +\
                     "|content=")
         #insertig theorem content
         s.append(self.render_children_blocks(block))
-        s.append('}}')
+        s.append('}}\n')
         return '\n'.join(s)
 
     def r_proof(self, block):
         s=[]
         if block.title !=None:
-            s.append('{{Dimostrazione|titolo='+\
+            s.append('\n{{Dimostrazione|titolo='+\
                     block.attributes['title'])
         else:
             s.append('{{Dimostrazione|')
         s.append('|content=')
         s.append(self.render_children_blocks(block))
-        s.append('}}')
+        s.append('}}\n')
         return '\n'.join(s)
 
 

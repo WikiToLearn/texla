@@ -8,7 +8,7 @@ def remove_command_greedy(tex, command, delete_content=False):
     '''This function remove a command like \command{content}
      even if it contains nested brakets. If delete_content=False it leaves
      the content of the command without the command, otherwise it deletes all'''
-    r = re.search(r'\\' + command, tex)
+    r = re.search(r'\\' + command +'(?=[\s\{\[])', tex)
     result = ''
     if r:
         left = tex[:r.start()]
@@ -46,7 +46,7 @@ def replace_command_greedy(tex,
     ''' This function replace a command with the repl par. It must be used
     with command with {}, not with declaration. It understands nested brakets.
     If rm_content is true che content of the command and {} are removed'''
-    r = re.search(r'\\' + command, tex)
+    r = re.search(r'\\' + command +'(?=[\s\{\[])', tex)
     result = ''
     if r:
         left = tex[:r.start()]
@@ -77,7 +77,7 @@ def replace_command_greedy(tex,
 def get_content_greedy(tex, command):
     '''This function get the content of the first occurence of the command
     \command{content}'''
-    r = re.search(r'\\' + command, tex)
+    r = re.search(r'\\' + command +'(?=[\s\{\[])', tex)
     if r:
         right = tex[r.end():].lstrip()
         #getting content

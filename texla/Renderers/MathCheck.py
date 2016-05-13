@@ -27,7 +27,7 @@ def math_check(mtxt, env=''):
     #replace intertext with mbox
     mtxt = replace_command_greedy(mtxt, 'intertext', 'mbox', False)
     #symbols
-    mtxt = mtxt.replace('\\abs', '|')
+    mtxt = replace_command_greedy(mtxt,'\\abs', '|')
     mtxt = mtxt.replace('\\lvert', '|')
     mtxt = mtxt.replace('\\rvert', '|')
     mtxt = replace_command_greedy(mtxt, '\\modul', '|', False, '|', '|')
@@ -35,8 +35,8 @@ def math_check(mtxt, env=''):
     mtxt = mtxt.replace('\\nonumber', '')
     mtxt = mtxt.replace('\\notag', '')
     #dag to dagger
-    mtxt = mtxt.replace('\\dag', '\\dagger')
-    mtxt = mtxt.replace('\\fint', '\\int')
+    mtxt = replace_command_greedy(mtxt,'\\dag', '\\dagger')
+    mtxt = replace_command_greedy(mtxt,'\\fint', '\\int')
     #replacing spacing commands
     mtxt = mtxt.replace('\\:', '\\,')
     #removing rule command
