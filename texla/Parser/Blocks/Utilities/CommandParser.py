@@ -15,12 +15,12 @@ def parse_options(tex, grammar):
 	option for the command:
 	[(opt_name, '{', '}' ), (opt_name2, '[', ']'),...  ].
 	The function search for matches from left to right.
-	A list of options is extracted from the tex, then 
+	A list of options is extracted from the tex, then
 	a match is performed on the grammar: if the first grammar rule
 	doesn't match the second one is checked, and so on for
 	all parsed parenthesis.
 	The function returns a dictionary with the matched
-	options.
+	options. If an option is not matched it returnrs None
 	'''
 	prt = get_parenthesis(tex)
 	#now we have to match the parenthesis with the grammar,

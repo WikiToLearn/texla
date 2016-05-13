@@ -33,15 +33,15 @@ class TheoremBlock(Block):
     def parse(parser, tex, parent_block, params):
         #first of all we extract the optional title
         data ,left_tex = CommandParser.parse_options(tex,
-                    [('name','{','}'),('title','[',']')])
-        name = data['name']
+                    [('th_type','{','}'),('title','[',']')])
+        th_type = data['th_type']
         title = data['title']
-        block = TheoremBlock(parsed_theorems[name],
+        block = TheoremBlock(parsed_theorems[th_type],
                     title, left_tex, parent_block)
         ch_blocks = parser.parse_instructions(left_tex,
                         block, {})
         block.add_children_blocks(ch_blocks)
-        logging.debug('TheoremBlock.parse @ name: %s',name)
+        logging.debug('TheoremBlock.parse @ name: %s',th_type)
         return block
 
     def __init__(self, theorem, title, content, parent_block):
@@ -52,6 +52,7 @@ class TheoremBlock(Block):
         self.attributes['type'] = theorem.th_type
         self.attributes['definition'] = theorem.definition
         self.attributes['star'] = theorem.star
+        self.attributes['counter'] = theorem.counter
 
 class ProofBlock(Block):
     '''Block that represents a proof.'''

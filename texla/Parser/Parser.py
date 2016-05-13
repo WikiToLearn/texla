@@ -271,7 +271,6 @@ class Parser:
             if match.group('cmd') != None:
                 matched_cmd = match.group('cmd')
                 star = True if match.group('star')!='' else False
-                print(star)
                 #we insert the matched options in the dict for hooks
                 params = {'cmd':matched_cmd, 'star':star}
                 #the text passed to hooks is STRIPPED to remove
