@@ -7,7 +7,7 @@ class MediaWikiRenderer(Renderer):
 
     def __init__(self, configs):
         super().__init__()
-        self.configs = {}
+        self.configs = configs
         self.doc_title = configs['doc_title']
         #registering the hooks
         self.register_render_hooks(self.get_render_hooks())
@@ -259,11 +259,8 @@ class MediaWikiRenderer(Renderer):
 
     def r_theorem(self, block):
         #the label in theorems is not working for now
-        if block.attributes['title'] != None:
-            th_title = block.attributes['title']
-        else:
-            th_title = ''
         th_definition = block.attributes['definition']
+        th_title = ''
         if not block.attributes['star']:
             counter = block.attributes['counter']
             if counter==None:
@@ -272,41 +269,80 @@ class MediaWikiRenderer(Renderer):
                 num = self.th_numbering[counter] +1
             else:
                 num = 1
-            th_title += " - " + str(num)
+            th_title += str(num)
             self.th_numbering[counter] = num
+        if block.attributes['title'] != None:
+            th_title += block.attributes['title']
         s = []
-        if th_definition.lower() == 'teorema':
-        #adding content to page through a template
-            s.append("\n{{Teorema|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower() == 'definizione':
-            s.append("\n{{Definizione|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower() == 'proposizione':
-            s.append("\n{{Proposizione|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower() == 'lemma':
-            s.append("\n{{Lemma|title=" + \
-                    th_title+"|")
-        elif th_definition.lower() == 'corollario':
-            s.append("\n{{Corollario|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower()[:-2] == 'eserciz':
-            s.append("\n{{Esercizio|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower()[:-1] == 'osservazion':
-            s.append("\n{{Osservazione|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower()[:-2] == 'esemp':
-            s.append("\n{{Esempio|titolo=" + \
-                    th_title+"|")
-        elif th_definition.lower() == 'dimostrazione':
-            s.append("\n{{Dimostrazione|titolo=" + \
-                    th_title+"|")
-        else:
-            s.append("\n{{Environment|name="+ th_definition + \
-                    "|title=" + th_title +\
-                    "|content=")
+        if self.configs['lang'] =='it':
+            if th_definition.lower() == 'teorema':
+            #adding content to page through a template
+                s.append("\n{{Teorema|titolo=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'definizione':
+                s.append("\n{{Definizione|titolo=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'proposizione':
+                s.append("\n{{Proposizione|titolo=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'lemma':
+                s.append("\n{{Lemma|title=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'corollario':
+                s.append("\n{{Corollario|titolo=" + \
+                        th_title+"|")
+            elif th_definition.lower()[:-2] == 'eserciz':
+                s.append("\n{{Esercizio|titolo=" + \
+                        th_title+"|")
+            elif th_definition.lower()[:-1] == 'osservazion':
+                s.append("\n{{Osservazione|titolo=" + \
+                        th_title+"|")
+            elif th_definition.lower()[:-2] == 'esemp':
+                s.append("\n{{Esempio|titolo=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'dimostrazione':
+                s.append("\n{{Dimostrazione|titolo=" + \
+                        th_title+"|")
+            else:
+                s.append("\n{{Environment|name="+ th_definition + \
+                        "|title=" + th_title +\
+                        "|content=")
+        elif self.configs['lang'] =='en':
+            if th_definition.lower() == 'theorem':
+            #adding content to page through a template
+                s.append("\n{{Theorem|title=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'definition':
+                s.append("\n{{Definition|title=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'proposition':
+                s.append("\n{{Proposition|title=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'lemma':
+                s.append("\n{{Lemma|title=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'corollarium':
+                s.append("\n{{Corollarium|title=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'exercise':
+                s.append("\n{{Exercise|title=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'observation':
+                s.append("\n{{Observation|title=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'remark':
+                s.append("\n{{Remark|title=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'example':
+                s.append("\n{{Example|title=" + \
+                        th_title+"|")
+            elif th_definition.lower() == 'demonstration':
+                s.append("\n{{Demonstration|title=" + \
+                        th_title+"|")
+            else:
+                s.append("\n{{Environment|name="+ th_definition + \
+                        "|title=" + th_title +\
+                        "|content=")
         #insertig theorem content
         s.append(self.render_children_blocks(block))
         s.append('}}\n')
@@ -314,11 +350,18 @@ class MediaWikiRenderer(Renderer):
 
     def r_proof(self, block):
         s=[]
-        if block.title !=None:
-            s.append('\n{{Dimostrazione|titolo='+\
-                    block.attributes['title'])
-        else:
-            s.append('{{Dimostrazione|')
+        if self.configs['lang'] == 'it':
+            if block.title !=None:
+                s.append('\n{{Dimostrazione|titolo='+\
+                        block.attributes['title'])
+            else:
+                s.append('\n{{Dimostrazione|')
+        elif self.configs['lang'] == 'en':
+            if block.title !=None:
+                s.append('\n{{Proof|title='+\
+                        block.attributes['title'])
+            else:
+                s.append('\n{{Proof|')
         s.append('|content=')
         s.append(self.render_children_blocks(block))
         s.append('}}\n')
