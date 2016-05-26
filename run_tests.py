@@ -1,6 +1,7 @@
 import re
 import texla.Parser.Blocks
 from texla.Parser.Blocks.Utilities import *
+import texla.Renderers.utils as ut
 import unittest
 
 class CommandParserTest(unittest.TestCase):
@@ -143,6 +144,52 @@ class RegexTest(unittest.TestCase):
 		self.assertEqual(sec.split(a),
 			['text tex ','{} text ','[] text'])
 
+class UtilTest(unittest.TestCase):
+    def test_remove_command_greedy1(self):
+        a = 'tex text \\command[option][option2]{ok \\test{} ok} text'
+        result = ut.remove_command_greedy(a, 'command', False)
+        self.assertEqual(result, 'tex text ok \\test{} ok text')
+
+    def test_remove_command_greedy2(self):
+        a = 'tex text \\command{ok \\test{} ok} text'
+        result = ut.remove_command_greedy(a, 'command', True)
+        self.assertEqual(result, 'tex text  text')
+
+    def test_replace_command_greedy1(self):
+        a = 'tex text \\command[option]{ok ok} text'
+        result = ut.replace_command_greedy(a, 'command','cmd',False)
+        self.assertEqual(result,
+                'tex text \\cmd{ok ok} text', msg=None)
+
+    def test_replace_command_greedy2(self):
+        a = 'tex text \\command[option]{ok ok} text'
+        result = ut.replace_command_greedy(a, 'command','cmd',True)
+        self.assertEqual(result,
+                'tex text \\cmd text', msg=None)
+
+    def test_replace_command_greedy3(self):
+        a = 'tex text \\command{ok ok} text'
+        result = ut.replace_command_greedy(a, 'command','cmd',False)
+        self.assertEqual(result,
+                'tex text \\cmd{ok ok} text', msg=None)
+
+    def test_replace_command_no_options(self):
+        a = 'tex text \\dag\\int text'
+        result = ut.replace_command_no_options(a, 'dag','dagger')
+        self.assertEqual(result,
+                'tex text \\dagger\\int text', msg=None)
+
+    def test_replace_command_greedy_delim(self):
+        a = 'tex text \\modul{10} text'
+        result = ut.replace_command_greedy(a, 'modul','',False,
+                                           "|","|",rm_slash=True)
+        self.assertEqual(result,
+                'tex text |10| text', msg=None)
+
+    def test_get_content_greedy(self):
+        a = 'tex text \\command[option]{content} text'
+        result = ut.get_content_greedy(a, 'command')
+        self.assertEqual(result,"content", msg=None)
 
 
 if __name__ == '__main__':

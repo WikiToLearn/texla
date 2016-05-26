@@ -362,7 +362,6 @@ class MediaWikiRenderer(Renderer):
                         block.attributes['title'])
             else:
                 s.append('\n{{Proof|')
-        s.append('|content=')
         s.append(self.render_children_blocks(block))
         s.append('}}\n')
         return '\n'.join(s)

@@ -5,10 +5,12 @@ from ..Parser.Blocks.Utilities import EnvironmentParser
 
 
 def remove_command_greedy(tex, command, delete_content=False):
-    '''This function remove a command like \command{content}
-     even if it contains nested brakets. If delete_content=False it leaves
-     the content of the command without the command, otherwise it deletes all'''
-    r = re.search(r'\\' + command +'(?=[\s\{\[])', tex)
+    '''This function remove a command like
+    \command[simple option]{content} even if it contains
+    nested brakets. If delete_content=False it leaves
+    the content of the command without the command,
+    otherwise it deletes all. The options are removed'''
+    r = re.search(r'\\' + command +'(\[.*?\])*(?=[\s\{\[])', tex)
     result = ''
     if r:
         left = tex[:r.start()]
@@ -26,10 +28,9 @@ def remove_command_greedy(tex, command, delete_content=False):
             #now check if we are returned to 0 level
             if level == 0:
                 if not delete_content:
-                    result += ' '+ right[1:pos]+\
-                             ' '+ right[pos+1:]
+                    result += right[1:pos]+ right[pos+1:]
                 else:
-                    result += ' ' + right[pos + 1:]
+                    result +=  right[pos + 1:]
                 break
     else:
         result = tex
@@ -41,12 +42,15 @@ def replace_command_greedy(tex,
                            repl,
                            rm_content=False,
                            left_delim='{',
-                           right_delim='}'):
+                           right_delim='}',
+                           rm_slash=False):
 
-    ''' This function replace a command with the repl par. It must be used
-    with command with {}, not with declaration. It understands nested brakets.
-    If rm_content is true che content of the command and {} are removed'''
-    r = re.search(r'\\' + command +'(?=[\s\{\[])', tex)
+    ''' This function replace a command with the
+    repl par. It MUST be used with command with {},
+    not with declaration. It understands nested brakets.
+    If rm_content is true che content of the command
+    and {} are removed'''
+    r = re.search(r'\\' + command +'(\[.*?\])*(?=[\s\{\[])', tex)
     result = ''
     if r:
         left = tex[:r.start()]
@@ -64,20 +68,30 @@ def replace_command_greedy(tex,
             #now check if we are returned to 0 level
             if level == 0:
                 if rm_content:
-                    result += '\\' + repl + ' ' + right[pos + 1:]
+                    if not rm_slash:
+                        result += '\\'
+                    result += repl + right[pos + 1:]
                 else:
-                    result+= '\\'+ repl + left_delim+ right[1:pos]+ \
-                            right_delim+' '+ right[pos+1:]
+                    if not rm_slash:
+                        result += '\\'
+                    result+= repl + left_delim+ right[1:pos]+ \
+                            right_delim + right[pos+1:]
                 break
     else:
         result = tex
     return result
 
+def replace_command_no_options(tex, command, repl):
+    '''This function replace a command without touching
+    options and content'''
+    r = re.compile(r'(?<=\\)'+command +r'(?=[\s\{\[\\])')
+    return r.sub(repl, tex)
+
 
 def get_content_greedy(tex, command):
     '''This function get the content of the first occurence of the command
-    \command{content}'''
-    r = re.search(r'\\' + command +'(?=[\s\{\[])', tex)
+    \command[option]{content}. Option is removed'''
+    r = re.search(r'\\' + command +'(\[.*?\])*(?=[\s\{\[])', tex)
     if r:
         right = tex[r.end():].lstrip()
         #getting content

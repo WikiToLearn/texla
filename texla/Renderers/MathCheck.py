@@ -20,6 +20,7 @@ def math_check(mtxt, env=''):
     mtxt = remove_command_greedy(mtxt, 'tiny',False)
     #replace hspace with \quad
     mtxt = replace_command_greedy(mtxt, 'hspace', 'quad', True)
+    mtxt = replace_command_greedy(mtxt, 'underbar', 'underline', False)
     #replacing bb and bbm with boldmath
     mtxt = replace_command_greedy(mtxt, 'bm', 'mathbf', False)
     mtxt = replace_command_greedy(mtxt, 'bbm', 'mathbf', False)
@@ -27,16 +28,17 @@ def math_check(mtxt, env=''):
     #replace intertext with mbox
     mtxt = replace_command_greedy(mtxt, 'intertext', 'mbox', False)
     #symbols
-    mtxt = replace_command_greedy(mtxt,'\\abs', '|')
+    mtxt = mtxt.replace('\\abs', '|')
     mtxt = mtxt.replace('\\lvert', '|')
     mtxt = mtxt.replace('\\rvert', '|')
-    mtxt = replace_command_greedy(mtxt, '\\modul', '|', False, '|', '|')
+    mtxt = replace_command_greedy(mtxt, 'modul', '', False,
+                                  '|', '|',rm_slash=False)
     #removing \nonumber command
     mtxt = mtxt.replace('\\nonumber', '')
     mtxt = mtxt.replace('\\notag', '')
     #dag to dagger
-    mtxt = replace_command_greedy(mtxt,'\\dag', '\\dagger')
-    mtxt = replace_command_greedy(mtxt,'\\fint', '\\int')
+    mtxt = replace_command_no_options(mtxt,'dag', 'dagger')
+    mtxt = replace_command_no_options(mtxt,'fint', 'int')
     #replacing spacing commands
     mtxt = mtxt.replace('\\:', '\\,')
     #removing rule command
