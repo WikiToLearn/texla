@@ -52,11 +52,12 @@ def parse_options(tex, grammar):
 def get_command_options(tex):
 	'''
 	The function removes an arbitrary number of options
-	parenthesis from tex. Tex must start with a parenthesis
-	([ or {). The funcion is useful to remove a command's
+	parenthesis from tex.
+    The funcion is useful to remove a command's
 	parenthesis without knowing their structure.
 	The function return (matched parenthesis, left tex,
-	starting index of left tex )
+	starting index of left tex ).
+    The tex could also have not parenthesis.
 	'''
 	#now we extract the tokens
 	toks = get_parenthesis(tex)

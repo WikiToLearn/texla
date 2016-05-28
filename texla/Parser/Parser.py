@@ -123,7 +123,7 @@ class Parser:
         left_tex = ''
         if slash == -1 and dollar == -1:
             #we check if the string is only space or \n
-            if (tex != " "*len(tex) and tex!='\n'):
+            if (len(tex.strip())):
                 #it's plain text
                 pblocks.append(self.parse_plain_text(tex,
                         parent_block))
@@ -133,12 +133,10 @@ class Parser:
             #text before and to parse
             before_tex = tex[:slash]
             tex_tp = tex[slash:]
-            if len(before_tex) > 0:
-                #creating a plain text block
-                if (before_tex != " "*len(before_tex)
-                        and before_tex!='\n'):
-                    pblocks.append(self.parse_plain_text(before_tex,
-                            parent_block))
+            #creating a plain text block
+            if (len(before_tex.strip())):
+                pblocks.append(self.parse_plain_text(before_tex,
+                        parent_block))
             #we check if it's a math command like \[ or \(
             if tex_tp[1] in ('[','('):
                 block, left_tex = self.parse_math(
@@ -166,12 +164,10 @@ class Parser:
             #test before is plain text.
             before_tex = tex[:dollar]
             tex_tp = tex[dollar:]
-            if len(before_tex) > 0:
-                #we check if the string is only space or \n
-                if (before_tex != " "*len(before_tex)
-                            and before_tex!='\n'):
-                    pblocks.append(self.parse_plain_text(
-                        before_tex, parent_block))
+            #we check if the string is only space or \n
+            if (len(before_tex.strip())):
+                pblocks.append(self.parse_plain_text(
+                    before_tex, parent_block))
 
             #we have to parse math
             block, left_tex = self.parse_math(tex_tp, parent_block,options)
