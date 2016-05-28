@@ -21,7 +21,7 @@ class FormattingText(Block):
 		logging.debug('format type: %s', format_type )
 		super().__init__(format_type,text,parent_block)
 		self.attributes['text'] = text
-		self.attributes['text_lenght'] = len(text)
+		self.attributes['text_length'] = len(text)
 		self.attributes['format_type'] = format_type
 
 

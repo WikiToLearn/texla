@@ -67,7 +67,7 @@ class Macro:
                         pars[i+2] = params[i]
             else:
                 #we have to check if the
-                #lenght of param is less then the
+                #length of param is less then the
                 #required n_param
                 if len(params) < self.n_param:
                     #the default param is the one in

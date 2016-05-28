@@ -24,7 +24,7 @@ class TextBlock(Block):
         super().__init__('text', text, parent_block)
         #attributes
         self.attributes['text'] = TextBlock.fix_text(text)
-        self.attributes['text_lenght'] = len(text)
+        self.attributes['text_length'] = len(text)
 
     @staticmethod
     def fix_text(text):
@@ -35,8 +35,8 @@ class TextBlock(Block):
         return text
 
     def __str__(self):
-        return '<Block:{}, ID:{}, text_lenght:{}>'.format(
-            self.block_name, self.id, self.attributes['text_lenght'])
+        return '<Block:{}, ID:{}, text_length:{}>'.format(
+            self.block_name, self.id, self.attributes['text_length'])
 
 
 class AccentedLetterBlock(Block):
