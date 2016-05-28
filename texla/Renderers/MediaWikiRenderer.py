@@ -89,7 +89,7 @@ class MediaWikiRenderer(Renderer):
         s = block.attributes['content']
         #check math content
         s = MathCheck.math_check(s)
-        return ' <math>' + s + '</math> '
+        return '<math>' + s + '</math>'
 
     def r_align(self, block):
         s = block.attributes['content']
