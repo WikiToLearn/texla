@@ -59,12 +59,10 @@ def parse_macros(tex):
                 #we get command complete tex
                 cmd_tex = CommandParser.get_command_options(tex_to_parse[
                     cmd_ma.end():])
-                print(cmd_tex)
                 #cmd_tex contains also the index of the star  of
                 #tex after the macro. We need it later.
                 #we get parenthesis
                 parenthesis = CommandParser.get_parenthesis(cmd_tex[0])
-                print(parenthesis)
                 if parenthesis[0][0] == '[':
                     param_default = parenthesis[0][1]
                     parenthesis.pop(0)
@@ -72,14 +70,12 @@ def parse_macros(tex):
                     param_default = None
                 params = [parenthesis[i][1]
                           for i in range(len(parenthesis) - 1)]
-                print(params)
                 #asking the tex to the macro
                 replace_tex = macros[m].get_tex(params, param_default)
                 #now we replace the tex
                 preparsed_tex = preparsed_tex[:cmd_ma.start()] +\
                             replace_tex +\
                             preparsed_tex[cmd_ma.end() + cmd_tex[2]:]
-                print(tex_to_parse)
 
         #at the end of the cyle we check if a macro was found
         if macros_found > 0:

@@ -112,9 +112,10 @@ class Parser:
             parsed separately
         -normal commands: like \cmd{text}
         '''
+        #printing the current tex for debug
+        logging.debug('CURRENT-TEX: ' + tex[:40])
         #list of blocks parsed
         pblocks = []
-        print(tex[:40])
         #checking if tex is void
         if len(tex) == 0:
             return pblocks
@@ -293,7 +294,6 @@ class Parser:
                 #we have a \\ command
                 matched_cmd = '\\'
                 tex_to_parse = tex[match.end():].strip()
-                print(tex_to_parse)
                 #we insert the matched options in the dict for hooks
                 params = {'cmd':'\\', 'star':False}
                 #check if we have \\*

@@ -7,7 +7,7 @@ class FormattingText(Block):
 
 	@staticmethod
 	def parse(parser, tex, parent_block, params):
-		logging.debug('FormattingText.parse @ tex: %s', tex )
+		logging.debug('FormattingText.parse @ tex: %s', tex[:30] )
 		options, left_tex = CommandParser.parse_options(tex,
 			[('text','{','}')])
 		text = options['text']
