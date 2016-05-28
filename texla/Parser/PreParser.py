@@ -52,17 +52,19 @@ def parse_macros(tex):
         for m in macros:
             #the macro name is \\name, but it's not
             #raw: we have to add a \\ in front of it.
-            cmd_re = re.compile('\\' + m + r'(?=[\s\{\[])')
+            cmd_re = re.compile('\\' + m + r'(?=[\s\{\[\\])')
             for cmd_ma in cmd_re.finditer(tex_to_parse):
                 log[m] += 1
                 macros_found += 1
                 #we get command complete tex
                 cmd_tex = CommandParser.get_command_options(tex_to_parse[
                     cmd_ma.end():])
-                #cmd_tex contains also the index of the end of
-                #the command. We need it later.
+                print(cmd_tex)
+                #cmd_tex contains also the index of the star  of
+                #tex after the macro. We need it later.
                 #we get parenthesis
                 parenthesis = CommandParser.get_parenthesis(cmd_tex[0])
+                print(parenthesis)
                 if parenthesis[0][0] == '[':
                     param_default = parenthesis[0][1]
                     parenthesis.pop(0)
@@ -70,12 +72,15 @@ def parse_macros(tex):
                     param_default = None
                 params = [parenthesis[i][1]
                           for i in range(len(parenthesis) - 1)]
+                print(params)
                 #asking the tex to the macro
                 replace_tex = macros[m].get_tex(params, param_default)
                 #now we replace the tex
-                preparsed_tex = preparsed_tex.replace(
-                    tex_to_parse[cmd_ma.start():cmd_ma.end() + cmd_tex[2]],
-                    replace_tex)
+                preparsed_tex = preparsed_tex[:cmd_ma.start()] +\
+                            replace_tex +\
+                            preparsed_tex[cmd_ma.end() + cmd_tex[2]:]
+                print(tex_to_parse)
+
         #at the end of the cyle we check if a macro was found
         if macros_found > 0:
             tex_to_parse = preparsed_tex
