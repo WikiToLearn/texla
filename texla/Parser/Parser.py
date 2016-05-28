@@ -365,7 +365,7 @@ class Parser:
         cmd = tex[1]
         if (cmd == ' '):
             #we change the name of the command
-            cmd = "space"
+            cmd = "mandatory_space"
         params = {'cmd':cmd, 'star':False}
         block, left_tex =  self.call_parser_hook(cmd,
                 'cmd', tex[2:], parent_block, params)

@@ -25,5 +25,5 @@ class SpaceBlock(Block):
 parser_hooks = {
     'hspace' : SpaceBlock.parse,
     'vspace' : SpaceBlock.parse,
-    'space' : SpaceBlock.parse
+    'mandatory_space' : SpaceBlock.parse
     }
