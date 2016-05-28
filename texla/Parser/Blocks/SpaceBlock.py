@@ -12,9 +12,8 @@ class SpaceBlock(Block):
 
         options, left_text = CommandParser.parse_options(
             tex, [('length','{','}')])
-
         block = SpaceBlock(params['cmd'],
-                length, parent_block)
+                options['length'], parent_block)
         logging.debug('SpaceBlock.parse @')
         return (block, left_text)
 
