@@ -18,8 +18,7 @@ class Parser:
     def parse(self,tex):
         tex, data = PreParser.preparse(tex)
         self.data = data
-        logging.debug('Preparsed TEX @ #######\n'+\
-            '%s \n#######', tex)
+        logging.info('######## PREPARSED TEX ########')
 
         #Getting content of document
         r_doc = re.compile(r'\\begin(?P<options>\[.*?\])?{document}'+
@@ -52,7 +51,7 @@ class Parser:
         if (level+1) < (len(utility.section_level)-1):
             #getting level key from utility to create regex
             level_key = utility.section_level[level+1]
-            sec_re = re.compile(r'\\'+ level_key)
+            sec_re = re.compile(r'\\'+ level_key + r'(?=[*\[\{])')
             #the tex is splitted by the section key
             toks = sec_re.split(tex)
             #the first token is the tex outside sectioning

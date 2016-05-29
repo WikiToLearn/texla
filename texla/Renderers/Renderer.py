@@ -19,12 +19,9 @@ class Renderer():
     def render_children_blocks(self, block, collapse=True):
         output = []
         for bl in block.ch_blocks:
-            #searching for renderer_hook
-            if bl.block_name in self.render_hooks:
-                output.append((bl.block_name, self.render_block(bl)))
-            else:
-                #default hook is mandatory
-                output.append((bl.block_name, self.render_block(bl)))
+            #it's not necessary checking for renderer_hook
+            #because default hook is mandatory
+            output.append((bl.block_name, self.render_block(bl)))
         logging.debug('Render.ch_blocks @ %s', output)
         if collapse:
             return ''.join([x[1] for x in output])
