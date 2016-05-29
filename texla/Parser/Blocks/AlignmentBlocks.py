@@ -23,6 +23,18 @@ class AlignmentBlock(Block):
         logging.debug('AlignmentBlock.parse_cmd @ type: %s', params['cmd'])
         return (block,tex)
 
+    @staticmethod
+    def parse_command_content(parser, tex, parent_block, params):
+        options, left_text = CommandParser.parse_options(
+            tex, [('content','{','}')])
+        block = AlignmentBlock(params['cmd'],
+                    options['content'], parent_block)
+        children_blocks = parser.parse_instructions(
+                    options['content'], block,{})
+        block.add_children_blocks(children_blocks)
+        logging.debug('AlignmentBlock.parse_cmd @ type: %s', params['cmd'])
+        return (block, left_text)
+
 
     def __init__(self, align_type, tex, parent_block):
         super().__init__(align_type, tex, parent_block)
@@ -37,5 +49,6 @@ parser_hooks = {
     'flushleft' : AlignmentBlock.parse_env,
     'flushright' : AlignmentBlock.parse_env,
     'center' : AlignmentBlock.parse_env,
-    'centering' : AlignmentBlock.parse_command
+    'centering' : AlignmentBlock.parse_command,
+    'centerline' : AlignmentBlock.parse_command_content
 }

@@ -119,7 +119,7 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #FORMATTING
 
-    def r_special_command(self, block):
+    def r_special_character(self, block):
         return block.attributes['character']
 
     def r_dots(self, block):
@@ -156,6 +156,13 @@ class MediaWikiRenderer(Renderer):
         s.append('</sub>')
         return ''.join(s)
 
+    def r_underline(self, block):
+        s = []
+        s.append('{{sottolineato|')
+        s.append(self.render_children_blocks(block))
+        s.append('}}')
+        return ''.join(s)
+
     def r_abstract(self, block):
         s = []
         s.append('{{abstract|')
@@ -166,19 +173,24 @@ class MediaWikiRenderer(Renderer):
     def r_break(self, block):
         return ''
 
+    def r_vspace(self,block):
+        return '\n\n'
+
+    def r_mandatory_space(self,block):
+        return ' '
+
+    def r_verbatim(self, block):
+        return '<pre>' + block.attributes['content'] +'</pre>'
+
+    def r_verb(self, block):
+        return '<tt>' + block.attributes['content'] +'</tt>'
+
     #########################################
     #ALIGNMENT
 
     def r_center(self, block):
         s = []
         s.append('{{center|')
-        s.append(self.render_children_blocks(block))
-        s.append('}}')
-        return ''.join(s)
-
-    def r_centering(self, block):
-        s = []
-        s.append('{{center')
         s.append(self.render_children_blocks(block))
         s.append('}}')
         return ''.join(s)
@@ -384,29 +396,36 @@ class MediaWikiRenderer(Renderer):
             'cleardoublepage': self.r_newpage,
             #formatting
             'emph': self.r_textit,
-            'centering': self.r_centering,
             'textbf': self.r_textbf,
             'textit': self.r_textit,
             'textsc': self.r_textsc,
             'textsuperscript': self.r_superscript,
             'textsubscript': self.r_subscript,
-            '%': self.r_special_command,
-            '&': self.r_special_command,
-            '$': self.r_special_command,
-            '{': self.r_special_command,
-            '}': self.r_special_command,
-            '#': self.r_special_command,
-            '_': self.r_special_command,
+            'underline': self.r_underline,
+            'uline': self.r_underline,
+            '%': self.r_special_character,
+            '&': self.r_special_character,
+            '$': self.r_special_character,
+            '{': self.r_special_character,
+            '}': self.r_special_character,
+            '#': self.r_special_character,
+            '_': self.r_special_character,
             'dots': self.r_dots,
             'ldots': self.r_dots,
             'flushright': self.r_flushright,
             'flushleft': self.r_flushleft,
             'center': self.r_center,
+            'centerline': self.r_center,
             'abstract': self.r_abstract,
             'linebreak': self.r_break,
             'pagebreak': self.r_break,
             'nolinebreak': self.r_break,
             'nopagebreak': self.r_break,
+            'verbatim': self.r_verbatim,
+            'verb': self.r_verb,
+            #spaces
+            'vspace': self.r_vspace,
+            'mandatory_space': self.r_mandatory_space,
             #theorems
             'theorem' : self.r_theorem,
             'proof' : self.r_proof,

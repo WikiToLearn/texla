@@ -29,7 +29,6 @@ class TextBlock(Block):
     @staticmethod
     def fix_text(text):
         '''Function that removes useless spaces from text'''
-        #text = text.strip()  #MAYBE it's not necessary
         text = text.replace('\t', '')
         text = text.replace('    ', '')
         return text

@@ -2,7 +2,6 @@ import logging
 from .Utilities import *
 from .Block import Block
 
-#general class for every type of text format
 class FormattingText(Block):
 
 	@staticmethod

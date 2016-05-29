@@ -9,7 +9,6 @@ class SpaceBlock(Block):
 
     @staticmethod
     def parse(parser, tex, parent_block, params):
-
         options, left_text = CommandParser.parse_options(
             tex, [('length','{','}')])
         block = SpaceBlock(params['cmd'],

@@ -200,7 +200,7 @@ class Page():
             s['is_page'] = False
         else:
             s['is_page'] = True
-        s['text'] = self.text
+        s['text'] = self.text[:100]
         s['children'] = []
         for page in self.subpages:
             s['children'].append(page.get_json_dictionary(pages))
