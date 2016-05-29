@@ -119,18 +119,27 @@ class Parser:
         if len(tex) == 0:
             return pblocks
         #searching for comands \cmd, envs \begin or math
+        symb = {}
+        left_tex = ''
         slash = tex.find('\\')
         dollar = tex.find('$')
-        left_tex = ''
-        if slash == -1 and dollar == -1:
+        graph = tex.find('{')
+        if slash == -1 and dollar == -1 and graph==-1:
             #we check if the string is only space or \n
             if (len(tex.strip())):
                 #it's plain text
                 pblocks.append(self.parse_plain_text(tex,
                         parent_block))
             return pblocks
+        #searching the first symbol
+        symb[slash] = 'slash'
+        symb[dollar] = 'dollar'
+        symb[graph] = 'group'
+        print(symb)
+        first = symb[sorted(symb)[0]]
+        print(first)
         #what's the first token: cmd,env or math
-        elif (slash < dollar and slash!=-1 and slash!=-1) or dollar==-1:
+        if first == 'slash':
             #text before and to parse
             before_tex = tex[:slash]
             tex_tp = tex[slash:]
@@ -160,7 +169,7 @@ class Parser:
                     tex_tp, parent_block, options)
             #block saved
             pblocks.append(block)
-        else:
+        elif first == 'dollar':
             #we have MATH
             #test before is plain text.
             before_tex = tex[:dollar]
@@ -173,6 +182,8 @@ class Parser:
             #we have to parse math
             block, left_tex = self.parse_math(tex_tp, parent_block,options)
             pblocks.append(block)
+        elif first == 'group':
+            pass
 
         #left_tex is parsed with another cycle
         pblocks += self.parse_instructions(left_tex, parent_block, options)
