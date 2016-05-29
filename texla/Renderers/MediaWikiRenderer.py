@@ -158,14 +158,14 @@ class MediaWikiRenderer(Renderer):
 
     def r_underline(self, block):
         s = []
-        s.append('{{sottolineato|')
+        s.append('{{Sottolineato|')
         s.append(self.render_children_blocks(block))
         s.append('}}')
         return ''.join(s)
 
     def r_abstract(self, block):
         s = []
-        s.append('{{abstract|')
+        s.append('{{Abstract|')
         s.append(self.render_children_blocks(block))
         s.append('}}')
         return ''.join(s)
@@ -190,21 +190,21 @@ class MediaWikiRenderer(Renderer):
 
     def r_center(self, block):
         s = []
-        s.append('{{center|')
+        s.append('{{Center|')
         s.append(self.render_children_blocks(block))
         s.append('}}')
         return ''.join(s)
 
     def r_flushleft(self, block):
         s = []
-        s.append('{{flushleft|')
+        s.append('{{Flushleft|')
         s.append(self.render_children_blocks(block))
         s.append('}}')
         return ''.join(s)
 
     def r_flushright(self, block):
         s = []
-        s.append('{{flushright|')
+        s.append('{{Flushright|')
         s.append(self.render_children_blocks(block))
         s.append('}}')
         return ''.join(s)
