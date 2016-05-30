@@ -139,16 +139,18 @@ class Parser:
         if graph != -1:
             symb[graph] = 'group'
         #getting the first occurence
-        first = symb[sorted(symb)[0]]
+        first_index = sorted(symb)[0]
+        first_symb = symb[first_index]
+        #creating block text with before_tex
+        before_tex = tex[:first_index]
+        #tex to parse
+        tex_tp = tex[first_index:]
+        #creating a plain text block
+        if (len(before_tex.strip())):
+            pblocks.append(self.parse_plain_text(before_tex,
+                    parent_block))
         #what's the first token: slash, dollar, group
-        if first == 'slash' or first == 'group':
-            #text before and to parse
-            before_tex = tex[:slash]
-            tex_tp = tex[slash:]
-            #creating a plain text block
-            if (len(before_tex.strip())):
-                pblocks.append(self.parse_plain_text(before_tex,
-                        parent_block))
+        if first_symb == 'slash':
             #we check if it's a math command like \[ or \(
             if tex_tp[1] in ('[','('):
                 block, left_tex = self.parse_math(
@@ -171,22 +173,19 @@ class Parser:
                     tex_tp, parent_block, options)
             #block saved
             pblocks.append(block)
-        elif first == 'dollar':
-            #we have MATH
-            #test before is plain text.
-            before_tex = tex[:dollar]
-            tex_tp = tex[dollar:]
-            #we check if the string is only space or \n
-            if (len(before_tex.strip())):
-                pblocks.append(self.parse_plain_text(
-                    before_tex, parent_block))
-
+        elif first_symb == 'dollar':
             #we have to parse math
             block, left_tex = self.parse_math(tex_tp, parent_block,options)
             pblocks.append(block)
-
+        elif first_symb == 'group':
+            #we have a group {...} syntax
+            block, left_tex = self.parse_commands_group(
+                    tex_tp, parent_block, options)
+            pblocks.append(block)
         #left_tex is parsed with another cycle
-        pblocks += self.parse_instructions(left_tex, parent_block, options)
+        pblocks += self.parse_instructions(
+                left_tex, parent_block, options)
+        #all the blocks parsed are returned
         return pblocks
 
 
@@ -322,6 +321,16 @@ class Parser:
             logging.error('PARSER.parse_command @ command NOT FOUND')
 
 
+    def parse_commands_group(self, tex, parent_block, options):
+        '''
+        This function handles the group of commands created
+        with the syntax {...}. It's used for the formatting
+        commands.
+        '''
+        block, left_tex = self.call_parser_hook(
+            'commands_group', 'env', tex, parent_block,
+            {'env':'commands_group'})
+        return (block, left_tex)
 
     def parse_letter_command(self, tex, parent_block,options):
         ''''
