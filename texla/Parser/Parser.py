@@ -132,14 +132,16 @@ class Parser:
                         parent_block))
             return pblocks
         #searching the first symbol
-        symb[slash] = 'slash'
-        symb[dollar] = 'dollar'
-        symb[graph] = 'group'
-        print(symb)
+        if slash != -1:
+            symb[slash] = 'slash'
+        if dollar != -1:
+            symb[dollar] = 'dollar'
+        if graph != -1:
+            symb[graph] = 'group'
+        #getting the first occurence
         first = symb[sorted(symb)[0]]
-        print(first)
-        #what's the first token: cmd,env or math
-        if first == 'slash':
+        #what's the first token: slash, dollar, group
+        if first == 'slash' or first == 'group':
             #text before and to parse
             before_tex = tex[:slash]
             tex_tp = tex[slash:]
@@ -182,8 +184,6 @@ class Parser:
             #we have to parse math
             block, left_tex = self.parse_math(tex_tp, parent_block,options)
             pblocks.append(block)
-        elif first == 'group':
-            pass
 
         #left_tex is parsed with another cycle
         pblocks += self.parse_instructions(left_tex, parent_block, options)
