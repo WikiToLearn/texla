@@ -52,7 +52,7 @@ def parse_macros(tex):
         for m in macros:
             #the macro name is \\name, but it's not
             #raw: we have to add a \\ in front of it.
-            cmd_re = re.compile('\\' + m + r'(?=[\s\{\[\\])')
+            cmd_re = re.compile('\\' + m + r'(?![a-zA-Z])')
             for cmd_ma in cmd_re.finditer(tex_to_parse):
                 log[m] += 1
                 macros_found += 1
@@ -73,9 +73,9 @@ def parse_macros(tex):
                 #asking the tex to the macro
                 replace_tex = macros[m].get_tex(params, param_default)
                 #now we replace the tex
-                preparsed_tex = preparsed_tex[:cmd_ma.start()] +\
+                preparsed_tex = tex_to_parse[:cmd_ma.start()] +\
                             replace_tex +\
-                            preparsed_tex[cmd_ma.end() + cmd_tex[2]:]
+                            tex_to_parse[cmd_ma.end() + cmd_tex[2]:]
 
         #at the end of the cyle we check if a macro was found
         if macros_found > 0:
