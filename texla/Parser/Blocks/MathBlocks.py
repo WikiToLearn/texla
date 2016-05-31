@@ -22,7 +22,7 @@ class MathBlock(Block):
             lblock = LabelBlock(l, block)
             logging.info('BLOCK @ %s%s',
                     "\t"*lblock.tree_depth, str(lblock))
-            block.add_child_block(lblock)
+            block.labels.append(lblock)
         return block
 
     @staticmethod
@@ -61,6 +61,8 @@ class MathBlock(Block):
         #the content is saved in attributes
         self.attributes['content'] = tex
         self.attributes['star'] = star
+        #list for labels blocks
+        self.labels = []
 
     def __str__(self):
         return  '<Block:{}, ID:{}, math_type:{}, star:{}>'.format(

@@ -20,6 +20,7 @@ def math_check(mtxt, env=''):
     mtxt = remove_command_greedy(mtxt, 'ensuremath', False)
     #removing tiny command
     mtxt = remove_command_greedy(mtxt, 'tiny',False)
+    mtxt = remove_command_greedy(mtxt, 'scriptsize')
     #replace hspace with \quad
     mtxt = replace_command_greedy(mtxt, 'hspace', 'quad', True)
     mtxt = replace_command_greedy(mtxt, 'underbar', 'underline', False)

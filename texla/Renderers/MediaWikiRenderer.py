@@ -83,12 +83,16 @@ class MediaWikiRenderer(Renderer):
         s = block.attributes['content']
         #check math content
         s = MathCheck.math_check(s)
+        #rendering labels
+        self.render_blocks(block.labels)
         return '<dmath>' + s + '</dmath>'
 
     def r_inline_math(self, block):
         s = block.attributes['content']
         #check math content
         s = MathCheck.math_check(s)
+        #rendering labels
+        self.render_blocks(block.labels)
         return '<math>' + s + '</math>'
 
     def r_align(self, block):
@@ -102,6 +106,8 @@ class MediaWikiRenderer(Renderer):
         s = s.replace('multline*', 'align')
         #check math content
         s = MathCheck.math_check(s)
+        #rendering labels
+        self.render_blocks(block.labels)
         return '<dmath type=align>' + s + '</dmath>'
 
     #########################################
@@ -284,8 +290,8 @@ class MediaWikiRenderer(Renderer):
             th_title += str(num)
             self.th_numbering[counter] = num
         if block.attributes['title'] != None:
-            th_title += block.attributes['title']
-        s = []
+            th_title +=" "+ block.attributes['title']
+        s = ['\n']
         if self.configs['lang'] =='it':
             if th_definition.lower() == 'teorema':
             #adding content to page through a template

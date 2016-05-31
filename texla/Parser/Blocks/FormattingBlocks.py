@@ -59,6 +59,7 @@ parser_hooks = {
     'textsuperscript' : FormattingTextBlock.parse,
     'textsubscript' : FormattingTextBlock.parse,
     #command in groups
+    #shapes
     'normalfont' : FormattingGroupBlock.parse,
     'em' : FormattingGroupBlock.parse,
     'rmfamily' : FormattingGroupBlock.parse,
