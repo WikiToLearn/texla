@@ -89,6 +89,7 @@ class PageTree():
                 self.normalized_urls[math]= tit
                 #saving it to file
                 self.nurls_file.write(math+'@@@'+tit+'\n')
+                self.nurls_file.flush()
                 title =  title.replace(mre.group(0),tit)
         return title
 

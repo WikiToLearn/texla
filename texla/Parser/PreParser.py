@@ -160,6 +160,6 @@ def preparse_header(tex):
 
 def preparse_par(tex):
     '''This function replace \n\n with a \\par to
-    show that there's a change of par, understendable bye parser.
+    show that there's a change of par, understendable by the parser.
     It replaces even occurrences of \n\n'''
     return re.sub(r'(\n\n)+','\\par ',tex)

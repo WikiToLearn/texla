@@ -446,6 +446,7 @@ class MediaWikiRenderer(Renderer):
             #math
             'displaymath': self.r_display_math,
             'inlinemath': self.r_inline_math,
+            'ensuremath': self.r_inline_math,
             'equation': self.r_display_math,
             'eqnarray': self.r_align,
             'multline': self.r_align,

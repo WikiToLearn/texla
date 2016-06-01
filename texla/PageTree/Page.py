@@ -118,7 +118,7 @@ class Page():
         if level == 0:
             if '<ref>' in self.text:
                 #added refs tags to show footnotes
-                self.text+='\n<references/>'
+                self.text+='\n{{Note}}'
         else:
             #Creation of current page'title
             tit = '\n'+'='*(level)+self.title+ \
@@ -153,7 +153,7 @@ class Page():
                 page = pages[labels[label]]
                 if page.url != self.url:
                     self.text = self.text.replace('\\ref{'+label+'}',\
-                        ' ([[' + page.url + '|'+ page.title + ']]) ')
+                        ' [[' + page.url + '|'+ page.title + ']] ')
                 else:
                     self.text = self.text.replace('\\ref{'+label+'}',' ')
             except Exception:
