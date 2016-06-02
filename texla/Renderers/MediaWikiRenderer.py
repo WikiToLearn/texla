@@ -450,6 +450,7 @@ class MediaWikiRenderer(Renderer):
             'equation': self.r_display_math,
             'eqnarray': self.r_align,
             'multline': self.r_align,
+            'align': self.r_align,
             'alignat': self.r_align,
             #lists
             'itemize': self.r_itemize,

@@ -69,7 +69,9 @@ class ItemBlock(Block):
         #we must search for the param \item [word]
         options, left_tex = CommandParser.parse_options(
             tex, [('word','[',']')])
-        word = options['word']
+        word =  options['word']
+        if word==None:
+            word = ''
         block = ItemBlock(word, parent_block)
         logging.debug('ItemBlock.parse @ word: %s',str(word))
         #the left_tex is returned stripped
