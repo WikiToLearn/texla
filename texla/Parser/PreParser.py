@@ -55,7 +55,10 @@ def parse_macros(tex):
             logging.debug("preparsing MACRO: %s", m)
             #the macro name is \\name, but it's not
             #raw: we have to add a \\ in front of it.
-            cmd_re = re.compile('\\' + m + r'(?![a-zA-Z])')
+            #we have to create the string for regex
+            #to fix the special characters problem
+            m_r = ''.join(['['+x+']' for x in m[1:]])
+            cmd_re = re.compile(r'\\' + m_r + r'(?![a-zA-Z])')
 
             #lists for positions and replacements
             pos = []
