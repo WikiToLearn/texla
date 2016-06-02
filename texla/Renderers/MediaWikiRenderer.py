@@ -291,7 +291,7 @@ class MediaWikiRenderer(Renderer):
             self.th_numbering[counter] = num
         if block.attributes['title'] != None:
             th_title +=" "+ block.attributes['title']
-        s = ['\n']
+        s = []
         if self.configs['lang'] =='it':
             if th_definition.lower() == 'teorema':
             #adding content to page through a template
