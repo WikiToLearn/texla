@@ -10,7 +10,7 @@ import texla.PageTree.Exporter as exporter
 
 def execute_texla_mediawiki(config):
     logging.info('######## STARTING PARSING ########')
-    p = Parser()
+    p = Parser(config)
     a = open(config['input_path'], 'r').read()
     tree = p.parse(a)
     f = open(config['output_path'] + '.tree', 'w')

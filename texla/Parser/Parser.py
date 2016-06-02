@@ -12,11 +12,12 @@ special_characters = ('%','&','$','{','}','#','_',' ')
 
 class Parser:
 
-    def __init__(self):
-        pass
+    def __init__(self, configs):
+        self.configs = configs
 
     def parse(self,tex):
-        tex, data = PreParser.preparse(tex)
+        tex, data = PreParser.preparse(tex,
+                        self.configs['input_path'])
         self.data = data
         logging.info('######## PREPARSED TEX ########')
 
