@@ -155,6 +155,16 @@ class UtilTest(unittest.TestCase):
         result = ut.remove_command_greedy(a, 'command', True)
         self.assertEqual(result, 'tex text  text')
 
+    def test_remove_command_no_option(self):
+        a = 'tex text \\command text \\command'
+        result = ut.remove_command_no_options(a, 'command')
+        self.assertEqual(result, 'tex text  text ')
+
+    def test_remove_command_greedy_multi(self):
+        a = 'tex \\cmd{bo} tex \\cmd{foo} text'
+        result = ut.remove_command_greedy(a, 'cmd', False)
+        self.assertEqual(result, 'tex bo tex foo text')
+
     def test_replace_command_greedy1(self):
         a = 'tex text \\command[option]{ok ok} text'
         result = ut.replace_command_greedy(a, 'command','cmd',False)
@@ -172,6 +182,12 @@ class UtilTest(unittest.TestCase):
         result = ut.replace_command_greedy(a, 'command','cmd',False)
         self.assertEqual(result,
                 'tex text \\cmd{ok ok} text', msg=None)
+
+    def test_replace_command_greedy_multi(self):
+        a = 'tex \\cmd{tex} text \\cmd{ok ok} text'
+        result = ut.replace_command_greedy(a, 'cmd','command',False)
+        self.assertEqual(result,
+                'tex \\command{tex} text \\command{ok ok} text')
 
     def test_replace_command_no_options(self):
         a = 'tex text \\dag\\int text'
