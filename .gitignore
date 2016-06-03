@@ -1,3 +1,4 @@
 *.pyc
 .directory
 __pycache__
+test/
