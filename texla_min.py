@@ -19,7 +19,11 @@ def execute_texla_mediawiki(config):
     #rendering
     rend = MediaWikiRenderer(config)
     rend.start_rendering(tree)
-
+    #collpasing tree
+    tree = rend.tree
+    tree.collapse_content_level(config['collapse_content_level'])
+    tree.collapse_urls()
+    tree.fix_references()
     #getting text of root_page
     output_text = rend.tree.root_page.text
     logging.info('######## STARTING EXPORTING ########')
@@ -38,7 +42,11 @@ if __name__ == '__main__':
               "output_path":fileout,
               "doc_title":"texla_min",
               "lang":"it",
-              "keywords":{}
+              "keywords":json.loads(
+                  open('lang.txt').read())['it'],
+              "collapse_content_level":-1,
+              "base_path":'',
+              "create_index":0,
               }
     #reading JSON configs
     execute_texla_mediawiki(config)
