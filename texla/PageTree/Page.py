@@ -121,8 +121,9 @@ class Page():
                 self.text+='\n{{Note}}'
         else:
             #Creation of current page'title
-            tit = '\n'+'='*(level)+self.title+ \
-                    '='*(level)
+            #base il ===
+            tit = '\n'+'='+'='*(level)+self.title+ \
+                    '='*(level)+'='
             self.text = tit+ "\n"+ self.text
             #marking as collapsed
             self.collapsed = True

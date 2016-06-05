@@ -108,7 +108,7 @@ class MediaWikiRenderer(Renderer):
         s = MathCheck.math_check(s)
         #rendering labels
         self.render_blocks(block.labels)
-        return '<dmath type=align>' + s + '</dmath>'
+        return '<dmath type="align">' + s + '</dmath>'
 
     #########################################
     #LABELS and refs

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-
 import re
 from .utils import *
-
 
 def math_check(mtxt, env=''):
     '''Function that remove and replace some commands from math'''
@@ -18,6 +16,7 @@ def math_check(mtxt, env=''):
     mtxt = remove_command_greedy(mtxt, 'boxed',False)
     #removing \ensuremath from macros
     mtxt = remove_command_greedy(mtxt, 'ensuremath', False)
+    mtxt = remove_command_greedy(mtxt, 'mathsrc', False)
     #removing tiny command
     mtxt = remove_command_greedy(mtxt, 'tiny',False)
     mtxt = remove_command_greedy(mtxt, 'scriptsize')
@@ -27,7 +26,6 @@ def math_check(mtxt, env=''):
     #replacing bb and bbm with boldmath
     mtxt = replace_command_greedy(mtxt, 'bm', 'mathbf', False)
     mtxt = replace_command_greedy(mtxt, 'bbm', 'mathbf', False)
-    mtxt = replace_command_greedy(mtxt, 'mathscr', 'mathcal', False)
     #replace intertext with mbox
     mtxt = replace_command_greedy(mtxt, 'intertext', 'mbox', False)
     #symbols
