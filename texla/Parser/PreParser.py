@@ -12,7 +12,7 @@ def preparse(tex, input_path):
     '''
     Entrypoint for preparsing of tex
     '''
-    #input files
+    tex = check_doc_integrity(tex)
     tex = remove_comments(tex)
     tex = preparse_input(tex, input_path)
     tex = parse_macros(tex)
@@ -23,6 +23,11 @@ def preparse(tex, input_path):
     o.write(tex)
     return (tex, data)
 
+def check_doc_integrity(tex):
+    '''checking if the source has \begin{document}'''
+    if not ("\\begin{document}" in tex):
+        tex = "\\begin{document}"+tex+ "\\end{document}"
+    return tex
 
 def parse_macros(tex):
     '''
@@ -119,6 +124,7 @@ def remove_comments(tex):
     '''
     This function removes comments from the tex.
     '''
+    print(type(tex))
     com_re = re.compile(r'(?<!\\)(%.*)\n')
     final_tex = tex
     for match in com_re.finditer(tex):
