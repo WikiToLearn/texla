@@ -47,7 +47,6 @@ def parse_macros(tex):
     #now we can search for occurrence of the macro,
     #get the options, and replace the tex
     macros_found = 0
-    f = open('macro', 'w')
     #we reiterate the process until no macros are found.
     #This is useful for macros using other macros.
     while True:
