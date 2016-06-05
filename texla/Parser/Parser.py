@@ -16,9 +16,15 @@ class Parser:
         self.configs = configs
 
     def parse(self,tex):
-        tex, data = PreParser.preparse(tex,
+        '''Entry point for parsing.
+        The DocumentBlock is created and all the
+        parse chain is started from parse_sections.
+        The function returns the root_block,
+        which contains all the parsed tree blocks.'''
+        #preparsing
+        tex, doc_data = PreParser.preparse(tex,
                         self.configs['input_path'])
-        self.data = data
+        self.doc_data = doc_data
         logging.info('######## PREPARSED TEX ########')
 
         #Getting content of document
@@ -27,13 +33,13 @@ class Parser:
         m_doc = r_doc.search(tex)
         #getting content
         content = m_doc.group("content")
-        options = m_doc.group("options")
         logging.debug('PARSER @ got content of Document')
         #creating root block
-        self.root_block = DocumentBlock(self.data['title'],{})
-        #beginning of parsing
+        self.root_block = DocumentBlock(self.doc_data['title'],{})
+        #beginning of parsing: creation of root block
         options = {} #for now we don't have options
-        blocks = self.parse_sections(content, -1, self.root_block,options)
+        blocks = self.parse_sections(content, -1,
+                        self.root_block,options)
         self.root_block.add_children_blocks(blocks)
         return self.root_block
 
@@ -52,7 +58,7 @@ class Parser:
         if (level+1) < (len(utility.section_level)-1):
             #getting level key from utility to create regex
             level_key = utility.section_level[level+1]
-            sec_re = re.compile(r'\\'+ level_key + r'(?=[*\[\{])')
+            sec_re = re.compile(r'\\'+ level_key + r'(?![a-zA-Z])')
             #the tex is splitted by the section key
             toks = sec_re.split(tex)
             #the first token is the tex outside sectioning
