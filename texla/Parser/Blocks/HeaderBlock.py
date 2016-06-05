@@ -9,9 +9,9 @@ class HeaderBlock(Block):
 
     @staticmethod
     def parse(parser, tex, parent_block, params):
-        title = parser.data['title']
-        author = parser.data['author']
-        date = parser.data['date']
+        title = parser.doc_data['title']
+        author = parser.doc_data['author']
+        date = parser.doc_data['date']
         block = HeaderBlock(title, date, author, parent_block)
         return (block, tex)
 
