@@ -13,8 +13,9 @@ def preparse(tex, input_path):
     Entrypoint for preparsing of tex
     '''
     tex = check_doc_integrity(tex)
+    tex = preparse_include(tex, input_path)
+    tex = preparse_subfiles(tex, input_path)
     tex = remove_comments(tex)
-    tex = preparse_input(tex, input_path)
     tex = parse_macros(tex)
     tex = preparse_theorems(tex)
     tex = preparse_par(tex)
@@ -124,7 +125,6 @@ def remove_comments(tex):
     '''
     This function removes comments from the tex.
     '''
-    print(type(tex))
     com_re = re.compile(r'(?<!\\)(%.*)\n')
     final_tex = tex
     for match in com_re.finditer(tex):
@@ -195,18 +195,16 @@ def preparse_par(tex):
     It replaces even occurrences of \n\n'''
     return re.sub(r'(\n\n)+','\\par ',tex)
 
-def preparse_input(tex,input_path):
+def preparse_include(tex,input_path):
     ''' This function replace \input{} commands
     with the content of the files.  '''
     base_path = os.path.dirname(input_path)
-    print(base_path)
     r = re.compile(r'\\input{(.*?)}')
     inputs_found = 0
     result_tex = tex
     while(True):
         for m in r.finditer(tex):
             name = m.group(1) + '.tex'
-            print(m.groups())
             #reading file
             file_name = base_path + "/"+ name
             file_tex = open(file_name, 'r').read()
@@ -239,3 +237,28 @@ def preparse_input(tex,input_path):
         else:
             break
     return result_tex
+
+def preparse_subfiles(tex, input_path):
+    '''This preparse function insert the subfiles in the tex'''
+    base_path = os.path.dirname(input_path)
+    r = re.compile(r'\\subfile{(.*?)}')
+    inputs_found = 0
+    result_tex = tex
+    while(True):
+        for m in r.finditer(tex):
+            name = m.group(1) + '.tex'
+            #reading file
+            file_name = base_path + "/"+ name
+            file_tex = open(file_name, 'r').read()
+            #we have to catch the content of the doc
+            r_doc = re.compile(r'\\begin(?P<options>\[.*?\])?{document}'+
+                               r'(?P<content>.*?)\\end{document}', re.DOTALL)
+            file_tex = r_doc.search(file_tex).group('content')
+            result_tex = result_tex.replace(
+                        m.group(0), file_tex)
+            inputs_found+=1
+        if (inputs_found>0):
+            tex = result_tex
+            inputs_found = 0
+        else:
+            return result_tex
