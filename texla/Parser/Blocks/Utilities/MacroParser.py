@@ -93,5 +93,12 @@ class Macro:
             if j % 2 == 0:
                 tex.append(self.content[j])
             else:
-                tex.append(pars[self.content[j]])
+                #checking if we have the par,
+                #if not, we add a  '+
+                index = self.content[j]
+                print(pars)
+                if len(pars) > index:
+                    tex.append(pars[index])
+                else:
+                    tex.append('')
         return ''.join(tex)
