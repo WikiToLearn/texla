@@ -27,13 +27,11 @@ class PageTree():
         self.pageid_stack = [ro.id]
         self.current_id = self.root_id
         self.current_anchor = self.root_id
-        #preparing data for normalized_urls
-        self.prepare_normalize_urls()
 
     def createPage(self, title, page_type):
         '''This method creates a new page and enters
         in his enviroment setting current variables'''
-        title = self.getNormalizedUrl(title)
+        title = self.get_normalized_title(title)
         #finding level
         level = len(self.pageid_stack) - 1
         #create new page
@@ -63,34 +61,17 @@ class PageTree():
     def getRef(self, label):
         return self.urls[self.labels[label]]
 
-    def prepare_normalize_urls(self):
-        '''This function prepare the data for normalized urls.'''
-        #preparing dictionary
-        self.normalized_urls = {}
-        #initializing normalized_urls dict reading from file if exists
-        if os.path.exists(self.output_path+".titles"):
-            for line in open(self.output_path+".titles",'r'):
-                tok = line.split('@@@')
-                self.normalized_urls[tok[0]] = tok[1].strip()
-        #the file is used to save the dict of normalized urls
-        self.nurls_file = open(self.output_path+".titles",'a')
-
-    def getNormalizedUrl(self,title):
-        '''Function that removes math from title'''
-        r = re.compile(r'(?<![\$])\$(?P<m>[^$]+)\$(?!\$)', re.DOTALL)
-        for mre in r.finditer(title):
-            math = mre.group(1)
-            #reading the normalized urls dict
-            if math in self.normalized_urls:
-                title = title.replace(mre.group(0),self.normalized_urls[math])
-            else:
-                tit = str(input("\n@Normalize title: "+ title+" --->  ")).strip()
-                #saving the normalized urls
-                self.normalized_urls[math]= tit
-                #saving it to file
-                self.nurls_file.write(math+'@@@'+tit+'\n')
-                self.nurls_file.flush()
-                title =  title.replace(mre.group(0),tit)
+    @staticmethod
+    def get_normalized_title(title):
+        '''Function that removes bad symbols from title'''
+        title = title.replace('$', '')
+        title = title.replace('{','')
+        title = title.replace('}','')
+        title = title.replace('\\', '')
+        title = title.replace('\\mathcal','')
+        title = title.replace('\\mathbf','')
+        title = title.replace('\\mathbb','')
+        title = title.replace('\\ensuremath','')
         return title
 
     def get_tree_json(self):

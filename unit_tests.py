@@ -2,6 +2,7 @@ import re
 import texla.Parser.Blocks
 from texla.Parser.Blocks.Utilities import *
 import texla.Renderers.utils as ut
+import texla.PageTree.PageTree as pt
 import unittest
 
 class CommandParserTest(unittest.TestCase):
@@ -206,6 +207,12 @@ class UtilTest(unittest.TestCase):
         a = 'tex text \\command[option]{content} text'
         result = ut.get_content_greedy(a, 'command')
         self.assertEqual(result,"content", msg=None)
+
+class TitleTest(unittest.TestCase):
+    def test_title_normalizaton(self):
+        title = 'title $math \\frac{1}{2}$'
+        result = pt.PageTree.get_normalized_title(title)
+        self.assertEqual(result, 'title math frac12')
 
 
 if __name__ == '__main__':
