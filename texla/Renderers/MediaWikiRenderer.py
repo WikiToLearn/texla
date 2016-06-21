@@ -85,7 +85,7 @@ class MediaWikiRenderer(Renderer):
         s = MathCheck.math_check(s)
         #rendering labels
         self.render_blocks(block.labels)
-        return '<dmath>' + s + '</dmath>'
+        return '<math display="block">' + s + '</dmath>'
 
     def r_inline_math(self, block):
         s = block.attributes['content']
@@ -108,7 +108,8 @@ class MediaWikiRenderer(Renderer):
         s = MathCheck.math_check(s)
         #rendering labels
         self.render_blocks(block.labels)
-        return '<dmath type="align">' + s + '</dmath>'
+        return '<math display="block">\\begin{align}' +\
+                    s + '\end{align}</math>'
 
     #########################################
     #LABELS and refs
