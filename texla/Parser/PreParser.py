@@ -19,8 +19,9 @@ def preparse(tex, input_path):
     tex = parse_macros(tex)
     tex = preparse_theorems(tex)
     tex = preparse_par(tex)
+    tex = preparse_verb(tex)
     data = preparse_header(tex)
-    o = open('preparsed', 'w')
+    o = open('preparsed.tex', 'w')
     o.write(tex)
     return (tex, data)
 
@@ -262,3 +263,13 @@ def preparse_subfiles(tex, input_path):
             inputs_found = 0
         else:
             return result_tex
+
+def preparse_verb(tex):
+    '''This function preparse verbatim putting
+    the content in a {...} pair'''
+    r = re.compile(r'\\verb(?P<del>[^a-zA-Z])(?P<content>.*?)(?P=del)')
+    result = tex
+    for match in r.finditer(tex):
+        c = match.group("content")
+        result = result.replace(match.group(0), '\\verb{'+c +'}')
+    return result

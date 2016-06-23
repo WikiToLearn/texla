@@ -19,12 +19,11 @@ class VerbatimBlock(Block):
     @staticmethod
     def parse_verb(parser, tex, parent_block, params):
         #we have to extract the delimiter
-        delim = tex[0]
-        r = re.compile(r'['+delim +r']'+\
-                       r'(.*?)' + r'['+delim +r']')
-        m = r.match(tex)
-        block = VerbatimBlock('verb',m.group(1),False, parent_block)
-        return (block, tex[m.end():])
+        options, left_tex = CommandParser.parse_options(tex,
+            [('content','{','}')])
+        text = options['content']
+        block = VerbatimBlock('verb',text,False, parent_block)
+        return (block, left_tex)
 
 
     def __init__(self, vtype, content,star, parent_block):
