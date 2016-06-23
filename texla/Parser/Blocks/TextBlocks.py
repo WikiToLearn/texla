@@ -45,7 +45,7 @@ class AccentedLetterBlock(Block):
         logging.debug('AccentedLetterBlock.parse @ ')
         #we can extract the letter using grammar
         params, left_tex = CommandParser.parse_options(tex,
-                                                       [('letter', '{', '}')])
+                                    [('letter', '{', '}')])
         #we get the letter, stripper to avoid spaces
         letter = params['letter'].strip()
         block = AccentedLetterBlock(letter, accent_type, parent_block)

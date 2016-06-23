@@ -385,6 +385,14 @@ class MediaWikiRenderer(Renderer):
         s.append('}}\n')
         return '\n'.join(s)
 
+    #########################################
+    #ACCENTED letters
+    def r_accented_letter(self, block):
+        if block.attributes["accent_type"] in ['"',"'","`"]:
+            return block.attributes["letter"]+\
+                    block.attributes["accent_type"]
+        else:
+            return block.attributes["letter"]
 
 
     def get_render_hooks(self):
@@ -467,6 +475,8 @@ class MediaWikiRenderer(Renderer):
             'ref': self.r_ref,
             'vref': self.r_ref,
             'pageref': self.r_ref,
-            'eqref': self.r_ref
+            'eqref': self.r_ref,
+            #accents
+            "accented_letter": self.r_accented_letter,
         }
         return render_hooks
