@@ -85,7 +85,7 @@ class MediaWikiRenderer(Renderer):
         s = MathCheck.math_check(s)
         #rendering labels
         self.render_blocks(block.labels)
-        return '<math display="block">' + s + '</dmath>'
+        return '<math display="block">' + s + '</math>'
 
     def r_inline_math(self, block):
         s = block.attributes['content']

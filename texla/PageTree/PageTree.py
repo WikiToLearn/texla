@@ -67,11 +67,13 @@ class PageTree():
         title = title.replace('$', '')
         title = title.replace('{','')
         title = title.replace('}','')
-        title = title.replace('\\', '')
         title = title.replace('\\mathcal','')
         title = title.replace('\\mathbf','')
         title = title.replace('\\mathbb','')
         title = title.replace('\\ensuremath','')
+        title = title.replace(';', ' ')
+        title = title.replace('&', 'e')
+        title = title.replace('\\', '')
         return title
 
     def get_tree_json(self):
@@ -226,7 +228,7 @@ class PageTree():
              | setting-toc = auto | setting-columns = 1}}']
         #book export: setting title
         book_export_index.append('==' + self.doc_title + '==')
-        for page in self.pages.values():
+        for page in self.root_page.subpages:
             if page.level == 0:
                 index.append('{{Section\n|sectionTitle=')
                 index.append(page.title + '\n')
