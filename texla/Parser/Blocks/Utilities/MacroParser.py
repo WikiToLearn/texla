@@ -94,10 +94,9 @@ class Macro:
                 tex.append(self.content[j])
             else:
                 #checking if we have the par,
-                #if not, we add a  '+
+                #if not, we add a  ''
                 index = self.content[j]
-                print(pars)
-                if len(pars) > index:
+                if len(pars) >= index:
                     tex.append(pars[index])
                 else:
                     tex.append('')
