@@ -118,7 +118,7 @@ class Page():
         if level == 0:
             if '<ref>' in self.text:
                 #added refs tags to show footnotes
-                self.text+='\n{{Note}}'
+                self.text+='\n{{Notes}}'
         else:
             #Creation of current page'title
             #base il ===

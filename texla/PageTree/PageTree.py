@@ -74,6 +74,9 @@ class PageTree():
         title = title.replace(';', ' ')
         title = title.replace('&', 'e')
         title = title.replace('\\', '')
+        title = title.replace('/', '_')
+        title = title.replace('>', 'gt')
+        title = title.replace('<', 'lt')
         return title
 
     def get_tree_json(self):
