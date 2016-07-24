@@ -1,8 +1,5 @@
 from .Page import *
 import os
-'''Entry point for exporting pages. config is a tuple
-with (export_format, username, userid)'''
-
 
 def exportPages(pages, path, format):
     #choosing format

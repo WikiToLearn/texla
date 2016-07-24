@@ -11,3 +11,35 @@ simple tree of Blocks objects.
 
 It's **easily extensible** because to support a new command or environment the only necessary code is a
 Python class that defines a new Block. Moreover options and arguments of Latex commands and environments could be parsed with a simple and easy **API**.
+
+
+Texla Configuration
+===================
+
+The execution of texla is controlled by the **configs.txt** file.
+
+There are a few parameters to set:
+
+* __renderer__ : The output format of the conversion. __mediawiki__ is the only avaiable one for now
+
+* __input_path__ : the path of the main tex file to convert. Texla is able to convert complex documents with many included subfiles: in "input_path" you have to put the main tex file that includes all the subfiles.
+
+* __output_path__ : the path for the output files. Write it without the extension because it will be the base filename for all output files.
+
+* __doc_title__: The title of the document. Texla doesn't read the title written inside tex. :__doc_title__ is used as a base namespace for pages
+
+* __base_path__: texla exports pages in an hierarchical way, organizing pages with unique urls. __base_path__ is used as a root for the urls of the pages. It can be void.
+
+* __collapse_content_level__ : The sectioning of a latex file is a tree. Every part of the tex doc has a level. The text inside _\begin{document}_ and outside any sectioning command has level 0. texla converts the sections into pages and the page gets the level of the seciton. The content of the pages with level greater than __collapse_content_level__ is inserted in the text of the parent page as a paragraph.
+
+* __collapse_pages_level__: If a page has a level greater than __collape_pages_level__ and is not collapsed, it is moved to the level given by __collapse_pages_level__ going up in the page tree.
+
+* __create_index__: if 1 a index is create in the root page.
+
+* __export_format__ : for now _text_ is the only avaiable
+
+* __export_single_pages__: if 1 a file for every page is created and saved in a directory called __output_path_pages__
+
+* __print_preparsed_tex__: if 1 a debug file called _preparsed.tex_ is saved with preparsed tex.
+
+* __lang__: localization for keywords. The avaiable languages are those inside __lang.txt__ file. Contributions appreciated :)

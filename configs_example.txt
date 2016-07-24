@@ -10,5 +10,4 @@
 	"export_format":"text",
 	"export_single_pages":1,
 	"print_preparsed_tex":1,
-	"lang":"it"
-}
+	"lang":"it"}
