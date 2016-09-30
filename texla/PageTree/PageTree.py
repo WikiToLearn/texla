@@ -226,18 +226,14 @@ class PageTree():
         base_page.text+= '{{libro|Project:Libri/'+ book_url+\
                 '|'+ self.doc_title + '}}\n'
         #creating root index
-        index = []
+        index = ["{{CCourse|"]
         book_export_index = ['{{libro_salvato | setting-papersize = a4\
              | setting-toc = auto | setting-columns = 1}}']
         #book export: setting title
         book_export_index.append('==' + self.doc_title + '==')
         for page in self.root_page.subpages:
             if page.level == 0:
-                index.append('{{Section\n|sectionTitle=')
-                index.append(page.title + '\n')
-                index.append('|sectionText=\n')
-                #transcluding index for section
-                index.append('{{:'+ page.url+ '}}')
+                index.append('{{SSection|'+page.title +'}}')
                 #book export index for chapters
                 book_export_index.append(';' + page.title)
                 #creating index for book
@@ -247,7 +243,13 @@ class PageTree():
                             book_export_index.append(
                                 ':[[' + p.url + '|' + p.title + ']]')
                 #closing section
-                index.append('}}\n{{ForceBreak}}\n')
+                index.append('\n{{ForceBreak}}\n')
+        #adding category to book page
+        book_export_index.append("[["+self.configs["keywords"]["book_category"]+
+                                 "|"+self.doc_title +"]]")
+        #adding course category
+        index.append("}}\n")
+        index.append("[["+ self.configs["keywords"]["category"] +":Structure]]")
         base_page.text += '\n'.join(index)
 
         #creating book export page
