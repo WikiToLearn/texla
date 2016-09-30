@@ -208,8 +208,9 @@ class Page():
         return s
 
     def get_str(self):
-        a = ' C' if self.collapsed else ''
-        return '----'*self.level +'> '+ self.title + a
+        a = '  [C]' if self.collapsed else ''
+        return '('+ str(self.level)+')'+'----'*self.level +\
+                '> '+ self.title + a
 
 
     def __str__(self):

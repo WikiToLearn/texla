@@ -74,7 +74,10 @@ class ItemBlock(Block):
             word = ''
         block = ItemBlock(word, parent_block)
         logging.debug('ItemBlock.parse @ word: %s',str(word))
-        #the left_tex is returned stripped
+        #if there's a column in the left text is removed
+        left_tex = left_tex.strip()
+        if left_tex[0] == ':':
+            left_tex = left_tex[1:]
         return (block, left_tex.strip())
 
     def __init__(self, word, parent_block):
