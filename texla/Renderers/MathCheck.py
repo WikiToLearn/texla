@@ -57,4 +57,36 @@ def math_check(mtxt, env=''):
     if env == 'empheq':
         mtxt = re.sub(r'\[box=(.*?)\]', '', mtxt, re.DOTALL)
 
+    #Michela Montrasio specific edits
+    #greek letters abbreviations
+    mtxt = replace_command_no_options(mtxt, '\\a', '\\alpha')
+    mtxt = replace_command_no_options(mtxt, '\\b', '\\beta')
+    mtxt = replace_command_no_options(mtxt, '\\ga', '\\gamma')
+    mtxt = replace_command_no_options(mtxt, '\\d', '\\delta')
+    mtxt = replace_command_no_options(mtxt, '\\eps', '\\epsilon')
+    mtxt = replace_command_no_options(mtxt, '\\l', '\\lambda')
+    mtxt = replace_command_no_options(mtxt, '\\t', '\\theta')
+    mtxt = replace_command_no_options(mtxt, '\\s', '\\sigma')
+    #number sets
+    mtxt = replace_command_no_options(mtxt, '\\N', '\\mathbb{N}')
+    mtxt = replace_command_no_options(mtxt, '\\Z', '\\mathbb{Z}')
+    mtxt = replace_command_no_options(mtxt, '\\Q', '\\mathbb{Q}')
+    mtxt = replace_command_no_options(mtxt, '\\R', '\\mathbb{R}')
+    mtxt = replace_command_no_options(mtxt, '\\C', '\\mathbb{C}')
+    #generic
+    mtxt = replace_command_no_options(mtxt, '\\+', '+ \\dots +')
+    mtxt = replace_command_no_options(mtxt, '\\from', '\\colon')
+    mtxt = replace_command_no_options(mtxt, '\\ssm', '\\smallsetminus')
+    mtxt = replace_command_no_options(mtxt, '\\implies', '\\longrightarrow')
+    mtxt = replace_command_no_options(mtxt, '\\v', '\\overrightarrow')
+
+    #To Do List: understand how to treat this stuff
+    #\renewcommand{\Re}{\mathop{Re}}
+    #\DeclareMathOperator{\spam}{spam}
+    #\renewcommand{\Im}{\mathop{Im}}
+    #\newcommand{\floor}[1]{\left\lfloor #1 \right\rfloor}
+    #\newcommand{\pint}[1]{\mathaccent23{#1}}
+    #\newenvironment{sistema}%{\left \lbrace \begin{array}{@{}l@{}}}%{\end{array}\right.}
+
+
     return mtxt
