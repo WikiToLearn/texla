@@ -293,78 +293,119 @@ class MediaWikiRenderer(Renderer):
         if block.attributes['title'] != None:
             th_title +=" "+ block.attributes['title']
         s = []
+        #checking if the Environment template is used
+        environ = False
         if self.configs['lang'] =='it':
             if th_definition.lower() == 'teorema':
             #adding content to page through a template
                 s.append("\n{{Teorema|titolo=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineTeorema}}\n")
             elif th_definition.lower() == 'definizione':
                 s.append("\n{{Definizione|titolo=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineDefinizione}}\n")
             elif th_definition.lower() == 'proposizione':
                 s.append("\n{{Proposizione|titolo=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineProposizione}}\n")
             elif th_definition.lower() == 'lemma':
                 s.append("\n{{Lemma|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineLemma}}\n")
             elif th_definition.lower() == 'corollario':
                 s.append("\n{{Corollario|titolo=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineCorollario}}\n")
             elif th_definition.lower()[:-2] == 'eserciz':
                 s.append("\n{{Esercizio|titolo=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineEsercizio}}\n")
             elif th_definition.lower()[:-1] == 'osservazion':
                 s.append("\n{{Osservazione|titolo=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineOsservazione}}\n")
             elif th_definition.lower()[:-2] == 'esemp':
                 s.append("\n{{Esempio|titolo=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineEsempio}}\n")
             elif th_definition.lower() == 'dimostrazione':
                 s.append("\n{{Dimostrazione|titolo=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineDimostrazione}}\n")
             else:
                 s.append("\n{{Environment|name="+ th_definition + \
                         "|title=" + th_title +\
                         "|content=")
+                s.append(self.render_children_blocks(block))
+                s.append("}}\n")
         elif self.configs['lang'] =='en':
             if th_definition.lower() == 'theorem':
             #adding content to page through a template
                 s.append("\n{{Theorem|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndTheorem}}\n")
             elif th_definition.lower() == 'definition':
                 s.append("\n{{Definition|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndDefinition}}\n")
             elif th_definition.lower() == 'proposition':
                 s.append("\n{{Proposition|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndProposition}}\n")
             elif th_definition.lower() == 'lemma':
                 s.append("\n{{Lemma|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndLemma}}\n")
             elif th_definition.lower() == 'corollarium':
                 s.append("\n{{Corollarium|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndCorollarium}}\n")
             elif th_definition.lower() == 'exercise':
                 s.append("\n{{Exercise|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndExercise}}\n")
             elif th_definition.lower() == 'observation':
                 s.append("\n{{Observation|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndObservation}}\n")
             elif th_definition.lower() == 'remark':
                 s.append("\n{{Remark|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndRemark}}\n")
             elif th_definition.lower() == 'example':
                 s.append("\n{{Example|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndExample}}\n")
             elif th_definition.lower() == 'demonstration':
                 s.append("\n{{Demonstration|title=" + \
-                        th_title+"|")
+                        th_title+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndDemonstration}}\n")
             else:
                 s.append("\n{{Environment|name="+ th_definition + \
                         "|title=" + th_title +\
                         "|content=")
-        #insertig theorem content
-        s.append(self.render_children_blocks(block))
-        s.append('}}\n')
+                s.append(self.render_children_blocks(block))
+                s.append("}}\n")
         return '\n'.join(s)
 
     def r_proof(self, block):
@@ -372,17 +413,24 @@ class MediaWikiRenderer(Renderer):
         if self.configs['lang'] == 'it':
             if block.title !=None:
                 s.append('\n{{Dimostrazione|titolo='+\
-                        block.attributes['title'])
+                        block.attributes['title']+ "}}")
+
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineDimostrazione}}\n")
             else:
-                s.append('\n{{Dimostrazione|')
+                s.append('\n{{Dimostrazione}}')
+                s.append(self.render_children_blocks(block))
+                s.append("{{FineDimostrazione}}\n")
         elif self.configs['lang'] == 'en':
             if block.title !=None:
                 s.append('\n{{Proof|title='+\
-                        block.attributes['title'])
+                        block.attributes['title']+"}}")
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndProof}}\n")
             else:
-                s.append('\n{{Proof|')
-        s.append(self.render_children_blocks(block))
-        s.append('}}\n')
+                s.append('\n{{Proof}}')
+                s.append(self.render_children_blocks(block))
+                s.append("{{EndProof}}\n")
         return '\n'.join(s)
 
     #########################################
