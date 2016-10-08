@@ -2,6 +2,7 @@ import logging
 import sys
 import json
 import log
+import yaml
 
 from texla.Parser import Parser
 from texla.Renderers.MediaWikiRenderer import MediaWikiRenderer
@@ -52,15 +53,9 @@ def execute_texla_mediawiki(config):
 
 if __name__ == '__main__':
     #reading JSON configs
-    p = json.loads(open('configs.txt').read())
-    config = p
-    config['collapse_content_level'] = int(p['collapse_content_level'])
-    config['collapse_pages_level'] = int(p['collapse_pages_level'])
-    config['export_single_pages'] = bool(int(p['export_single_pages']))
-    config['create_index'] = bool(int(p['create_index']))
-    config['print_preparsed_tex'] = bool(int(p['print_preparsed_tex']))
+    config = yaml.load(open('configs.yaml','r'))
     #loading localized keywords
-    config['keywords'] = json.loads(open('lang.txt').read())[config['lang']]
+    config['keywords'] = yaml.load(open('i18n.yaml','r'))[config['lang']]
     #executing process for alla renderers
     if config['renderer'] == 'mediawiki':
         execute_texla_mediawiki(config)

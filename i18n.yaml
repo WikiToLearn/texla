@@ -1,0 +1,13 @@
+it:
+    chapters: Capitoli
+    subpages: Sottopagine
+    intro: Introduzione
+    book_category: Categoria:Libri
+    category: Categoria
+
+en:
+    chapters: Chapters
+    subpages: Subpages
+    intro: Introduction
+    book_category: Category:Books
+    category: Category
