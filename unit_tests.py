@@ -2,6 +2,7 @@ import re
 import texla.Parser.Blocks
 from texla.Parser.Blocks.Utilities import *
 import texla.Renderers.utils as ut
+import texla.Renderers.MathCheck as mc
 import texla.PageTree.PageTree as pt
 import unittest
 
@@ -213,6 +214,13 @@ class TitleTest(unittest.TestCase):
         title = 'title $math \\frac{1}{2}$'
         result = pt.PageTree.get_normalized_title(title)
         self.assertEqual(result, 'title math frac12')
+
+class MathCheckTest(unittest.TestCase):
+
+    def checkApostrophe(self):
+        math = 'u" = x" y'
+        result = mc.math_check(math, env='')
+        self.assertEqual(result, "u'' = x'' y")
 
 
 if __name__ == '__main__':

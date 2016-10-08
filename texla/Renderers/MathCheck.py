@@ -16,7 +16,7 @@ def math_check(mtxt, env=''):
     mtxt = remove_command_greedy(mtxt, 'boxed',False)
     #removing \ensuremath from macros
     mtxt = remove_command_greedy(mtxt, 'ensuremath', False)
-    mtxt = remove_command_greedy(mtxt, 'mathsrc', False)
+    mtxt = remove_command_greedy(mtxt, 'mathscr', False)
     #removing tiny command
     mtxt = remove_command_greedy(mtxt, 'tiny',False)
     mtxt = remove_command_greedy(mtxt, 'scriptsize')
@@ -53,6 +53,9 @@ def math_check(mtxt, env=''):
     mtxt = remove_command_greedy(mtxt, 'tag', True)
     #apostrophe in math
     mtxt = mtxt.replace('”', "''")
+    mtxt = mtxt.replace('"', "''")
+    mtxt = mtxt.replace('``', "''")
+    mtxt = mtxt.replace('`', "'")
     #environment specific changes
     if env == 'empheq':
         mtxt = re.sub(r'\[box=(.*?)\]', '', mtxt, re.DOTALL)

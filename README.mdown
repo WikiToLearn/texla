@@ -16,7 +16,7 @@ Python class that defines a new Block. Moreover options and arguments of Latex c
 Texla Configuration
 ===================
 
-The execution of texla is controlled by the **configs.txt** file.
+The execution of texla is controlled by the **configs.yaml** file.
 
 There are a few parameters to set:
 
@@ -34,12 +34,12 @@ There are a few parameters to set:
 
 * __collapse_pages_level__: If a page has a level greater than __collape_pages_level__ and is not collapsed, it is moved to the level given by __collapse_pages_level__ going up in the page tree.
 
-* __create_index__: if 1 a index is create in the root page.
+* __create_index__: if True a index is create in the root page.
 
 * __export_format__ : for now _text_ is the only avaiable
 
-* __export_single_pages__: if 1 a file for every page is created and saved in a directory called __output_path_pages__
+* __export_single_pages__: if True a file for every page is created and saved in a directory called __output_path_pages__
 
-* __print_preparsed_tex__: if 1 a debug file called _preparsed.tex_ is saved with preparsed tex.
+* __print_preparsed_tex__: if True a debug file called _preparsed.tex_ is saved with preparsed tex.
 
-* __lang__: localization for keywords. The avaiable languages are those inside __lang.txt__ file. Contributions appreciated :)
+* __lang__: localization for keywords. The avaiable languages are those inside __i18n.yaml__ file. Contributions appreciated :)
