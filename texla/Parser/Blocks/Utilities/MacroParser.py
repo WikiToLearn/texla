@@ -28,15 +28,16 @@ class Macro:
 
         #now we split the definition around args
         #inserction
-        toks = re.split(r'#(\d+)', things['definition'])
         content = []
-        #we insert into content a list of text tokens and
-        #indexs that are the index of option to be inserted
-        for i in range(len(toks)):
-            if i % 2 == 0:
-                content.append(toks[i])
-            else:
-                content.append(int(toks[i]))
+        if things['definition'] is not None:
+            toks = re.split(r'#(\d+)', things['definition'])
+            #we insert into content a list of text tokens and
+            #indexs that are the index of option to be inserted
+            for i in range(len(toks)):
+                if i % 2 == 0:
+                    content.append(toks[i])
+                else:
+                    content.append(int(toks[i]))
         return Macro(things['name'], things['n_param'],
                     things['default'],content)
 
