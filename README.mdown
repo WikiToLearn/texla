@@ -30,7 +30,7 @@ There are a few parameters to set:
 
 * __base_path__: texla exports pages in an hierarchical way, organizing pages with unique urls. __base_path__ is used as a root for the urls of the pages. It can be void.
 
-* __collapse_content_level__ : The sectioning of a latex file is a tree. Every part of the tex doc has a level. The text inside _\begin{document}_ and outside any sectioning command has level 0. texla converts the sections into pages and the page gets the level of the seciton. The content of the pages with level greater than __collapse_content_level__ is inserted in the text of the parent page as a paragraph.
+* __collapse_content_level__ : The sectioning of a latex file is a tree. Every part of the tex doc has a level. The level of the root page, that contains the index of the document is -1. The first level of sectioning in the document has level 0. Texla converts the sections into pages and the page gets the level of the seciton. The content of the pages with level greater than __collapse_content_level__ is inserted in the text of the parent page as a paragraph.
 
 * __collapse_pages_level__: If a page has a level greater than __collape_pages_level__ and is not collapsed, it is moved to the level given by __collapse_pages_level__ going up in the page tree.
 
@@ -38,7 +38,9 @@ There are a few parameters to set:
 
 * __export_format__ : for now _text_ is the only avaiable
 
-* __export_single_pages__: if True a file for every page is created and saved in a directory called __output_path_pages__
+* __export_single_pages__: if True a file for every page is created and saved in a directory called __"output_path"_pages__
+
+* __export_pages_tree__: if True the pages are exported in a tree of directory (root in __"output_path"_pages__ ) corresponding to the actual sectioning.
 
 * __print_preparsed_tex__: if True a debug file called _preparsed.tex_ is saved with preparsed tex.
 
