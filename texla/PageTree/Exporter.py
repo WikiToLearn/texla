@@ -1,5 +1,6 @@
 from .Page import *
 import os
+import logging
 
 def exportPages(pages, path, format):
     #choosing format
@@ -51,3 +52,16 @@ def exportText_single_pages(pages, base_path=''):
                 f.write('\n'.join(text))
                 f.close()
     pf.close()
+
+def export_pages_tree(pages, base_path=''):
+    '''
+    This function exports the pages in a tree of directory
+    corresponding to the tree of pages.
+    '''
+    for p in pages:
+        if not p.collapsed:
+            current_path = base_path + "/" + p.url[:p.url.rfind("/")]
+            logging.info(current_path)
+            os.makedirs(current_path, exist_ok=True)
+            with open(base_path + "/" + p.url + ".mw",'w') as f:
+                f.write(p.text)

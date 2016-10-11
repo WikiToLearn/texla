@@ -41,13 +41,16 @@ def execute_texla_mediawiki(config):
     logging.info('######## STARTING EXPORTING ########')
     if config['create_index']:
         tree.create_indexes()
-
     exporter.exportPages(tree.pages, config['output_path'] + '.mw',
                          config['export_format'])
     if config['export_single_pages']:
         exporter.export_singlePages(tree.pages,
                                     config['output_path'] + '_pages',
                                     config['export_format'])
+    if config['export_pages_tree']:
+        exporter.export_pages_tree(tree.pages.values(),
+                                   config['output_path'] + "_pages")
+
     logging.info('Finished')
 
 
