@@ -2,3 +2,5 @@
 .directory
 __pycache__
 test/
+configs.yaml
+preparsed.tex
