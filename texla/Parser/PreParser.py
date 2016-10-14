@@ -254,9 +254,12 @@ def preparse_subfiles(tex, input_path):
             #we have to catch the content of the doc
             r_doc = re.compile(r'\\begin(?P<options>\[.*?\])?{document}'+
                                r'(?P<content>.*?)\\end{document}', re.DOTALL)
-            file_tex = r_doc.search(file_tex).group('content')
+            mat =  r_doc.search(file_tex)
+            content = mat.group('content')
             result_tex = result_tex.replace(
-                        m.group(0), file_tex)
+                        m.group(0), content)
+            preamble = file_tex[:mat.start()]
+            result_tex = preamble + "\n" + result_tex
             inputs_found+=1
         if (inputs_found>0):
             tex = result_tex
