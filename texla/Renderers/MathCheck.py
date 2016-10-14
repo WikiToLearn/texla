@@ -32,6 +32,7 @@ def math_check(mtxt, env=''):
     mtxt = mtxt.replace('\\abs', '|')
     mtxt = mtxt.replace('\\lvert', '|')
     mtxt = mtxt.replace('\\rvert', '|')
+    mtxt = mtxt.replace("\\middle|", '|')
     mtxt = mtxt.replace('\\coloneq', ':=')
     mtxt = replace_command_greedy(mtxt, 'modul', '', False,
                                   '|', '|',rm_slash=False)
