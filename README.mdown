@@ -1,7 +1,7 @@
 texla
 =====
 
-![](doc/logo/wikitolearn-logo-texla.svg.png)
+![](doc/texla-logo.png)
 
 A minimal and easily extensible LaTeX parser.
 
