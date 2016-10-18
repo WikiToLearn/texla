@@ -9,8 +9,91 @@ class MediaWikiRenderer(Renderer):
         super().__init__()
         self.configs = configs
         self.doc_title = configs['doc_title']
-        #registering the hooks
-        self.register_render_hooks(self.get_render_hooks())
+        #saving the hooks
+        self.render_hooks = {
+            #root
+            'root-block': self.r_document,
+            'default': self.default,
+            #text
+            'par': self.r_par,
+            'newpage': self.r_newpage,
+            'newline': self.r_newline,
+            '\\': self.r_newline,
+            'text': self.r_text,
+            'clearpage': self.r_newpage,
+            'cleardoublepage': self.r_newpage,
+            #formatting
+            'emph': self.r_textit,
+            'textbf': self.r_textbf,
+            'textit': self.r_textit,
+            'textsc': self.r_textsc,
+            'textsuperscript': self.r_superscript,
+            'textsubscript': self.r_subscript,
+            'underline': self.r_underline,
+            'uline': self.r_underline,
+            '%': self.r_special_character,
+            '&': self.r_special_character,
+            '$': self.r_special_character,
+            '{': self.r_special_character,
+            '}': self.r_special_character,
+            '#': self.r_special_character,
+            '_': self.r_special_character,
+            'dots': self.r_dots,
+            'ldots': self.r_dots,
+            'flushright': self.r_flushright,
+            'flushleft': self.r_flushleft,
+            'center': self.r_center,
+            'centerline': self.r_center,
+            'abstract': self.r_abstract,
+            'linebreak': self.r_break,
+            'pagebreak': self.r_break,
+            'nolinebreak': self.r_break,
+            'nopagebreak': self.r_break,
+            'verbatim': self.r_verbatim,
+            'verb': self.r_verb,
+            #spaces
+            'vspace': self.r_vspace,
+            'mandatory_space': self.r_mandatory_space,
+            #theorems
+            'theorem' : self.r_theorem,
+            'proof' : self.r_proof,
+            #sectioning
+            'part': self.sectioning,
+            'chapter': self.sectioning,
+            'section': self.sectioning,
+            'subsection': self.sectioning,
+            'subsubsection': self.sectioning,
+            'paragraph': self.sectioning,
+            'subparagraph': self.sectioning,
+            #math
+            'displaymath': self.r_display_math,
+            'inlinemath': self.r_inline_math,
+            'ensuremath': self.r_inline_math,
+            'equation': self.r_display_math,
+            'eqnarray': self.r_align,
+            'multline': self.r_align,
+            'align': self.r_align,
+            'alignat': self.r_align,
+            #lists
+            'itemize': self.r_itemize,
+            'enumerate': self.r_enumerate,
+            'description': self.r_description,
+            #quotes
+            'quotation': self.r_quotes,
+            'quote': self.r_quotes,
+            'verse': self.r_verse,
+            'footnote': self.r_footnote,
+            #labels
+            'label': self.r_label,
+            'ref': self.r_ref,
+            'vref': self.r_ref,
+            'pageref': self.r_ref,
+            'eqref': self.r_ref,
+            #accents
+            "accented_letter": self.r_accented_letter,
+            }
+        #register plugins
+        self.register_plugins(configs["plugins"])
         #tree object
         self.tree = PageTree(configs)
         #parameter for list formatting
@@ -441,90 +524,3 @@ class MediaWikiRenderer(Renderer):
                     block.attributes["accent_type"]
         else:
             return block.attributes["letter"]
-
-
-    def get_render_hooks(self):
-        '''Render hooks'''
-        render_hooks = {
-            #root
-            'root-block': self.r_document,
-            'default': self.default,
-            #text
-            'par': self.r_par,
-            'newpage': self.r_newpage,
-            'newline': self.r_newline,
-            '\\': self.r_newline,
-            'text': self.r_text,
-            'clearpage': self.r_newpage,
-            'cleardoublepage': self.r_newpage,
-            #formatting
-            'emph': self.r_textit,
-            'textbf': self.r_textbf,
-            'textit': self.r_textit,
-            'textsc': self.r_textsc,
-            'textsuperscript': self.r_superscript,
-            'textsubscript': self.r_subscript,
-            'underline': self.r_underline,
-            'uline': self.r_underline,
-            '%': self.r_special_character,
-            '&': self.r_special_character,
-            '$': self.r_special_character,
-            '{': self.r_special_character,
-            '}': self.r_special_character,
-            '#': self.r_special_character,
-            '_': self.r_special_character,
-            'dots': self.r_dots,
-            'ldots': self.r_dots,
-            'flushright': self.r_flushright,
-            'flushleft': self.r_flushleft,
-            'center': self.r_center,
-            'centerline': self.r_center,
-            'abstract': self.r_abstract,
-            'linebreak': self.r_break,
-            'pagebreak': self.r_break,
-            'nolinebreak': self.r_break,
-            'nopagebreak': self.r_break,
-            'verbatim': self.r_verbatim,
-            'verb': self.r_verb,
-            #spaces
-            'vspace': self.r_vspace,
-            'mandatory_space': self.r_mandatory_space,
-            #theorems
-            'theorem' : self.r_theorem,
-            'proof' : self.r_proof,
-            #sectioning
-            'part': self.sectioning,
-            'chapter': self.sectioning,
-            'section': self.sectioning,
-            'subsection': self.sectioning,
-            'subsubsection': self.sectioning,
-            'paragraph': self.sectioning,
-            'subparagraph': self.sectioning,
-            #math
-            'displaymath': self.r_display_math,
-            'inlinemath': self.r_inline_math,
-            'ensuremath': self.r_inline_math,
-            'equation': self.r_display_math,
-            'eqnarray': self.r_align,
-            'multline': self.r_align,
-            'align': self.r_align,
-            'alignat': self.r_align,
-            #lists
-            'itemize': self.r_itemize,
-            'enumerate': self.r_enumerate,
-            'description': self.r_description,
-            #quotes
-            'quotation': self.r_quotes,
-            'quote': self.r_quotes,
-            'verse': self.r_verse,
-            'footnote': self.r_footnote,
-            #labels
-            'label': self.r_label,
-            'ref': self.r_ref,
-            'vref': self.r_ref,
-            'pageref': self.r_ref,
-            'eqref': self.r_ref,
-            #accents
-            "accented_letter": self.r_accented_letter,
-        }
-        return render_hooks
