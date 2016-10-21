@@ -11,3 +11,4 @@ export_single_pages: True/False
 export_pages_tree: True/False
 print_preparsed_tex: True/False
 lang: Look at i18n.yaml
+plugins: [MathCheck]

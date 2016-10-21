@@ -1,7 +1,6 @@
 import logging
 from .Renderer import Renderer
 from ..PageTree.PageTree import *
-from . import MathCheck
 
 class MediaWikiRenderer(Renderer):
 
@@ -164,16 +163,12 @@ class MediaWikiRenderer(Renderer):
 
     def r_display_math(self, block):
         s = block.attributes['content']
-        #check math content
-        s = MathCheck.math_check(s)
         #rendering labels
         self.render_blocks(block.labels)
         return '<math display="block">' + s + '</math>'
 
     def r_inline_math(self, block):
         s = block.attributes['content']
-        #check math content
-        s = MathCheck.math_check(s)
         #rendering labels
         self.render_blocks(block.labels)
         return '<math>' + s + '</math>'
@@ -187,8 +182,6 @@ class MediaWikiRenderer(Renderer):
         s = s.replace('alignat*', 'align')
         s = s.replace('eqnarray*', 'align')
         s = s.replace('multline*', 'align')
-        #check math content
-        s = MathCheck.math_check(s)
         #rendering labels
         self.render_blocks(block.labels)
         return '<math display="block">\\begin{align}' +\
