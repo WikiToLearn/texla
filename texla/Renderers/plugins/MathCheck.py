@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 from ..utils import *
+import logging
 
 def math_check(block):
+    logging.debug("Plugin MathCheck @ checking math")
     #extracting math content to elaborate
     mtxt = block.attributes["content"]
     '''Function that remove and replace some commands from math'''
@@ -62,7 +64,7 @@ def math_check(block):
     #saving content
     block.attributes["content"] = mtxt
 
-plugin_hooks = {
+plugin_render_hooks = {
     'displaymath': {"pre": math_check},
     'inlinemath': {"pre": math_check},
     'ensuremath': {"pre": math_check},

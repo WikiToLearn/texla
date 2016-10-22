@@ -9,19 +9,25 @@ class Renderer():
         #plugins hooks
         self.pre_render_hooks = {}
         self.post_render_hooks = {}
+        self.start_hooks = []
+        self.end_hooks = []
         self.loaded_plugins = {}
         self.used_tags = {}
 
     def register_plugins(self, plugins):
         for plugin in plugins:
             m = importlib.import_module("..plugins"+'.'+ plugin, __name__)
-            if hasattr(m, "plugin_hooks"):
-                self.loaded_plugins[plugin] = m.plugin_hooks
-                self.register_render_plugin_hooks(m.plugin_hooks)
+            if hasattr(m, "plugin_render_hooks"):
+                self.loaded_plugins[plugin] = m.plugin_render_hooks
+                self.register_render_plugin_hooks(m.plugin_render_hooks)
                 logging.info("Renderer.register_plugins "\
                              "@ Loaded plugin: {}".format(plugin))
-                logging.info("Plugin {} hooks: {}".format( plugin,
-                            list(m.plugin_hooks.keys())))
+                logging.debug("Plugin {} render hooks: {}".format( plugin,
+                            list(m.plugin_render_hooks.keys())))
+            if hasattr(m, "plugin_lifecycle_hooks"):
+                self.register_lifecyle_plugin_hooks(m.plugin_lifecycle_hooks)
+                logging.info("Plugin {} lifecycle hooks: {}".format( plugin,
+                            list(m.plugin_lifecycle_hooks.keys())))
 
 
     def register_render_plugin_hooks(self, hooks):
@@ -37,6 +43,16 @@ class Renderer():
             if "post" in hooks[bl]:
                 self.register_pre_renderer_hook(bl, hooks[bl]["post"])
 
+    def register_lifecyle_plugin_hooks(self, hooks):
+        ''' This function registers the hooks for the renderer lifecycle.
+        Plugins can register hooks for the start and end actions.
+        The hook is called without arguments. These hooks must be used
+        only to signal the actions to the plugins.'''
+        if "start" in hooks:
+            self.register_start_hook(hooks["start"])
+        if "end" in hooks:
+            self.register_end_hook(hooks["end"])
+
     def register_pre_renderer_hook(self, block, hook):
         if block not in self.pre_render_hooks:
             self.pre_render_hooks[block] = []
@@ -46,6 +62,22 @@ class Renderer():
         if block not in self.post_render_hooks:
             self.post_render_hooks[block] = []
         self.post_render_hooks[block].append(hook)
+
+    def register_start_hook(self, hook):
+        self.start_hooks.append(hook)
+
+    def register_end_hook(self, hook):
+        self.end_hooks.append(hook)
+
+    def start_rendering(self):
+        #starting plugins
+        for hook in self.start_hooks:
+            hook()
+
+    def end_rendering(self):
+        #ending plugins
+        for hook in self.end_hooks:
+            hook()
 
     def render_children_blocks(self, block, collapse=True):
         '''This is one of the most important funciont
