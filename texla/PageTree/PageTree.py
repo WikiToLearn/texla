@@ -214,6 +214,8 @@ class PageTree():
                                 '[[' + p.url + '|' + p.title + ']]')
                         else:
                             index.append('*'*p.level+ p.title )
+                #adding section category
+                index.append("<noinclude>[[Category:CourseLevelTwo]]</noinclude>")
                 page.text = '\n'.join(index)
 
 
@@ -226,14 +228,14 @@ class PageTree():
         base_page.text+= '{{libro|Project:Libri/'+ book_url+\
                 '|'+ self.doc_title + '}}\n'
         #creating root index
-        index = ["{{CCourse|"]
+        index = ["{{CourseRoot|"]
         book_export_index = ['{{libro_salvato | setting-papersize = a4\
              | setting-toc = auto | setting-columns = 1}}']
         #book export: setting title
         book_export_index.append('==' + self.doc_title + '==')
         for page in self.root_page.subpages:
             if page.level == 0:
-                index.append('{{SSection|'+page.title +'}}')
+                index.append('{{CourseLevelTwo|'+page.title +'}}')
                 #book export index for chapters
                 book_export_index.append(';' + page.title)
                 #creating index for book
@@ -247,9 +249,10 @@ class PageTree():
         #adding category to book page
         book_export_index.append("[["+self.configs["keywords"]["book_category"]+
                                  "|"+self.doc_title +"]]")
-        #adding course category
+        #adding course categories
         index.append("}}\n")
         index.append("[["+ self.configs["keywords"]["category"] +":Structure]]")
+        index.append("<noinclude>[[Category:CourseRoot]]</noinclude>")
         base_page.text += '\n'.join(index)
 
         #creating book export page
