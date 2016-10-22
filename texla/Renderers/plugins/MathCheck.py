@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
-from .utils import *
+from ..utils import *
 
-def math_check(mtxt, env=''):
+def math_check(block):
+    #extracting math content to elaborate
+    mtxt = block.attributes["content"]
     '''Function that remove and replace some commands from math'''
     #removing inner starred commands
     re_remove_star = re.compile(r'\\begin{(\w+)\*}(.*?)\\end{(\w+)\*}',
@@ -57,8 +59,16 @@ def math_check(mtxt, env=''):
     mtxt = mtxt.replace('"', "''")
     mtxt = mtxt.replace('``', "''")
     mtxt = mtxt.replace('`', "'")
-    #environment specific changes
-    if env == 'empheq':
-        mtxt = re.sub(r'\[box=(.*?)\]', '', mtxt, re.DOTALL)
+    #saving content
+    block.attributes["content"] = mtxt
 
-    return mtxt
+plugin_hooks = {
+    'displaymath': {"pre": math_check},
+    'inlinemath': {"pre": math_check},
+    'ensuremath': {"pre": math_check},
+    'equation': {"pre": math_check},
+    'eqnarray': {"pre": math_check},
+    'multline': {"pre": math_check},
+    'align': {"pre": math_check},
+    'alignat': {"pre": math_check}
+}
