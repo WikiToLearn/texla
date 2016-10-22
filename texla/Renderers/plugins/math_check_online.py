@@ -14,6 +14,7 @@ def request_formula(tex):
         print("\tFormula rendering error: ", r.status_code)
 
 
+
 def check_math(block):
     tex = block.attributes["content"]
     tex = mc.math_check(tex)

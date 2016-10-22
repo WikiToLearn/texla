@@ -4,7 +4,9 @@ import importlib
 
 class Renderer():
     def __init__(self):
+        #hooks implemented directly by the Renderer class.
         self.render_hooks = {}
+        #plugins hooks
         self.pre_render_hooks = {}
         self.post_render_hooks = {}
         self.loaded_plugins = {}
@@ -24,7 +26,7 @@ class Renderer():
 
     def register_render_plugin_hooks(self, hooks):
         '''This function registers the hooks for renderer plugins.
-        The plugins can define hooks for pre and post render actions.
+        # The plugins can define hooks for pre and post render actions.
         The pre hook receives the block before the rendering and can
         only return the block itself, modified.
         The post hook receive the block and the text from the renderer:
