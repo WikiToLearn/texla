@@ -1,8 +1,9 @@
 import requests
 import logging
+from multiprocessing import Process, Pool, Queue
 
 def request_formula(tex):
-    url_check = 'http://restbase.wikitolearn.org/en.wikitolearn.org/v1/media/math/check/tex'
+    url_check = 'http://restbase.wikitolearn.org/pool.wikitolearn.org/v1/media/math/check/tex'
     header= {'Accept':'application/json',
              'Content-Type': 'application/x-www-form-urlencoded'}
     payload = {'q': tex}
@@ -13,26 +14,37 @@ def request_formula(tex):
         return False
 
 formulas = []
-
+bad_formulas = Queue()
 
 def save_math(block):
     tex = block.attributes["content"]
-    logging.debug("Plugin math_check_online @ saving formula {}".format(tex))
-    formulas.append(tex)
+    #saving the formula only if it's longer than 10
+    if len(tex)>10:
+        logging.debug("Plugin math_check_online @ saving formula {}".format(tex))
+        formulas.append(tex)
 
-def check_math():
-    w = open("math_errors.txt",'w')
-    i = 0
-    tot = len(formulas)
-    for f in formulas:
-        ok = request_formula(f)
-        if ok:
-            logging.info("Plugin math_check_online @ formula {}/{} {}".format(i, tot, "OK"))
-        else:
-            logging.error("Plugin math_check_online @ formula {}/{} {}".format(i, tot, "BAD"))
-        i += 1
-        w.write(f + "\n\n")
-    w.close()
+def check_math(formula):
+    ok = request_formula(formula)
+    if ok:
+        logging.info("Plugin math_check_online @ formula {}".format("OK"))
+    else:
+        logging.error("Plugin math_check_online @ formula {}".format("BAD"))
+        bad_formulas.put(formula)
+
+def start_pool():
+    pool = Pool(processes=6)
+    logging.info("Plugin math_check_online @ total formulas to check: {}".format(len(formulas)))
+    pool.map(check_math, formulas)
+    #saving results
+    with open("math_errors.txt","w") as f:
+        for form in bad_formulas:
+            f.write(form + "\n\n")
+
+
+
+def start_check():
+    p = Process(target=start_pool)
+    p.start()
 
 
 plugin_render_hooks = {
@@ -47,5 +59,5 @@ plugin_render_hooks = {
 }
 
 plugin_lifecycle_hooks = {
-    "end" : check_math
+    "end" : start_check
 }
