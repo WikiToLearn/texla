@@ -120,6 +120,8 @@ class MediaWikiRenderer(Renderer):
         text = self.render_children_blocks(block)
         #text is the tex outside sections
         self.tree.addText(text)
+        #returning the text to respect the interface
+        return text
 
     ########################################
     #DEFAULT

@@ -36,12 +36,20 @@ class Renderer():
         The pre hook receives the block before the rendering and can
         only return the block itself, modified.
         The post hook receive the block and the text from the renderer:
-        it has to return the final text only.'''
+        it has to return the final text only.
+        The keyword ALL creates a hooks for all the blocks.
+        Note that it is always called after all the other hooks.'''
         for bl in hooks:
             if "pre" in hooks[bl]:
                 self.register_pre_renderer_hook(bl, hooks[bl]["pre"])
             if "post" in hooks[bl]:
-                self.register_pre_renderer_hook(bl, hooks[bl]["post"])
+                self.register_post_renderer_hook(bl, hooks[bl]["post"])
+        #checking ALL keyword
+        if "ALL" in hooks:
+            if "pre" in hooks["ALL"]:
+                self.register_pre_renderer_hook(bl, hooks["ALL"]["pre"])
+            if "post" in hooks["ALL"]:
+                self.register_post_renderer_hook(bl, hooks["ALL"]["post"])
 
     def register_lifecyle_plugin_hooks(self, hooks):
         ''' This function registers the hooks for the renderer lifecycle.
@@ -111,6 +119,11 @@ class Renderer():
             for prehook in self.pre_render_hooks[bl.block_name]:
                 #calling prehook with the block
                 prehook(bl)
+        #calling after the others the ALL hooks
+        if "ALL" in self.pre_render_hooks:
+            for prehook in self.pre_render_hooks["ALL"]:
+                #calling prehook with the block
+                prehook(bl)
         ######## rendering #############
         if bl.block_name in self.render_hooks:
             self.used_tag('ok      | ' + bl.block_name)
@@ -128,7 +141,12 @@ class Renderer():
         if bl.block_name in self.post_render_hooks:
             for posthook in self.post_render_hooks[bl.block_name]:
                 #calling posthook with the block and output
-                output = postblos(bl, output)
+                output = posthook(bl, output)
+        #calling ALL hooks after the others
+        if "ALL" in self.post_render_hooks:
+            for posthook in self.post_render_hooks["ALL"]:
+                #calling posthook with the block and output
+                output = posthook(bl, output)
         #final output
         return output
 
