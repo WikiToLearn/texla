@@ -21,15 +21,22 @@ def save_math(block):
     #saving the formula only if it's longer than 10
     if len(tex)>10:
         logging.debug("Plugin math_check_online @ saving formula {}".format(tex))
-        formulas.append(tex)
+        formulas.append((tex, block.id))
+
+def save_math_align(block):
+    tex = "\\begin{align}" + block.attributes["content"] + "\\end{align}"
+    #saving the formula only if it's longer than 10
+    if len(tex)>50:
+        logging.debug("Plugin math_check_online @ saving formula {}".format(tex))
+        formulas.append((tex, block.id))
 
 def check_math(formula):
-    ok = request_formula(formula)
+    ok = request_formula(formula[0])
     if ok:
-        logging.info("Plugin math_check_online @ formula {}".format("OK"))
+        logging.info("Plugin math_check_online @ formula {}, block_id: {}".format("OK", formula[1]))
     else:
-        logging.error("Plugin math_check_online @ formula {}".format("BAD"))
-        bad_formulas.put(formula)
+        logging.error("Plugin math_check_online @ formula {}, block_id: {}".format("BAD", formula[1]))
+        bad_formulas.put(formula[1]+": "+formula[0])
 
 def start_pool():
     pool = Pool(processes=6)
@@ -53,10 +60,10 @@ plugin_render_hooks = {
     'inlinemath': {"pre": save_math},
     'ensuremath': {"pre": save_math},
     'equation': {"pre": save_math},
-    'eqnarray': {"pre": save_math},
-    'multline': {"pre": save_math},
-    'align': {"pre": save_math},
-    'alignat': {"pre": save_math}
+    'eqnarray': {"pre": save_math_align},
+    'multline': {"pre": save_math_align},
+    'align': {"pre": save_math_align},
+    'alignat': {"pre": save_math_align}
 }
 
 plugin_lifecycle_hooks = {
