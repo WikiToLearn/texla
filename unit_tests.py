@@ -204,6 +204,12 @@ class UtilTest(unittest.TestCase):
         self.assertEqual(result,
                 'tex text |10| text', msg=None)
 
+    def test_replace_command_greedy_space(self):
+        a = 'tex text \\modul{10}text'
+        result = ut.replace_command_greedy(a, 'modul','test',False)
+        self.assertEqual(result,
+                'tex text \\test{10} text', msg=None)
+
     def test_get_content_greedy(self):
         a = 'tex text \\command[option]{content} text'
         result = ut.get_content_greedy(a, 'command')
