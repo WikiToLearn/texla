@@ -107,7 +107,7 @@ class MediaWikiRenderer(Renderer):
     def start_rendering(self, root_block):
         '''starting rendering from root-block'''
         #start rendering of base class
-        super(MediaWikiRenderer, self).start_rendering()
+        super(MediaWikiRenderer, self).start_rendering(root_block)
         self.render_block(root_block)
         #after rendering
         self.tree.after_render()

@@ -46,7 +46,8 @@ class Renderer():
     def register_lifecyle_plugin_hooks(self, hooks):
         ''' This function registers the hooks for the renderer lifecycle.
         Plugins can register hooks for the start and end actions.
-        The hook is called without arguments. These hooks must be used
+        The start hook is called with the root_block of the chain.
+        The end hook is called without arguments. These hooks must be used
         only to signal the actions to the plugins.'''
         if "start" in hooks:
             self.register_start_hook(hooks["start"])
@@ -69,10 +70,10 @@ class Renderer():
     def register_end_hook(self, hook):
         self.end_hooks.append(hook)
 
-    def start_rendering(self):
+    def start_rendering(self, root_block):
         #starting plugins
         for hook in self.start_hooks:
-            hook()
+            hook(root_block)
 
     def end_rendering(self):
         #ending plugins
