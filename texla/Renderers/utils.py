@@ -80,12 +80,12 @@ def replace_command_greedy(tex,
                     if rm_content:
                         if not rm_slash:
                             result += '\\'
-                        result += repl + right[pos + 1:]
+                        result += repl + " " + right[pos + 1:]
                     else:
                         if not rm_slash:
                             result += '\\'
                         result+= repl + left_delim+ right[1:pos]+ \
-                                right_delim + right[pos+1:]
+                                right_delim +" "+ right[pos+1:]
                     break
             tex = result
             #next cycle
