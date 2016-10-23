@@ -37,7 +37,8 @@ def start_pool():
     pool.map(check_math, formulas)
     #saving results
     with open("math_errors.txt","w") as f:
-        for form in bad_formulas:
+        while not bad_formulas.empty():
+            form = bad_formulas.get()
             f.write(form + "\n\n")
 
 
