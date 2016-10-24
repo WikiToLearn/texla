@@ -74,6 +74,10 @@ def parse_macros(tex):
             #first of all we get all the occurrence
             #of a macro and its replacement tex.
             for cmd_ma in cmd_re.finditer(tex_to_parse):
+                #little hack to check if we are getting
+                #a macro inside the previous matched macro content.
+                if len(pos)>0 and (cmd_ma.start() < pos[len(pos)-1]):
+                    continue
                 log[m] += 1
                 macros_found += 1
                 #we get command complete tex
