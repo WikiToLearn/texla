@@ -4,6 +4,7 @@ from collections import deque
 import logging
 import re
 import os
+from os import path
 
 data = {}
 
@@ -21,7 +22,8 @@ def preparse(tex, input_path):
     tex = preparse_par(tex)
     tex = preparse_verb(tex)
     data = preparse_header(tex)
-    o = open('preparsed.tex', 'w')
+    log_preparsed_file_path = path.relpath('sandbox/preparsed.tex')
+    o = open(log_preparsed_file_path, 'w')
     o.write(tex)
     return (tex, data)
 

@@ -3,4 +3,5 @@
 __pycache__
 test/
 configs.yaml
-preparsed.tex
+!/sandbox/.placeholder
+sandbox
