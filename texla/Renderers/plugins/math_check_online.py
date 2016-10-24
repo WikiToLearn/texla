@@ -1,6 +1,7 @@
 import requests
 import logging
 from multiprocessing import Process, Pool, Queue
+from os import path
 
 
 def request_formula(tex):
@@ -56,7 +57,8 @@ def start_pool():
                  format(len(formulas)))
     pool.map(check_math, formulas)
     #saving results
-    with open("math_errors.txt", "w") as f:
+    log_matherrors_file_path = path.relpath("sandbox/math_errors.txt")
+    with open(log_matherrors_file_path, "w") as f:
         while not bad_formulas.empty():
             form = bad_formulas.get()
             f.write(form + "\n\n")
