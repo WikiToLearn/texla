@@ -5,11 +5,11 @@
 # this script searches for the block name inside the .tree file
 # this is intended as a temporary solution, it is not elegant
 # how to use this:
-# ./error-find $output-folder $error-block-id
+# ./math-error-find $output-folder $error-block-id
 # $output-folder is where the .tree file is saved
 # $error-block-id does not contain the starting `@-` characters
 # example
-# ./error-find.sh test/Algebra_1-Appunti-out x7t-la0-v5f-j0p
+# ./math-error-find.sh test/Algebra_1-Appunti-out x7t-la0-v5f-j0p
 # with
 # >➜ ls test/Algebra_1-Appunti-out/
 # >0File_principale-coll.json  0File_principale.json  0File_principale.tree
