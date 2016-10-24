@@ -28,10 +28,17 @@ def remove_command_greedy(tex, command, delete_content=False):
                     level -= 1
                 #now check if we are returned to 0 level
                 if level == 0:
+                    add_space = (pos+1)==len(right) or right[pos+1] not in ["\\", " "]
                     if not delete_content:
-                        result += right[1:pos]+ right[pos+1:]
+                        if add_space:
+                            result += right[1:pos]+ " " +right[pos+1:]
+                        else:
+                            result += right[1:pos] +right[pos+1:]
                     else:
-                        result +=  right[pos + 1:]
+                        if add_space:
+                            result +=  " " + right[pos + 1:]
+                        else:
+                            result +=  right[pos + 1:]
                     break
             tex = result
             #new cycle
@@ -77,15 +84,23 @@ def replace_command_greedy(tex,
                     level -= 1
                 #now check if we are returned to 0 level
                 if level == 0:
+                    add_space = (pos+1)==len(right) or right[pos+1] not in ["\\", " "]
                     if rm_content:
                         if not rm_slash:
                             result += '\\'
-                        result += repl + right[pos + 1:]
+                        if add_space:
+                            result += repl + " " + right[pos + 1:]
+                        else:
+                            result += repl + right[pos + 1:]
                     else:
                         if not rm_slash:
                             result += '\\'
-                        result+= repl + left_delim+ right[1:pos]+ \
-                                right_delim + right[pos+1:]
+                        if add_space:
+                            result+= repl + left_delim+ right[1:pos]+ \
+                                    right_delim +" "+ right[pos+1:]
+                        else:
+                            result+= repl + left_delim+ right[1:pos]+ \
+                                    right_delim + right[pos+1:]
                     break
             tex = result
             #next cycle

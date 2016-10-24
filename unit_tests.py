@@ -2,7 +2,7 @@ import re
 import texla.Parser.Blocks
 from texla.Parser.Blocks.Utilities import *
 import texla.Renderers.utils as ut
-import texla.Renderers.MathCheck as mc
+import texla.Renderers.plugins.MathCheck as mc
 import texla.PageTree.PageTree as pt
 import unittest
 
@@ -203,6 +203,12 @@ class UtilTest(unittest.TestCase):
                                            "|","|",rm_slash=True)
         self.assertEqual(result,
                 'tex text |10| text', msg=None)
+
+    def test_replace_command_greedy_space(self):
+        a = 'tex text \\modul{10}text'
+        result = ut.replace_command_greedy(a, 'modul','test',False)
+        self.assertEqual(result,
+                'tex text \\test{10} text', msg=None)
 
     def test_get_content_greedy(self):
         a = 'tex text \\command[option]{content} text'
