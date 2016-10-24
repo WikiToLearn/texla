@@ -28,7 +28,7 @@ def remove_command_greedy(tex, command, delete_content=False):
                     level -= 1
                 #now check if we are returned to 0 level
                 if level == 0:
-                    add_space = right[pos+1] not in ["\\", " "]
+                    add_space = (pos+1)==len(right) or right[pos+1] not in ["\\", " "]
                     if not delete_content:
                         if add_space:
                             result += right[1:pos]+ " " +right[pos+1:]
@@ -84,7 +84,7 @@ def replace_command_greedy(tex,
                     level -= 1
                 #now check if we are returned to 0 level
                 if level == 0:
-                    add_space = right[pos+1] not in ["\\", " "]
+                    add_space = (pos+1)==len(right) or right[pos+1] not in ["\\", " "]
                     if rm_content:
                         if not rm_slash:
                             result += '\\'
