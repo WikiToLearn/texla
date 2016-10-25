@@ -96,6 +96,9 @@ def parse_macros(tex):
                           for i in range(len(parenthesis) - 1)]
                 #asking the tex to the macro
                 replace_tex = macros[m].get_tex(params, param_default)
+                #adding a space for safety is necessary
+                if cmd_tex[1][0] not in ["\\", " ", '_', '^', '[', '(','{',"'"]:
+                    replace_tex = replace_tex + " "
                 #saving data
                 replaces.append(replace_tex)
                 pos+= [cmd_ma.start(), cmd_ma.end()+cmd_tex[2]]
