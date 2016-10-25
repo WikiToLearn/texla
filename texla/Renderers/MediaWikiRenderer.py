@@ -73,6 +73,7 @@ class MediaWikiRenderer(Renderer):
             'multline': self.r_align,
             'align': self.r_align,
             'alignat': self.r_align,
+            'gather': self.r_gather,
             #lists
             'itemize': self.r_itemize,
             'enumerate': self.r_enumerate,
@@ -181,17 +182,21 @@ class MediaWikiRenderer(Renderer):
 
     def r_align(self, block):
         s = block.attributes['content']
-        s = s.replace('alignat', 'align')
-        s = s.replace('eqnarray', 'align')
-        s = s.replace('multline', 'align')
-        s = s.replace('align*', 'align')
-        s = s.replace('alignat*', 'align')
-        s = s.replace('eqnarray*', 'align')
-        s = s.replace('multline*', 'align')
+        print(s)
         #rendering labels
         self.render_blocks(block.labels)
         return '<math display="block">\\begin{align}' +\
                     s + '\end{align}</math>'
+
+    def r_gather(self, block):
+        s = block.attributes['content']
+        output = []
+        for eq in s.split("\\\\"):
+            eq = eq.replace("\n","").strip()
+            output.append('<math display="block">' +\
+                        eq + '</math>')
+        return '\n'.join(output)
+
 
     #########################################
     #LABELS and refs

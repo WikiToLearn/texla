@@ -72,5 +72,6 @@ plugin_render_hooks = {
     'eqnarray': {"pre": math_check},
     'multline': {"pre": math_check},
     'align': {"pre": math_check},
-    'alignat': {"pre": math_check}
+    'alignat': {"pre": math_check},
+    'gather': {"pre": math_check}
 }
