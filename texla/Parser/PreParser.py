@@ -135,10 +135,15 @@ def remove_comments(tex):
     '''
     This function removes comments from the tex.
     '''
-    com_re = re.compile(r'(?<!\\)(%.*)\n')
-    final_tex = tex
-    for match in com_re.finditer(tex):
-        final_tex = final_tex.replace(match.group(1), '')
+    com_re = re.compile(r'(?<!\\)(%.*)(?=\n)')
+    final_tex = ""
+    while(True):
+        m = com_re.search(tex)
+        if m:
+            final_tex = tex[:m.start()]+ tex[m.end():]
+            tex = final_tex
+        else:
+            break
     return final_tex
 
 
@@ -209,11 +214,12 @@ def preparse_include(tex,input_path):
     ''' This function replace \input{} commands
     with the content of the files.  '''
     base_path = os.path.dirname(input_path)
-    r = re.compile(r'\\input{(.*?)}')
+    r1 = re.compile(r'\\input{(.*?)}')
+    r2 = re.compile(r'\\include{(.*?)}')
     inputs_found = 0
     result_tex = tex
     while(True):
-        for m in r.finditer(tex):
+        for m in r1.finditer(tex):
             name = m.group(1) + '.tex'
             #reading file
             file_name = base_path + "/"+ name
@@ -221,27 +227,16 @@ def preparse_include(tex,input_path):
             result_tex = result_tex.replace(
                         m.group(0), file_tex)
             inputs_found+=1
-        if (inputs_found>0):
-            tex = result_tex
-            inputs_found = 0
-        else:
-            break
-    #now include
-    r = re.compile(r'\\include{(.*?)}')
-    inputs_found = 0
-    #resetting tex
-    tex = result_tex
-    while(True):
-        for m in r.finditer(tex):
-            name = m.group(1) + '.tex'
+        for m2 in r2.finditer(tex):
+            name = m2.group(1) + '.tex'
             #reading file
             file_name =os.getcwd()+ '/'+\
                         base_path + "/"+ name
             file_tex = open(file_name, 'r').read()
             result_tex = result_tex.replace(
-                        m.group(0), file_tex)
+                        m2.group(0), file_tex)
             inputs_found+=1
-        if (inputs_found>0):
+        if inputs_found>0:
             tex = result_tex
             inputs_found = 0
         else:

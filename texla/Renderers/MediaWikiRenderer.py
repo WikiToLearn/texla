@@ -182,7 +182,6 @@ class MediaWikiRenderer(Renderer):
 
     def r_align(self, block):
         s = block.attributes['content']
-        print(s)
         #rendering labels
         self.render_blocks(block.labels)
         return '<math display="block">\\begin{align}' +\
