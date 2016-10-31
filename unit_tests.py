@@ -158,9 +158,9 @@ class UtilTest(unittest.TestCase):
         self.assertEqual(result, 'tex text  text')
 
     def test_remove_command_no_option(self):
-        a = 'tex text \\command text \\command'
+        a = 'tex text \\command\\par{} text \\command'
         result = ut.remove_command_no_options(a, 'command')
-        self.assertEqual(result, 'tex text  text ')
+        self.assertEqual(result, 'tex text \\par{} text ')
 
     def test_remove_command_greedy_multi(self):
         a = 'tex \\cmd{bo} tex \\cmd{foo} text'
