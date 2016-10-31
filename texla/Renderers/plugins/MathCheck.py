@@ -16,6 +16,8 @@ def math_check(block):
             star_tag.group(2)+'\end{'+ star_tag.group(3)+'}')
     #replacing split with align
     mtxt = mtxt.replace("split", "align")
+    #removing \par added for mistake in preparsing
+    mtxt = mtxt.replace("\\par", "")
     #removing \boxed command
     mtxt = remove_command_greedy(mtxt, 'boxed',False)
     #removing \ensuremath from macros
