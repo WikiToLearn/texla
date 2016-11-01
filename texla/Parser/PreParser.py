@@ -92,7 +92,7 @@ def parse_macros(tex):
                     parenthesis.pop(0)
                 else:
                     param_default = None
-                params = [ parenthesis[i][1] 
+                params = [parenthesis[i][1]
                           for i in range(len(parenthesis) - 1)]
                 #asking the tex to the macro
                 replace_tex = macros[m].get_tex(params, param_default)

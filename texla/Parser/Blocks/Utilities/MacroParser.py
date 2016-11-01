@@ -88,17 +88,26 @@ class Macro:
             if len(params) > 0:
                 for i in range(len(params)):
                     pars[i+1] = params[i]
-        #now we can work with self.content
+        #now we can work with self.content,
+        #creating the replacement string.
         tex = []
         for j in range(len(self.content)):
             if j % 2 == 0:
                 tex.append(self.content[j])
             else:
-                #checking if we have the par,
+                #checking if we have the params,
                 #if not, we add a  ''
                 index = self.content[j]
                 if len(pars) >= index:
                     tex.append(pars[index])
                 else:
                     tex.append('')
-        return ''.join(tex)
+        #now we have to check if there are spaces
+        #or slashes between parameters and the macro content.
+        final_tex = tex[0]
+        for t in tex[1:]:
+            if final_tex[-1] != " ":
+                final_tex = final_tex + " " + t
+            else:
+                final_tex = final_tex + t
+        return final_tex
