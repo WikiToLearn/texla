@@ -92,7 +92,7 @@ def parse_macros(tex):
                     parenthesis.pop(0)
                 else:
                     param_default = None
-                params = [parenthesis[i][1]
+                params = [ parenthesis[i][1] 
                           for i in range(len(parenthesis) - 1)]
                 #asking the tex to the macro
                 replace_tex = macros[m].get_tex(params, param_default)
@@ -136,7 +136,7 @@ def remove_comments(tex):
     This function removes comments from the tex.
     '''
     com_re = re.compile(r'(?<!\\)(%.*)(?=\n)')
-    final_tex = ""
+    final_tex = tex
     while(True):
         m = com_re.search(tex)
         if m:
