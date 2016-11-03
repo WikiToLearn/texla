@@ -45,3 +45,16 @@ There are a few parameters to set:
 * __print_preparsed_tex__: if True a debug file called _preparsed.tex_ is saved with preparsed tex.
 
 * __lang__: localization for keywords. The avaiable languages are those inside __i18n.yaml__ file. Contributions appreciated :)
+
+* __plugins__: [...]  List of the enabled plugins. The order of this list is the order of executing, be careful.
+
+
+Plugins
+=======
+The available plugins are:
+
+* __MathCheck__: it fixes the math to be correct for WikiToLearn rendering
+
+* __math_check_online__: at the end of the rendering it calls the WikiToLearn math renderer to check if there are errors in the math.
+
+* __space_check__: it removes the singles spaces after a newline.
