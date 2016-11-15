@@ -2,6 +2,7 @@
 .directory
 __pycache__
 test/
+import/
 configs.yaml
 !/sandbox/.placeholder
 sandbox

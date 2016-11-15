@@ -437,7 +437,7 @@ class MediaWikiRenderer(Renderer):
         elif self.configs['lang'] =='en':
             if th_definition.lower() == 'theorem':
             #adding content to page through a template
-                s.append("\n{{Beginheorem|title=" + \
+                s.append("\n{{BeginTheorem|title=" + \
                         th_title+"}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndTheorem}}\n")
