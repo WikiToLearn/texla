@@ -1,8 +1,8 @@
 *.pyc
 .directory
 __pycache__
+configs.yaml
 test/
 import/
-configs.yaml
 !/sandbox/.placeholder
 sandbox
