@@ -56,6 +56,9 @@ class Babel:
                 replace_string = "[["+ url + "]]"
             else:
                 replace_string = "[[{}|{}]]".format(url,title)
+            #checking if the babel has refs
+            if label not in self.refs:
+                continue
             #iterating over all refs
             for ref in self.refs[label]:
                 logging.info("Babel @ Fixing ref to label: {}, in page: {}".
