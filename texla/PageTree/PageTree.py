@@ -1,5 +1,6 @@
 from .Page import Page
 from .Babel import Babel
+from .TheoremsManager import *
 import re, os, json
 
 
@@ -15,6 +16,8 @@ class PageTree():
         self.titles = {}
         #label manager
         self.babel = Babel()
+        #theorems manager
+        self.theorems_manager = TheoremsManager()
         #urls (they are created after collapsing).
         #it's a dictionary id:url
         self.urls = {}
@@ -26,8 +29,9 @@ class PageTree():
         self.titles[self.root_id] = ro.title
         #indexes
         self.pageid_stack = [ro.id]
-        self.current_id = self.root_id
-        self.current_anchor = self.root_id
+        self.current_page_id = self.root_id
+        #the anchor is the object to be referentiated by labels
+        self.current_anchor = ro
 
     def createPage(self, title, page_type):
         '''This method creates a new page and enters
@@ -41,30 +45,42 @@ class PageTree():
         self.pages[p.id] = p
         self.titles[p.id] = p.title
         #adding the page as subpage of the current page
-        self.pages[self.current_id].addSubpage(p)
+        self.pages[self.current_page_id].addSubpage(p)
         #updates current
         self.pageid_stack.append(p.id)
-        self.current_id = p.id
-        self.current_anchor = p.id
+        self.current_page_id = p.id
+        self.current_anchor = p
 
     def exitPage(self):
         '''Return to the parent page enviroment'''
-        self.current_id = self.pageid_stack[-2]
+        self.current_page_id = self.pageid_stack[-2]
         self.pageid_stack.pop()
-        self.current_anchor = self.current_id
+        self.current_anchor = self.pages[self.current_page_id]
 
     def addText(self, text):
-        self.pages[self.current_id].addText(text)
+        self.pages[self.current_page_id].addText(text)
 
     def addLabel(self, label):
         '''adding label to the babel with the current
         page as the anchor'''
-        self.babel.add_label(label, self.pages[self.current_anchor])
+        self.babel.add_label(label, self.current_anchor)
 
     def addReference(self, label):
         '''adding the current_anchor as a reference for the
         requesting label'''
-        self.babel.add_reference(label, self.pages[self.current_anchor])
+        self.babel.add_reference(label, self.current_anchor)
+
+    def addTheorem(self, id, th_type):
+        '''Adding a theorem also as anchor'''
+        th = Theorem(id,self.current_anchor, th_type)
+        self.theorems_manager.addTheorem(th)
+        #setting current anchor on the theorem
+        self.current_anchor = th
+
+    def exitTheorem(self):
+        '''Removing the anchor from the theorem and setting it
+        to the last used page'''
+        self.current_anchor = self.pages[self.current_page_id]
 
     @staticmethod
     def get_normalized_title(title):
@@ -124,14 +140,19 @@ class PageTree():
         2) Fix the tree order with collapsing of page level
            (N.B.: it needs the collasped status of pages)
         3) Fix the urls now that the level if fixed.
-        4) Fix references to labels: the Babel will change pages
+        4) Create the pagenumber of every page, after the
+           movement in the tree.
+        5) The theorems are fixed adding the right numbering.
+        6) Fix references to labels: the Babel will change pages
            content so this has to be done after the url fixing
            but before the actual text collapsing.
-        5) Finally collapse the pages text to the
+        7) Finally collapse the pages text to the
            right content level'''
         self.collapse_content_level(content_level)
         self.collapse_page_level(max_page_level)
         self.collapse_urls()
+        self.create_pagenumbers()
+        self.theorems_manager.fix_theorems()
         #ask the babel to fix the refs to labels in all the pages
         self.babel.fix_references()
         #collapse the text in the right pages
@@ -211,6 +232,14 @@ class PageTree():
         the url is parent_page#title.
         Then the references are resolved to urls throught labes'''
         self.root_page.collapseURL(self.configs['base_path'])
+
+    def create_pagenumbers(self):
+        '''Every page will have a pagenumber like 1.2.1'''
+        self.root_page.pagenumber = "0"
+        i = 1
+        for pages in self.root_page.subpages:
+            pages.create_pagenumbers(None, i )
+            i += 1
 
     def create_indexes(self):
         '''This function create sections index and

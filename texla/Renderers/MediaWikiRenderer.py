@@ -100,6 +100,7 @@ class MediaWikiRenderer(Renderer):
         self.list_level = ''
         #parameters for theorem handling
         self.in_theorem = False
+        self.theorem_number = 0
         self.th_numbering = {}
 
     ########################################
@@ -370,66 +371,59 @@ class MediaWikiRenderer(Renderer):
         #the label in theorems is not working for now
         th_definition = block.attributes['definition']
         th_title = ''
-        if not block.attributes['star']:
-            counter = block.attributes['counter']
-            if counter==None:
-                counter = block.th_type
-            if counter in self.th_numbering:
-                num = self.th_numbering[counter] +1
-            else:
-                num = 1
-            th_title += str(num)
-            self.th_numbering[counter] = num
         if block.attributes['title'] != None:
             th_title +=" "+ block.attributes['title']
         s = []
+        #adding the theorem to the tree
+        self.theorem_number += 1
+        self.tree.addTheorem(str(self.theorem_number), th_definition)
         #checking if the Environment template is used
         environ = False
         if self.configs['lang'] =='it':
             if th_definition.lower() == 'teorema':
             #adding content to page through a template
                 s.append("\n{{InizioTeorema|titolo=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{FineTeorema}}\n")
             elif th_definition.lower() == 'definizione':
                 s.append("\n{{InizioDefinizione|titolo=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{FineDefinizione}}\n")
             elif th_definition.lower() == 'proposizione':
                 s.append("\n{{InizioProposizione|titolo=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{FineProposizione}}\n")
             elif th_definition.lower() == 'lemma':
                 s.append("\n{{InizioLemma|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{FineLemma}}\n")
             elif th_definition.lower() == 'corollario':
                 s.append("\n{{InizioCorollario|titolo=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{FineCorollario}}\n")
             elif th_definition.lower()[:-2] == 'eserciz':
                 s.append("\n{{InizioEsercizio|titolo=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{FineEsercizio}}\n")
             elif th_definition.lower()[:-1] == 'osservazion':
                 s.append("\n{{InizioOsservazione|titolo=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{FineOsservazione}}\n")
             elif th_definition.lower()[:-2] == 'esemp':
                 s.append("\n{{InizioEsempio|titolo=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{FineEsempio}}\n")
             elif th_definition.lower() == 'dimostrazione':
                 s.append("\n{{InizioDimostrazione|titolo=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{FineDimostrazione}}\n")
             else:
@@ -442,52 +436,52 @@ class MediaWikiRenderer(Renderer):
             if th_definition.lower() == 'theorem':
             #adding content to page through a template
                 s.append("\n{{BeginTheorem|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndTheorem}}\n")
             elif th_definition.lower() == 'definition':
                 s.append("\n{{BeginDefinition|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndDefinition}}\n")
             elif th_definition.lower() == 'proposition':
                 s.append("\n{{BeginProposition|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndProposition}}\n")
             elif th_definition.lower() == 'lemma':
                 s.append("\n{{BeginLemma|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndLemma}}\n")
             elif th_definition.lower() == 'corollarium':
                 s.append("\n{{BeginCorollarium|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndCorollarium}}\n")
             elif th_definition.lower() == 'exercise':
                 s.append("\n{{BeginExercise|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndExercise}}\n")
             elif th_definition.lower() == 'observation':
                 s.append("\n{{BeginObservation|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndObservation}}\n")
             elif th_definition.lower() == 'remark':
                 s.append("\n{{BeginRemark|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndRemark}}\n")
             elif th_definition.lower() == 'example':
                 s.append("\n{{BeginExample|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndExample}}\n")
             elif th_definition.lower() == 'demonstration':
                 s.append("\n{{BeginDemonstration|title=" + \
-                        th_title+"}}")
+                        th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndDemonstration}}\n")
             else:
@@ -496,6 +490,8 @@ class MediaWikiRenderer(Renderer):
                         "|content=")
                 s.append(self.render_children_blocks(block))
                 s.append("}}\n")
+        #exit from theorem ambient
+        self.tree.exitTheorem()
         return '\n'.join(s)
 
     def r_proof(self, block):

@@ -143,6 +143,19 @@ class Page():
             for p in self.subpages:
                 p.collapseURL(self.url)
 
+    def create_pagenumbers(self, parent, current):
+        '''This function creates the pagenumber string appending to the
+        parent number its position in the pages of the same level. Then
+        the process continues with subpages'''
+        if parent != None:
+            self.pagenumber = parent+ ".{}".format(current)
+        else:
+            self.pagenumber = str(current)
+        i = 1
+        for page in self.subpages:
+            page.create_pagenumbers(self.pagenumber, i)
+            i += 1
+
     def fix_text_characters(self):
         '''Utility function to fix apostrophes and other characters
         inside the text of the page'''
