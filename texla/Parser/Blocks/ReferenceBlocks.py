@@ -25,7 +25,7 @@ class LabelBlock(Block):
 
 class RefBlock(Block):
     '''Block thar represents reference'''
-
+    
     @staticmethod
     def parse_ref(parser, tex, parent_block, params):
         options, left_tex = CommandParser.parse_options(

@@ -1,4 +1,5 @@
 from .Page import Page
+from .Babel import Babel
 import re, os, json
 
 
@@ -12,8 +13,8 @@ class PageTree():
         self.pages = {}
         #id : titles
         self.titles = {}
-        #labels : id
-        self.labels = {}
+        #label manager
+        self.babel = Babel()
         #urls (they are created after collapsing).
         #it's a dictionary id:url
         self.urls = {}
@@ -56,10 +57,14 @@ class PageTree():
         self.pages[self.current_id].addText(text)
 
     def addLabel(self, label):
-        self.labels[label] = self.current_anchor
+        '''adding label to the babel with the current
+        page as the anchor'''
+        self.babel.add_label(label, self.pages[self.current_anchor])
 
-    def getRef(self, label):
-        return self.urls[self.labels[label]]
+    def addReference(self, label):
+        '''adding the current_anchor as a reference for the
+        requesting label'''
+        self.babel.add_reference(label, self.pages[self.current_anchor])
 
     @staticmethod
     def get_normalized_title(title):
@@ -112,17 +117,35 @@ class PageTree():
 
 
     def collapse_tree(self, content_level, max_page_level):
-        '''This funcion contains all the tree collapsing
-        procedures in the order: subpages content collapsing,
-        subpages level collapsing,
-        url collapsing, fixReferences.'''
+        '''This function contains all the tree collapsing
+        procedures in the order:
+        1) Mark the pages for the content collapsing without
+           actually move the text
+        2) Fix the tree order with collapsing of page level
+           (N.B.: it needs the collasped status of pages)
+        3) Fix the urls now that the level if fixed.
+        4) Fix references to labels: the Babel will change pages
+           content so this has to be done after the url fixing
+           but before the actual text collapsing.
+        5) Finally collapse the pages text to the
+           right content level'''
         self.collapse_content_level(content_level)
         self.collapse_page_level(max_page_level)
         self.collapse_urls()
-        self.fix_references()
+        #ask the babel to fix the refs to labels in all the pages
+        self.babel.fix_references()
+        #collapse the text in the right pages
+        self.collapse_content_level_text(content_level)
 
     def collapse_content_level(self, max_level):
-        '''This functions collapse the content
+        '''This function marks pages with level higher than
+        choosen level to be collapsed. It DOESN'T move the text.'''
+        for p in self.pages.values():
+            if p.level > max_level:
+                p.collapsed = True
+
+    def collapse_content_level_text(self, max_level):
+        '''This function collapses the content
         of the pages at the choosen level. The content
         of the pages with level higher than max_level
         is moved up to the tree to the page with the max_level,
@@ -130,7 +153,7 @@ class PageTree():
         are marked as collapsed=True.'''
         for p in self.pages.values():
             if p.level == max_level:
-                p.collapseSubpages()
+                p.collapseSubpagesText()
 
     def collapse_page_level(self, max_level):
         '''This function fixes the level of the pages
@@ -188,12 +211,6 @@ class PageTree():
         the url is parent_page#title.
         Then the references are resolved to urls throught labes'''
         self.root_page.collapseURL(self.configs['base_path'])
-
-    def fix_references(self):
-        '''This function fix the references inside the
-        text with the right urls instead of urls'''
-        for page in self.pages.values():
-            page.fixReferences(self.labels,self.pages)
 
     def create_indexes(self):
         '''This function create sections index and

@@ -194,6 +194,8 @@ class MediaWikiRenderer(Renderer):
             eq = eq.replace("\n","").strip()
             output.append('<math display="block">' +\
                         eq + '</math>')
+        #rendering labels
+        self.render_blocks(block.labels)
         return '\n'.join(output)
 
 
@@ -207,7 +209,9 @@ class MediaWikiRenderer(Renderer):
 
     def r_ref(self, block):
         ref = block.attributes['ref']
-        return '\\ref{' + ref + '}'
+        #saving ref in Babel of PageTree
+        self.tree.addReference(ref)
+        return "{{ref:"+ ref+ "}}"
 
     #########################################
     #FORMATTING

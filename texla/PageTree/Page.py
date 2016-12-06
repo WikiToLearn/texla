@@ -106,13 +106,12 @@ class Page():
         #check math inside titles
         self.math_inside_title = self.is_math_inside_title()
 
-    def collapseSubpages(self, level=0):
+
+    def collapseSubpagesText(self, level=0):
         ''' This method insert the text of subpages in this
         page and returns the complete text.'''
-        #start collapsing
-        #we have to managed the text
         for subpage in self.subpages:
-            t = subpage.collapseSubpages(level+1)
+            t = subpage.collapseSubpagesText(level+1)
             #add text
             self.text+= '\n'+t
         if level == 0:
@@ -120,15 +119,13 @@ class Page():
                 #added refs tags to show footnotes
                 self.text+='\n{{Notes}}'
         else:
-            #Creation of current page'title
-            #base il ===
+            #Creation of current page title
             tit = '\n'+'='+'='*(level)+self.title+ \
                     '='*(level)+'='
             self.text = tit+ "\n"+ self.text
-            #marking as collapsed
-            self.collapsed = True
             #return the text
             return self.text
+
 
     def collapseURL(self, base_url):
         '''This functions creates the url of the page
@@ -145,22 +142,6 @@ class Page():
                 self.url = self.title
             for p in self.subpages:
                 p.collapseURL(self.url)
-
-    def fixReferences(self, labels, pages):
-        '''This method insert the right mediawikiurl in
-        the \ref tags after the collapsing'''
-        for label in re.findall(r'\\ref{(.*?)}', self.text):
-            try:
-                page = pages[labels[label]]
-                if page.url != self.url:
-                    self.text = self.text.replace('\\ref{'+label+'}',\
-                        ' [[' + page.url + '|'+ page.title + ']] ')
-                else:
-                    self.text = self.text.replace('\\ref{'+label+'}',' ')
-            except Exception:
-                self.text = self.text.replace('\\ref{'+label+'}',
-                                        "('''MISSING REF''')")
-                logging.error("REF_ERROR: "+ label)
 
     def fix_text_characters(self):
         '''Utility function to fix apostrophes and other characters
@@ -216,7 +197,8 @@ class Page():
     def __str__(self):
         s =[]
         s.append('title='+self.title)
-        s.append('url='+self.url)
+        if hasattr(self, "url"):
+            s.append('url='+self.url)
         s.append('subpages='+str(self.subpages))
         s.append('level='+str(self.level))
         s.append('collapsed='+ str(self.collapsed))
