@@ -17,7 +17,7 @@ class PageTree():
         #label manager
         self.babel = Babel()
         #theorems manager
-        self.theorems_manager = TheoremsManager()
+        self.theorems_manager = TheoremsManager(self.pages)
         #urls (they are created after collapsing).
         #it's a dictionary id:url
         self.urls = {}

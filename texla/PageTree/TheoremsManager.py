@@ -2,7 +2,9 @@ import logging
 
 class TheoremsManager:
 
-    def __init__(self):
+    def __init__(self, pages_dict):
+        #refernce to the pages dictionary
+        self.pages = pages_dict
         self.pages_ths = {}
 
     def addTheorem(self, theorem):
@@ -11,22 +13,32 @@ class TheoremsManager:
             self.pages_ths[page] = []
         self.pages_ths[page].append(theorem)
 
+
     def fix_theorems(self):
-        #first of all we have to recover the right pages
-        #checking the collapsing
-        for page in self.pages_ths:
-            current_page = page
-            while(True):
-                if current_page.collapsed:
-                    current_page = current_page.parent
-                else:
-                    break
-            #so now the theorems of page belong to current_page
-            i = 1
-            for th in self.pages_ths[page]:
-                th.fixNumber(current_page.pagenumber + ".{}".format(i))
-                th.fixUrl(current_page)
-                i += 1
+        '''This function fixes the theorems calculating their
+        number and substituing it the placeholder in the text.
+        Moreover it fixes the data needed by the label manager.'''
+        for chapter in [x for x in self.pages.values() if x.level == 0]:
+            chapter_number = chapter.pagenumber
+            th_numbering = {}
+            pages_to_check = self.get_subpages_ordered(chapter)
+            for pag in pages_to_check:
+                for th in self.pages_ths[pag]:
+                    if th.th_type in th_numbering:
+                        number = th_numbering[th.th_type] +1
+                    else:
+                        number = 1
+                    th_numbering[th.th_type] = number
+                    th.fixNumber(chapter_number+"."+str(number))
+                    th.fixUrl()
+
+    def get_subpages_ordered(self, page):
+        pages = []
+        for subp in page.subpages:
+            if subp in self.pages_ths:
+                pages.append(subp)
+                pages += self.get_subpages_ordered(subp)
+        return pages
 
 
 class Theorem:
@@ -41,15 +53,26 @@ class Theorem:
         '''This method fix the number of the theorem
         inside its page text replacing the string {{thnum:id}}.
         The number is also appended to the title'''
-        self.page.text = self.page.text.replace("{{thnum:"+ self.id + "}}", str(number))
+        self.page.text = self.page.text.replace(
+                "{{thnum:"+ self.id + "}}", str(number))
         #creating title for label management
         self.title = self.th_type + " " + str(number)
         self.number = number
 
-    def fixUrl(self, basepage):
+    def fixUrl(self):
         '''The theorem url is setted to the page url.
         N.B.: to be called after pages' urls fixing'''
-        self.url = self.page.url
+        #getting not collapsed url
+        current_page = self.page
+        while(True):
+            if current_page.collapsed:
+                current_page = current_page.parent
+            else:
+                break
+        self.url = current_page.url + "#" + self.title
+        #replacing anchor in the text
+        self.page.text = self.page.text.replace(
+                "{{thanchor:"+ self.id + "}}", self.title)
 
     def __str__(self):
         return "Theorem. Type: {}, Page: {} Number: {}".format(
