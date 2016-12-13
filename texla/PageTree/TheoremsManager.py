@@ -69,10 +69,10 @@ class Theorem:
                 current_page = current_page.parent
             else:
                 break
-        self.url = current_page.url + "#" + self.title
+        self.url = current_page.url + "#" + self.title.replace(".", "_")
         #replacing anchor in the text
         self.page.text = self.page.text.replace(
-                "{{thanchor:"+ self.id + "}}", self.title)
+                "{{thanchor:"+ self.id + "}}", self.title.replace(".","_"))
 
     def __str__(self):
         return "Theorem. Type: {}, Page: {} Number: {}".format(
