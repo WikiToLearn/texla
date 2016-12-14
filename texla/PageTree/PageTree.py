@@ -131,6 +131,14 @@ class PageTree():
         else:
             self.root_page.removeSubpage(page)
 
+    def move_page_references(self, oldpage, newpage):
+        '''This function fixes the reference in TheoremsManager
+        and Babel when a page is moved'''
+        #we need to fix anchors in Babel
+        self.babel.move_anchor(oldpage, newpage)
+        #we need also to fix the theorems page
+        self.theorems_manager.move_theorems_page(oldpage, newpage)
+
 
     def collapse_tree(self, content_level, max_page_level):
         '''This function contains all the tree collapsing
@@ -202,7 +210,8 @@ class PageTree():
                 p.addSubpage_top(p_intro)
                 #erasing text from section page
                 p.text = ''
-                #we don't need to fix labels for now
+                #fixing page references
+                self.move_page_references(p, p_intro)
 
         #Now we move pages according to the max_level.
         #pages not collapsed and with higher level then
