@@ -34,6 +34,21 @@ class Babel:
         logging.info("Babel @ Adding ref: {}, to label: {}".
                      format(ref, label))
 
+    def move_anchor(self, oldanc, newanc):
+        '''This function replace the references to oldanc with newanc,
+        both as anchor and ref. It is used mainly when a page is moved'''
+        new_anchors = {}
+        for label, anc in self.anchors.items():
+            if anc == oldanc:
+                new_anchors[label] = newanc
+        self.anchors.update(new_anchors)
+        new_refs = {}
+        for label, ref in self.refs.items():
+            if ref == oldanc:
+                new_refs[label] = newanc
+        self.refs.update(new_refs)
+
+
     def fix_references(self):
         '''
         This method will fix the reference in the objects saved under

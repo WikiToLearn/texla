@@ -13,6 +13,13 @@ class TheoremsManager:
             self.pages_ths[page] = []
         self.pages_ths[page].append(theorem)
 
+    def move_theorems_page(self, oldpage, newpage):
+        '''This function moves a theorem to a different page
+        to maintain the right anchor in case of moved page.'''
+        if oldpage in self.pages_ths:
+            self.pages_ths[newpage] = self.pages_ths[oldpage]
+            self.pages_ths.pop(oldpage)
+
 
     def fix_theorems(self):
         '''This function fixes the theorems calculating their
@@ -58,6 +65,8 @@ class Theorem:
         #creating title for label management
         self.title = self.th_type + " " + str(number)
         self.number = number
+        logging.debug("Theorem @ Fixing number {} of theorem: {}".
+                      format(number, self))
 
     def fixUrl(self):
         '''The theorem url is setted to the page url.
@@ -75,5 +84,5 @@ class Theorem:
                 "{{thanchor:"+ self.id + "}}", self.title.replace(".","_"))
 
     def __str__(self):
-        return "Theorem. Type: {}, Page: {} Number: {}".format(
+        return "Theorem. Type: {}, Page: {}, Number: {}".format(
             self.th_type, self.page.title, self.number )
