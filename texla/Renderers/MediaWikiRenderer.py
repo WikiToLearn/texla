@@ -467,12 +467,12 @@ class MediaWikiRenderer(Renderer):
                             "|anchor={{thanchor:"+ str(self.theorem_number) +"}}}}")
                 s.append(self.render_children_blocks(block))
                 s.append("{{EndLemma}}\n")
-            elif th_definition.lower() == 'corollarium':
-                s.append("\n{{BeginCorollarium|title=" + \
+            elif th_definition.lower() == 'corollary':
+                s.append("\n{{BeginCorollary|title=" + \
                         th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}"+\
                             "|anchor={{thanchor:"+ str(self.theorem_number) +"}}}}")
                 s.append(self.render_children_blocks(block))
-                s.append("{{EndCorollarium}}\n")
+                s.append("{{EndCorollary}}\n")
             elif th_definition.lower() == 'exercise':
                 s.append("\n{{BeginExercise|title=" + \
                         th_title+"|number={{thnum:"+ str(self.theorem_number)+"}}"+\
