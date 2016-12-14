@@ -62,8 +62,8 @@ class Theorem:
         The number is also appended to the title'''
         self.page.text = self.page.text.replace(
                 "{{thnum:"+ self.id + "}}", str(number))
-        #creating title for label management
-        self.title = self.th_type + " " + str(number)
+        #creating title for label management. Only the number as latex. 
+        self.title = str(number)
         self.number = number
         logging.debug("Theorem @ Fixing number {} of theorem: {}".
                       format(number, self))

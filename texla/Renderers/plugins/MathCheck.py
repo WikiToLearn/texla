@@ -32,8 +32,6 @@ def math_check(block):
     #replacing bb and bbm with boldmath
     mtxt = replace_command_greedy(mtxt, 'bm', 'mathbf', False)
     mtxt = replace_command_greedy(mtxt, 'bbm', 'mathbf', False)
-    #replace intertext with mbox
-    mtxt = replace_command_greedy(mtxt, 'intertext', 'mbox', False)
     #symbols
     mtxt = mtxt.replace('\\abs', '|')
     mtxt = mtxt.replace('\\lvert', '|')
@@ -48,6 +46,7 @@ def math_check(block):
     #dag to dagger
     mtxt = replace_command_no_options(mtxt,'dag', 'dagger')
     mtxt = replace_command_no_options(mtxt,'fint', 'int')
+    mtxt = replace_command_no_options(mtxt,'dashrightarrow', 'rightarrow')
     #replacing spacing commands
     mtxt = mtxt.replace('\\:', '\\,')
     #removing rule command
