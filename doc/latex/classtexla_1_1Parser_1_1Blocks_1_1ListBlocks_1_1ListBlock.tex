@@ -1,0 +1,50 @@
+\hypertarget{classtexla_1_1Parser_1_1Blocks_1_1ListBlocks_1_1ListBlock}{}\section{texla.\+Parser.\+Blocks.\+List\+Blocks.\+List\+Block Class Reference}
+\label{classtexla_1_1Parser_1_1Blocks_1_1ListBlocks_1_1ListBlock}\index{texla.\+Parser.\+Blocks.\+List\+Blocks.\+List\+Block@{texla.\+Parser.\+Blocks.\+List\+Blocks.\+List\+Block}}
+Inheritance diagram for texla.\+Parser.\+Blocks.\+List\+Blocks.\+List\+Block\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classtexla_1_1Parser_1_1Blocks_1_1ListBlocks_1_1ListBlock}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classtexla_1_1Parser_1_1Blocks_1_1ListBlocks_1_1ListBlock_a72828e3b10fc6a6c22f6afed383af95e}{}\label{classtexla_1_1Parser_1_1Blocks_1_1ListBlocks_1_1ListBlock_a72828e3b10fc6a6c22f6afed383af95e} 
+def {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, list\+\_\+type, tex, parent\+\_\+block)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{classtexla_1_1Parser_1_1Blocks_1_1ListBlocks_1_1ListBlock_aaf69903ae29fb0d00539f91c6db5a656}{parse} (parser, tex, parent\+\_\+block, params)
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}We use one Block type for all listings.
+Itemize, Enumerate, Description are
+specified in list_type attributes.
+\end{DoxyVerb}
+ 
+
+\subsection{Member Function Documentation}
+\hypertarget{classtexla_1_1Parser_1_1Blocks_1_1ListBlocks_1_1ListBlock_aaf69903ae29fb0d00539f91c6db5a656}{}\label{classtexla_1_1Parser_1_1Blocks_1_1ListBlocks_1_1ListBlock_aaf69903ae29fb0d00539f91c6db5a656} 
+\index{texla\+::\+Parser\+::\+Blocks\+::\+List\+Blocks\+::\+List\+Block@{texla\+::\+Parser\+::\+Blocks\+::\+List\+Blocks\+::\+List\+Block}!parse@{parse}}
+\index{parse@{parse}!texla\+::\+Parser\+::\+Blocks\+::\+List\+Blocks\+::\+List\+Block@{texla\+::\+Parser\+::\+Blocks\+::\+List\+Blocks\+::\+List\+Block}}
+\subsubsection{\texorpdfstring{parse()}{parse()}}
+{\footnotesize\ttfamily def texla.\+Parser.\+Blocks.\+List\+Blocks.\+List\+Block.\+parse (\begin{DoxyParamCaption}\item[{}]{parser,  }\item[{}]{tex,  }\item[{}]{parent\+\_\+block,  }\item[{}]{params }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+\begin{DoxyVerb}We parse the content of the env.
+Then we analyze the blocks and find
+which are items and not. The hierarchy of
+blocks is constructed after the parsing of
+the content. It's the only way to let the parser
+handle nested environments. Then, all the
+blocks are reappended under items blocks and
+added as children nodes.
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+texla/\+Parser/\+Blocks/List\+Blocks.\+py\end{DoxyCompactItemize}

@@ -1,0 +1,72 @@
+\hypertarget{classtexla_1_1PageTree_1_1Babel_1_1Babel}{}\section{texla.\+Page\+Tree.\+Babel.\+Babel Class Reference}
+\label{classtexla_1_1PageTree_1_1Babel_1_1Babel}\index{texla.\+Page\+Tree.\+Babel.\+Babel@{texla.\+Page\+Tree.\+Babel.\+Babel}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classtexla_1_1PageTree_1_1Babel_1_1Babel_a4c6cf7487957f67b98f1a7d6520e86ba}{}\label{classtexla_1_1PageTree_1_1Babel_1_1Babel_a4c6cf7487957f67b98f1a7d6520e86ba} 
+def {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self)
+\item 
+def \hyperlink{classtexla_1_1PageTree_1_1Babel_1_1Babel_a60491a66c7f0bbd27cbcdb10447e2902}{add\+\_\+label} (self, label, anchor)
+\item 
+def \hyperlink{classtexla_1_1PageTree_1_1Babel_1_1Babel_a9fa3d1d8628ea14de175e506640bc160}{add\+\_\+reference} (self, label, ref)
+\item 
+def \hyperlink{classtexla_1_1PageTree_1_1Babel_1_1Babel_a0c75743fd9b66c057b5a27900ccb8e32}{move\+\_\+anchor} (self, oldanc, newanc)
+\item 
+def \hyperlink{classtexla_1_1PageTree_1_1Babel_1_1Babel_a1d4846dd94d6c4c272303703b7438f9e}{fix\+\_\+references} (self)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classtexla_1_1PageTree_1_1Babel_1_1Babel_aad0f2a6c8574722a11a5ce0a7dee78bd}{}\label{classtexla_1_1PageTree_1_1Babel_1_1Babel_aad0f2a6c8574722a11a5ce0a7dee78bd} 
+{\bfseries refs}
+\item 
+\hypertarget{classtexla_1_1PageTree_1_1Babel_1_1Babel_ad817351db8cee0a76bf2ef622bb02152}{}\label{classtexla_1_1PageTree_1_1Babel_1_1Babel_ad817351db8cee0a76bf2ef622bb02152} 
+{\bfseries anchors}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classtexla_1_1PageTree_1_1Babel_1_1Babel_a60491a66c7f0bbd27cbcdb10447e2902}{}\label{classtexla_1_1PageTree_1_1Babel_1_1Babel_a60491a66c7f0bbd27cbcdb10447e2902} 
+\index{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel@{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel}!add\+\_\+label@{add\+\_\+label}}
+\index{add\+\_\+label@{add\+\_\+label}!texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel@{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel}}
+\subsubsection{\texorpdfstring{add\+\_\+label()}{add\_label()}}
+{\footnotesize\ttfamily def texla.\+Page\+Tree.\+Babel.\+Babel.\+add\+\_\+label (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{label,  }\item[{}]{anchor }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}This method adds a label and its anchor to the
+babel. The label is unique but can be overwritten.
+\end{DoxyVerb}
+ \hypertarget{classtexla_1_1PageTree_1_1Babel_1_1Babel_a9fa3d1d8628ea14de175e506640bc160}{}\label{classtexla_1_1PageTree_1_1Babel_1_1Babel_a9fa3d1d8628ea14de175e506640bc160} 
+\index{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel@{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel}!add\+\_\+reference@{add\+\_\+reference}}
+\index{add\+\_\+reference@{add\+\_\+reference}!texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel@{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel}}
+\subsubsection{\texorpdfstring{add\+\_\+reference()}{add\_reference()}}
+{\footnotesize\ttfamily def texla.\+Page\+Tree.\+Babel.\+Babel.\+add\+\_\+reference (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{label,  }\item[{}]{ref }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}This method adds a reference to the label.
+A reference is a page or in general an object
+with .text properties. The babel will fix the reference
+of the registered objects.
+\end{DoxyVerb}
+ \hypertarget{classtexla_1_1PageTree_1_1Babel_1_1Babel_a1d4846dd94d6c4c272303703b7438f9e}{}\label{classtexla_1_1PageTree_1_1Babel_1_1Babel_a1d4846dd94d6c4c272303703b7438f9e} 
+\index{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel@{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel}!fix\+\_\+references@{fix\+\_\+references}}
+\index{fix\+\_\+references@{fix\+\_\+references}!texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel@{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel}}
+\subsubsection{\texorpdfstring{fix\+\_\+references()}{fix\_references()}}
+{\footnotesize\ttfamily def texla.\+Page\+Tree.\+Babel.\+Babel.\+fix\+\_\+references (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}This method will fix the reference in the objects saved under
+self.refs. The text {{ref:label}} in the objects' .text properties
+will be replaces by a url made of [url|title]. The url and the title
+MUST be properties of the anchor saved.
+\end{DoxyVerb}
+ \hypertarget{classtexla_1_1PageTree_1_1Babel_1_1Babel_a0c75743fd9b66c057b5a27900ccb8e32}{}\label{classtexla_1_1PageTree_1_1Babel_1_1Babel_a0c75743fd9b66c057b5a27900ccb8e32} 
+\index{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel@{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel}!move\+\_\+anchor@{move\+\_\+anchor}}
+\index{move\+\_\+anchor@{move\+\_\+anchor}!texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel@{texla\+::\+Page\+Tree\+::\+Babel\+::\+Babel}}
+\subsubsection{\texorpdfstring{move\+\_\+anchor()}{move\_anchor()}}
+{\footnotesize\ttfamily def texla.\+Page\+Tree.\+Babel.\+Babel.\+move\+\_\+anchor (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{oldanc,  }\item[{}]{newanc }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}This function replace the references to oldanc with newanc,
+both as anchor and ref. It is used mainly when a page is moved\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+texla/\+Page\+Tree/Babel.\+py\end{DoxyCompactItemize}
