@@ -200,7 +200,7 @@ class Parser:
         '''
         This function handles the parsing of environments.
         It parses the name of the environment and if it's starred.
-        Then utility.get_environment() is used to extract
+        Then EnvironmentParser.get_environment() is used to extract
         the complete environment, handling nested envs.
         The content is sent to parser_hook for the specific parsing.
         The parser_hook decides also if the content of the env
@@ -245,23 +245,29 @@ class Parser:
         is inserted in "display_math" or "inline_math" block.
         The function returnes the block and left_tex.
         '''
-        inline_re = re.compile(r'(?<![\$])\$(?P<m>[^$]+)\$(?!\$)', re.DOTALL)
-        display_re = re.compile(r'(?<![\$])\$\$(?P<m>[^$]+)\$\$(?!\$)', re.DOTALL)
-        inline_re2 = re.compile(r'\\\((?P<m>.*?)\\\)',re.DOTALL)
-        display_re2 = re.compile(r'\\\[(?P<m>.*?)\\\]', re.DOTALL)
-        #searching for match
-        matches = []
-        matches.append((inline_re.match(tex),'inlinemath'))
-        matches.append((display_re.match(tex),'displaymath'))
-        matches.append((inline_re2.match(tex),'inlinemath'))
-        matches.append((display_re2.match(tex),'displaymath'))
-        for m, env in matches:
-            if m != None:
-                content = m.group('m')
-                left_tex = tex[m.end():]
-                matched_env = env
-        params = {'env': matched_env}
-        block = self.call_parser_hook(matched_env,'env',
+        #firt we have to check the double dollar
+        if tex.startswith("$$"):
+            i = tex.find("$$", 2)
+            content = tex[2:i]
+            left_tex = tex[i+2:]
+            env = "displaymath"
+        elif tex.startswith("$"):
+            i = tex.find("$", 1)
+            content = tex[1:i]
+            left_tex = tex[i+1:]
+            env = "inlinemath"
+        elif tex.startswith("\\["):
+            i = tex.find("\\]", 2)
+            content = tex[2:i]
+            left_tex = tex[i+2:]
+            env = "displaymath"
+        elif tex.startswith("\\("):
+            i = tex.find("\\)", 2)
+            content = tex[2:i]
+            left_tex = tex[i+2:]
+            env = "inlinemath"
+        params = {'env': env}
+        block = self.call_parser_hook(env, 'env',
                 content, parent_block, params)
         logging.info('BLOCK @ %s%s',
                     "\t"*block.tree_depth,
