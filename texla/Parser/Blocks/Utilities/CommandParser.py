@@ -69,39 +69,42 @@ def get_command_options(tex):
 
 
 def get_parenthesis(tex):
-	'''This funcion parses strings like '[text]{text}[text]..'
-	It parses only [ and { parenthesis. It returns a list of tuples
-	in the format: (start_parenthesis, content , end_parenthesis).
-	The remaining string, not in [] or {}, is returned as ('out', string, '').
-	The function is able to understand nested parenthesis.
-	'''
-	if tex.startswith('['):
-		beginp = '['
-		endp = ']'
-	elif tex.startswith('{'):
-		beginp = '{'
-		endp = '}'
-	else:
-		#if the tex doesn't start
-		#with [ or { a empty list is returnses
-		return [('out',tex,'')]
-	content= []
-	level = 0
-	pos = -1
-	for ch in tex:
-		pos+=1
-		if ch == beginp:
-			level+=1
-		elif ch == endp:
-			level-=1
-		if level==0:
-			#we can extrac the token
-			content.append((beginp, tex[1:pos], endp))
-			break
-	#the left tex is parsed again
-	content += get_parenthesis(tex[pos+1:])
-	return content
+    '''This funcion parses strings like '[text]{text}(text)..'
+    It parses only (, [ and { parenthesis. It returns a list of tuples
+    in the format: (start_parenthesis, content , end_parenthesis).
+    The remaining string, not in [] or {}, is returned as ('out', string, '').
+    The function is able to understand nested parenthesis.
+    '''
+    if tex.startswith('['):
+        beginp = '['
+        endp = ']'
+    elif tex.startswith('{'):
+        beginp = '{'
+        endp = '}'
+    elif tex.startswith('('):
+        beginp = '('
+        endp = ')'
+    else:
+        #if the tex doesn't start
+        #with [ or { a empty list is returnses
+        return [('out',tex,'')]
+    content= []
+    level = 0
+    pos = -1
+    for ch in tex:
+        pos+=1
+        if ch == beginp:
+            level+=1
+        elif ch == endp:
+            level-=1
+        if level==0:
+            #we can extrac the token
+            content.append((beginp, tex[1:pos], endp))
+            break
 
+    #the left tex is parsed again
+    content += get_parenthesis(tex[pos+1:])
+    return content
 
 def get_command_greedy(tex):
 	'''

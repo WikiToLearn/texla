@@ -7,144 +7,144 @@ import texla.PageTree.PageTree as pt
 import unittest
 
 class CommandParserTest(unittest.TestCase):
-	def test_grammar_complete(self):
-		a = '[option]{text}other text'
-		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.parse_options(a, grammar),
-			({'opt':'option','content':'text'}, 'other text'))
+    def test_grammar_complete(self):
+        a = '[option]{text}other text'
+        grammar = [('opt','[',']'),('content','{','}')]
+        self.assertEqual(CommandParser.parse_options(a, grammar),
+            ({'opt':'option','content':'text'}, 'other text'))
 
-	def test_grammar_command_near_command(self):
-		a = '[option]{text}\cmd{other text}'
-		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.parse_options(a,grammar),
-			({'opt':'option','content':'text'},'\cmd{other text}'))
+    def test_grammar_command_near_command(self):
+        a = '[option]{text}\cmd{other text}'
+        grammar = [('opt','[',']'),('content','{','}')]
+        self.assertEqual(CommandParser.parse_options(a,grammar),
+            ({'opt':'option','content':'text'},'\cmd{other text}'))
 
-	def test_grammar_blank_left(self):
-		a = '{text} other text'
-		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.parse_options(a,grammar),
-			({'opt':None,'content':'text'},' other text'))
+    def test_grammar_blank_left(self):
+        a = '{text} other text'
+        grammar = [('opt','[',']'),('content','{','}')]
+        self.assertEqual(CommandParser.parse_options(a,grammar),
+            ({'opt':None,'content':'text'},' other text'))
 
-	def test_grammar_blank_right(self):
-		a = '[option] other text'
-		grammar = [('opt','[',']'),('content','{','}')]
-		self.assertEqual(CommandParser.parse_options(a, grammar),
-			({'opt':'option','content':None},' other text'))
+    def test_grammar_blank_right(self):
+        a = '[option] other text'
+        grammar = [('opt','[',']'),('content','{','}')]
+        self.assertEqual(CommandParser.parse_options(a, grammar),
+            ({'opt':'option','content':None},' other text'))
 
-	def test_grammar_blank_middle(self):
-		a = '[option1][option2] other text'
-		grammar = [('opt1','[',']'),('content','{','}'),
-			('opt2','[',']')]
-		self.assertEqual(CommandParser.parse_options(a, grammar),
-			({'opt1':'option1','content':None,
-			 'opt2':'option2'},' other text'))
+    def test_grammar_blank_middle(self):
+        a = '[option1][option2] other text'
+        grammar = [('opt1','[',']'),('content','{','}'),
+            ('opt2','[',']')]
+        self.assertEqual(CommandParser.parse_options(a, grammar),
+            ({'opt1':'option1','content':None,
+            'opt2':'option2'},' other text'))
 
-	def test_grammar_blank_same(self):
-		a = '[option1][option2] other text'
-		grammar = [('opt1','[',']'),('opt2','[',']'),
-			('opt3','[',']')]
-		self.assertEqual(CommandParser.parse_options(a, grammar),
-			({'opt1':'option1','opt2':'option2',
-			 'opt3':None},' other text'))
+    def test_grammar_blank_same(self):
+        a = '[option1][option2] other text'
+        grammar = [('opt1','[',']'),('opt2','[',']'),
+            ('opt3','[',']')]
+        self.assertEqual(CommandParser.parse_options(a, grammar),
+            ({'opt1':'option1','opt2':'option2',
+             'opt3':None},' other text'))
 
-	def test_grammar_nooptions(self):
-		self.assertEqual(CommandParser.parse_options(' text',[]),
-			({},' text'))
+    def test_grammar_nooptions(self):
+        self.assertEqual(CommandParser.parse_options(' text',[]),
+            ({},' text'))
 
-	def test_grammar_envinside(self):
-		a =  '{test $x=y$ text \\begin{align*}A'+\
-			'\end{align*} text}'
-		grammar = [('content','{','}')]
-		self.assertEqual(CommandParser.parse_options(a,grammar),
-			({'content':'test $x=y$ text \\begin{align*}A'+\
-			'\end{align*} text'},''))
+    def test_grammar_envinside(self):
+        a =  '{test $x=y$ text \\begin{align*}A'+\
+            '\end{align*} text}'
+        grammar = [('content','{','}')]
+        self.assertEqual(CommandParser.parse_options(a,grammar),
+            ({'content':'test $x=y$ text \\begin{align*}A'+\
+            '\end{align*} text'},''))
 
-	def test_grammar_get_param_with_env(self):
-		a =  '{test $x=y$ text \\begin{align*}A'+\
-			'\end{align*} text}'
-		grammar = [('content','{','}')]
-		self.assertEqual(
-			CommandParser.parse_options(a,grammar)[0]['content'],
-			'test $x=y$ text \\begin{align*}A'+\
-			'\end{align*} text')
+    def test_grammar_get_param_with_env(self):
+        a =  '{test $x=y$ text \\begin{align*}A'+\
+            '\end{align*} text}'
+        grammar = [('content','{','}')]
+        self.assertEqual(
+            CommandParser.parse_options(a,grammar)[0]['content'],
+            'test $x=y$ text \\begin{align*}A'+\
+            '\end{align*} text')
 
-	def test_get_parenthesis_nested(self):
-		a = '[a][b]{abc\command{}[]}[d]{boh[]} tests'
-		self.assertEqual(CommandParser.get_parenthesis(a)[:-1],
-			[('[','a',']'),('[','b',']'),('{','abc\command{}[]','}'),
-			('[','d',']'),('{','boh[]','}')])
-		self.assertEqual(CommandParser.get_parenthesis(a)[-1:],
-			[('out',' tests','')])
+    def test_get_parenthesis_nested(self):
+        a = '[a][b]{abc\command{}[]}[d]{boh[]} tests'
+        self.assertEqual(CommandParser.get_parenthesis(a)[:-1],
+            [('[','a',']'),('[','b',']'),('{','abc\command{}[]','}'),
+            ('[','d',']'),('{','boh[]','}')])
+        self.assertEqual(CommandParser.get_parenthesis(a)[-1:],
+            [('out',' tests','')])
 
-	def test_get_parenthesis_env(self):
-		a =  '{test $x=y$ text \\begin{align*}A'+\
-			'\end{align*} text}'
-		self.assertEqual(CommandParser.get_parenthesis(a),
-			[('{','test $x=y$ text \\begin{align*}A'+\
-			'\end{align*} text','}'),('out','','')])
+    def test_get_parenthesis_env(self):
+        a =  '{test $x=y$ text \\begin{align*}A'+\
+            '\end{align*} text}'
+        self.assertEqual(CommandParser.get_parenthesis(a),
+            [('{','test $x=y$ text \\begin{align*}A'+\
+            '\end{align*} text','}'),('out','','')])
 
-	def test_get_parenthesis_near_command(self):
-		a = '[a][b]{abc\command{}[]}[d]{boh[]}\cmd2{tests}'
-		self.assertEqual(CommandParser.get_parenthesis(a)[:-1],
-			[('[','a',']'),('[','b',']'),('{','abc\command{}[]','}'),
-			('[','d',']'),('{','boh[]','}')])
-		self.assertEqual(CommandParser.get_parenthesis(a)[-1:],
-			[('out','\cmd2{tests}','')])
+    def test_get_parenthesis_near_command(self):
+        a = '[a][b]{abc\command{}[]}[d]{boh[]}\cmd2{tests}'
+        self.assertEqual(CommandParser.get_parenthesis(a)[:-1],
+            [('[','a',']'),('[','b',']'),('{','abc\command{}[]','}'),
+            ('[','d',']'),('{','boh[]','}')])
+        self.assertEqual(CommandParser.get_parenthesis(a)[-1:],
+            [('out','\cmd2{tests}','')])
 
-	def test_get_command_greedy(self):
-		a = '\command[a][b]{abc\emph{}[]}[d]{boh[]}\cmd2{tests}'
-		self.assertEqual(CommandParser.get_command_greedy(a),
-			('command','\command[a][b]{abc\emph{}[]}[d]{boh[]}',
-				 '\cmd2{tests}',38))
 
-	def test_get_command_options(self):
-		a = '[boh]{test{test}}[{boh}a] left tex'
-		self.assertEqual(CommandParser.get_command_options(a),
-			('[boh]{test{test}}[{boh}a]', ' left tex',25))
+    def test_get_command_greedy(self):
+        a = '\command[a][b]{abc\emph{}[]}[d]{boh[]}\cmd2{tests}'
+        self.assertEqual(CommandParser.get_command_greedy(a),
+            ('command','\command[a][b]{abc\emph{}[]}[d]{boh[]}',
+                 '\cmd2{tests}',38))
 
+    def test_get_command_options(self):
+        a = '[boh]{test{test}}[{boh}a] left tex'
+        self.assertEqual(CommandParser.get_command_options(a),
+            ('[boh]{test{test}}[{boh}a]', ' left tex',25))
 
 
 class UtilityTest(unittest.TestCase):
-	def test_get_environment_content(self):
-		a = '\\begin{A} test \\begin{A}\nt\n\\end{A}'+\
-			'test\ntest\n\\end{A} other test'
-		self.assertEqual(EnvironmentParser.get_environment_content(a,'A'),
-			' test \\begin{A}\nt\n\\end{A}test\ntest\n')
+    def test_get_environment_content(self):
+        a = '\\begin{A} test \\begin{A}\nt\n\\end{A}'+\
+            'test\ntest\n\\end{A} other test'
+        self.assertEqual(EnvironmentParser.get_environment_content(a,'A'),
+            ' test \\begin{A}\nt\n\\end{A}test\ntest\n')
 
-	def test_get_environment_content_left(self):
-		a = 'test \\begin{A} test \\begin{A}\nt\n\\end{A}'+\
-			'test\ntest\n\\end{A} other test'
-		self.assertEqual(EnvironmentParser.get_environment_content(a,'A'),
-			' test \\begin{A}\nt\n\\end{A}test\ntest\n')
+    def test_get_environment_content_left(self):
+        a = 'test \\begin{A} test \\begin{A}\nt\n\\end{A}'+\
+            'test\ntest\n\\end{A} other test'
+        self.assertEqual(EnvironmentParser.get_environment_content(a,'A'),
+            ' test \\begin{A}\nt\n\\end{A}test\ntest\n')
 
-	def test_get_environment(self):
-		a = 'test \\begin{A} test \\begin{A}\nt\n\\end{A}'+\
-			'test\ntest\n\\end{A} other test'
-		r = EnvironmentParser.get_environment(a,'A')
-		s = r[0]
-		e = r[1]
-		c = r[2]
-		self.assertEqual(a[s:e],'\\begin{A} test \\begin{A}\nt\n\\end{A}'+\
-			'test\ntest\n\\end{A}')
+    def test_get_environment(self):
+        a = 'test \\begin{A} test \\begin{A}\nt\n\\end{A}'+\
+            'test\ntest\n\\end{A} other test'
+        r = EnvironmentParser.get_environment(a,'A')
+        s = r[0]
+        e = r[1]
+        c = r[2]
+        self.assertEqual(a[s:e],'\\begin{A} test \\begin{A}\nt\n\\end{A}'+\
+            'test\ntest\n\\end{A}')
 
 class RegexTest(unittest.TestCase):
-	def test_section_regex(self):
-		sec = re.compile(r'\\section' + \
+    def test_section_regex(self):
+        sec = re.compile(r'\\section' + \
                 r'(?:[*])?(?: *)'+\
                 r'(?=[\{\[])')
-		a = 'text tex \\section* {} text '+\
-			'\\section text'
-		self.assertEqual(sec.split(a),
-			['text tex ','{} text \\section text'])
+        a = 'text tex \\section* {} text '+\
+            '\\section text'
+        self.assertEqual(sec.split(a),
+            ['text tex ','{} text \\section text'])
 
-	def test_section_regex2(self):
-		sec = re.compile(r'\\section' + \
+    def test_section_regex2(self):
+        sec = re.compile(r'\\section' + \
                 r'(?:[*])?(?: *)'+\
                 r'(?=[\{\[])')
-		a = 'text tex \\section* {} text '+\
-			'\\section[] text'
-		self.assertEqual(sec.split(a),
-			['text tex ','{} text ','[] text'])
+        a = 'text tex \\section* {} text '+\
+            '\\section[] text'
+        self.assertEqual(sec.split(a),
+            ['text tex ','{} text ','[] text'])
 
 class UtilTest(unittest.TestCase):
     def test_remove_command_greedy1(self):
