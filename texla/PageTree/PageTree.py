@@ -311,11 +311,12 @@ class PageTree():
         base_page.text += '\n'.join(index)
 
         #creating book export page
-        book_title = 'Project:Libri_' + book_url
+        book_template = self.configs["keywords"]["book_template"]
+        book_title = book_template + '_' + book_url
         book_export_page = Page(book_title,
                                 'root', -1,None)
         book_export_page.url = self.configs['base_path']+ \
-                                'Project:Libri/' + self.doc_title
+                                book_template + '/' + self.doc_title
         #inserting index text
         book_export_page.addText(u'\n'.join(book_export_index))
         #the export book page is inserted in the pages dict and index
