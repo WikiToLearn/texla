@@ -53,6 +53,9 @@ class Theorem:
     def __init__(self, id, page, th_type):
         self.id = id
         self.page = page
+        #creating a text value. If the Theorem is used
+        #as reference the text of the parent page is used.
+        self.text = page.text
         self.th_type = th_type
         self.number = 0
 
@@ -62,10 +65,10 @@ class Theorem:
         The number is also appended to the title'''
         self.page.text = self.page.text.replace(
                 "{{thnum:"+ self.id + "}}", str(number))
-        #creating title for label management. Only the number as latex. 
+        #creating title for label management. Only the number as latex.
         self.title = str(number)
         self.number = number
-        logging.debug("Theorem @ Fixing number {} of theorem: {}".
+        logging.info("Theorem @ Fixing number {} of theorem: {}".
                       format(number, self))
 
     def fixUrl(self):
@@ -82,6 +85,7 @@ class Theorem:
         #replacing anchor in the text
         self.page.text = self.page.text.replace(
                 "{{thanchor:"+ self.id + "}}", self.title.replace(".","_"))
+        logging.debug("Theorem @ Fixing URL of theorem {}".format(self))
 
     def __str__(self):
         return "Theorem. Type: {}, Page: {}, Number: {}".format(

@@ -16,7 +16,7 @@ class Babel:
             logging.warn("Babel @ label: {} already present".format(label))
         #saving the anchor that has to be unique
         self.anchors[label] = anchor
-        logging.info("Babel @ Adding label: {} to anchor: {}".
+        logging.info("Babel @ Adding label: \"{}\" to anchor: {}".
                      format(label, anchor))
 
     def add_reference(self, label, ref):
@@ -31,7 +31,7 @@ class Babel:
         if label not in self.refs:
             self.refs[label] = []
         self.refs[label].append(ref)
-        logging.info("Babel @ Adding ref: {}, to label: {}".
+        logging.info("Babel @ Adding ref: {}, to label: \"{}\"".
                      format(ref, label))
 
     def move_anchor(self, oldanc, newanc):
