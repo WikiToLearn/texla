@@ -76,7 +76,7 @@ class Babel:
                 continue
             #iterating over all refs
             for ref in self.refs[label]:
-                logging.info("Babel @ Fixing ref to label: {}, in page: {}".
+                logging.info("Babel @ Fixing ref to label: \"{}\", in page: {}".
                              format(label,ref.title))
                 logging.debug("From page: {}, to page: {}".format(ref, obj))
                 ref.text = ref.text.replace("{{ref:"+ label +"}}", replace_string)

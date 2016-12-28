@@ -3,7 +3,7 @@ it:
     subpages: Sottopagine
     intro: Introduzione
     book_category: Categoria:Libri
-    book_template: Project:Libri
+    book_url: Project:Libri
     category: Categoria
 
 en:
@@ -11,5 +11,5 @@ en:
     subpages: Subpages
     intro: Introduction
     book_category: Category:Books
-    book_template: Project:Books
+    book_url: Project:Books
     category: Category

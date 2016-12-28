@@ -250,11 +250,11 @@ class PageTree():
             pages.create_pagenumbers(None, i )
             i += 1
 
-    def create_indexes(self):
+    def create_indexes(self, export_book_page=False):
         '''This function create sections index and
         book total index'''
         self.create_sections_index()
-        self.create_book_index()
+        self.create_book_index(export_book_page=False)
 
     def create_sections_index(self):
         '''This function create the index for the
@@ -274,50 +274,50 @@ class PageTree():
                 page.text = '\n'.join(index)
 
 
-    def create_book_index(self):
+    def create_book_index(self, export_book_page=False):
         '''This function create the book total index
         and the book export page index'''
         base_page = self.root_page
         #book export: link
         book_url = self.doc_title.replace(' ','_')
-        base_page.text+= '{{libro|Project:Libri/'+ book_url+\
-                '|'+ self.doc_title + '}}\n'
         #creating root index
         index = ["{{CourseRoot|"]
-        book_export_index = ['{{libro_salvato | setting-papersize = a4\
+        if export_book_page:
+            book_export_index = ['{{libro_salvato | setting-papersize = a4\
              | setting-toc = auto | setting-columns = 1}}']
-        #book export: setting title
-        book_export_index.append('==' + self.doc_title + '==')
+            #book export: setting title
+            book_export_index.append('==' + self.doc_title + '==')
         for page in self.root_page.subpages:
             if page.level == 0:
                 index.append('{{CourseLevelTwo|'+page.title +'}}')
-                #book export index for chapters
-                book_export_index.append(';' + page.title)
-                #creating index for book
-                for p in page.get_subpages():
-                    if not p.collapsed:
-                        if len(p.text) > 0:
-                            book_export_index.append(
-                                ':[[' + p.url + '|' + p.title + ']]')
+                if export_book_page:
+                    #book export index for chapters
+                    book_export_index.append(';' + page.title)
+                    #creating index for book
+                    for p in page.get_subpages():
+                        if not p.collapsed:
+                            if len(p.text) > 0:
+                                book_export_index.append(
+                                    ':[[' + p.url + '|' + p.title + ']]')
                 #closing section
                 index.append('\n{{ForceBreak}}\n')
-        #adding category to book page
-        book_export_index.append("[["+self.configs["keywords"]["book_category"]+
-                                 "|"+self.doc_title +"]]")
         #adding course categories
         index.append("}}\n")
         index.append("[["+ self.configs["keywords"]["category"] +":Structure]]")
         index.append("<noinclude>[[Category:CourseRoot]]</noinclude>")
         base_page.text += '\n'.join(index)
-
         #creating book export page
-        book_template = self.configs["keywords"]["book_template"]
-        book_title = book_template + '_' + book_url
-        book_export_page = Page(book_title,
+        if export_book_page:
+            #adding category to book page
+            book_export_index.append("[["+self.configs["keywords"]["book_category"]+
+                                 "|"+self.doc_title +"]]")
+            book_template = self.configs["keywords"]["book_template"]
+            book_title = book_template + '_' + book_url
+            book_export_page = Page(book_title,
                                 'root', -1,None)
-        book_export_page.url = self.configs['base_path']+ \
+            book_export_page.url = self.configs['base_path']+ \
                                 book_template + '/' + self.doc_title
-        #inserting index text
-        book_export_page.addText(u'\n'.join(book_export_index))
-        #the export book page is inserted in the pages dict and index
-        self.pages['Project:Libri/' + self.doc_title] = book_export_page
+            #inserting index text
+            book_export_page.addText(u'\n'.join(book_export_index))
+            #the export book page is inserted in the pages dict and index
+            self.pages[book_template + '/' + self.doc_title] = book_export_page
