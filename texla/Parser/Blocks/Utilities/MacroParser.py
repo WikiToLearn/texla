@@ -106,7 +106,7 @@ class Macro:
         #or slashes between parameters and the macro content.
         final_tex = tex[0]
         for t in tex[1:]:
-            if final_tex[-1] != " ":
+            if len(final_tex)>0 and final_tex[-1] != " ":
                 final_tex = final_tex + " " + t
             else:
                 final_tex = final_tex + t

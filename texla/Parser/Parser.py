@@ -8,7 +8,7 @@ from .Blocks.DocumentBlock import DocumentBlock
 
 '''Commands that changes directly the subsequent letter'''
 letters_commands = ("'","`",'"','~','^','=','.')
-special_characters = ('%','&','$','{','}','#','_',' ')
+special_characters = ('%','&','$','{','}','#','_',' ', '\n')
 
 class Parser:
 
@@ -289,7 +289,7 @@ class Parser:
         '''
         #regex to catch commands
         re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z]+)"+\
-                    r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
+                            r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
         match = re_cmd.match(tex)
         if match!=None:
             #managing match.
@@ -331,7 +331,8 @@ class Parser:
             return (block, left_tex)
         else:
             #it's an error
-            logging.error('PARSER.parse_command @ command NOT FOUND')
+            logging.error('PARSER.parse_command @ command NOT FOUND: {}'.
+                          format(tex[0:10]))
 
 
     def parse_commands_group(self, tex, parent_block, options):
@@ -395,7 +396,7 @@ class Parser:
         are not searched.
         '''
         cmd = tex[1]
-        if (cmd == ' '):
+        if (cmd in [' ','\n']):
             #we change the name of the command
             cmd = "mandatory_space"
         params = {'cmd':cmd, 'star':False}
