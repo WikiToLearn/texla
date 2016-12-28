@@ -71,7 +71,8 @@ parser_hooks = {
     'upshape' : FormattingGroupBlock.parse,
     'up': FormattingGroupBlock.parse,
     'itshape' : FormattingGroupBlock.parse,
-    'it': FormattingGroupBlock.parse,
+    ####changint it to command
+    'it': FormattingTextBlock.parse,
     'slshape' : FormattingGroupBlock.parse,
     'sl': FormattingGroupBlock.parse,
     'scshape' : FormattingGroupBlock.parse,

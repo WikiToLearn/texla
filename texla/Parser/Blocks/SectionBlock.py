@@ -13,8 +13,30 @@ class SectionBlock(Block):
         options, left_tex = CommandParser.parse_options(
                 tex, [('index_title','[',']'),('title','{','}')])
         #the regex MUST MATCH if not the parse wouldn't be called
-        title = options['title']
+        title_text = options['title']
         index_title = options['index_title']
+        #we have to parse possible commands in title looking for subblocks
+        children_blocks = parser.parse_instructions(title_text, parent_block, {})
+        title = ""
+        if len(children_blocks)==1 and children_blocks[0].block_name == "text":
+            title = children_blocks[0].content
+        else:
+            #looking for a text block
+            blocks_to_check = children_blocks
+            next_blocks = children_blocks
+            while True:
+                blocks_to_check = next_blocks
+                next_blocks = []
+                for chbl in blocks_to_check:
+                    if chbl.block_name == "text":
+                        title += chbl.content
+                    else:
+                        if len(chbl.ch_blocks)>0:
+                            next_blocks += chbl.ch_blocks
+                            break
+                if len(next_blocks) == 0:
+                    break
+
         logging.debug('SectionBlock.parse @ level: %s, title: %s',
             level_key, title)
         #first of all we can create the new block
