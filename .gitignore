@@ -5,4 +5,4 @@ configs.yaml
 test/
 import/
 !/sandbox/.placeholder
-sandbox
+sandbox/*
