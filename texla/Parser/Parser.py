@@ -3,6 +3,7 @@ import re
 import logging
 from . import PreParser
 from . import Blocks
+from .TreeExplorer import TreeExplorer
 from .Blocks.Utilities import *
 from .Blocks.DocumentBlock import DocumentBlock
 
@@ -36,6 +37,8 @@ class Parser:
         logging.debug('PARSER @ got content of Document')
         #creating root block
         self.root_block = DocumentBlock(self.doc_data['title'],{})
+        #creating the TreeExplorer
+        self.tree_explorer = TreeExplorer(self.root_block)
         #beginning of parsing: creation of root block
         options = {} #for now we don't have options
         blocks = self.parse_sections(content, -1,
