@@ -48,7 +48,7 @@ def check_math(formula):
     else:
         logging.error("Plugin math_check_online @ formula {}, block_id: {}".
                       format("BAD", formula[1]))
-        bad_formulas.put(formula[1] + ": " + formula[0])
+        bad_formulas.put(formula)
 
 
 def start_pool():
@@ -59,9 +59,15 @@ def start_pool():
     #saving results
     log_matherrors_file_path = path.relpath("sandbox/math_errors.txt")
     with open(log_matherrors_file_path, "w") as f:
+        f.write("Math Errors Tree Log: \n")
+        f.write("---------------------\n")
         while not bad_formulas.empty():
             form = bad_formulas.get()
-            f.write(form + "\n\n")
+            parents = tree_explorer.get_parent_tree_id(form[1])
+            block = tree_explorer.get_block(form[1])
+            parents.append(block)
+            output = tree_explorer.print_tree(parents)
+            f.write(output + "\n\n")
 
 
 def start_check():
@@ -97,3 +103,6 @@ plugin_render_hooks = {
 }
 
 plugin_lifecycle_hooks = {"end": start_check}
+
+needs_tree_explorer = True
+tree_explorer = None

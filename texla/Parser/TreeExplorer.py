@@ -80,14 +80,18 @@ class TreeExplorer:
         '''This methods prints a beautify tree out of
         the list given. '''
         output = []
-        lstr = ""
+        lstr = "."
+        bstr = " "
         for bl in blocks:
-            output.append(lstr+ "|"+"   "+ "  "+"_"*40 )
+            output.append(lstr+ bstr + "   "+ "  "+"_"*40 )
             output.append(lstr+ "#"+"---"+ ">|ID : {}".format(bl.id))
-            output.append(lstr+ " "+"   "+ " |block_name : {}".format(bl.block_name))
+            output.append(lstr+ " "+"   "+ " |block_name : {}".
+                          format(bl.block_name))
             output.append(lstr+ " "+"   "+ " |attributes: ")
             for at,attr in bl.attributes.items():
-                output.append(lstr+ "    " + " |   - "+ "{} : {}".format(at, attr))
+                output.append(lstr+ "    " + " |   - "+ "{} : {}".
+                              format(at, attr))
             output.append(lstr+ "     |"+"\u203E"*40)
             lstr += "     "
+            bstr = "|"
         return "\n".join(output)
