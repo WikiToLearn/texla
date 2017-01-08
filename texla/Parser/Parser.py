@@ -44,6 +44,8 @@ class Parser:
         blocks = self.parse_sections(content, -1,
                         self.root_block,options)
         self.root_block.add_children_blocks(blocks)
+        #updating the tree_explorer
+        self.tree_explorer.update_blocks_register()
         return self.root_block
 
 
@@ -122,7 +124,7 @@ class Parser:
         -normal commands: like \cmd{text}
         '''
         #printing the current tex for debug
-        logging.debug('CURRENT-TEX: ' + tex[:40])
+        #logging.debug('CURRENT-TEX: ' + tex[:40])
         #list of blocks parsed
         pblocks = []
         #checking if tex is void
