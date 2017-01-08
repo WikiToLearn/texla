@@ -3,6 +3,7 @@ import re
 import logging
 from . import PreParser
 from . import Blocks
+from .TreeExplorer import TreeExplorer
 from .Blocks.Utilities import *
 from .Blocks.DocumentBlock import DocumentBlock
 
@@ -36,11 +37,15 @@ class Parser:
         logging.debug('PARSER @ got content of Document')
         #creating root block
         self.root_block = DocumentBlock(self.doc_data['title'],{})
+        #creating the TreeExplorer
+        self.tree_explorer = TreeExplorer(self.root_block)
         #beginning of parsing: creation of root block
         options = {} #for now we don't have options
         blocks = self.parse_sections(content, -1,
                         self.root_block,options)
         self.root_block.add_children_blocks(blocks)
+        #updating the tree_explorer
+        self.tree_explorer.update_blocks_register()
         return self.root_block
 
 
@@ -119,7 +124,7 @@ class Parser:
         -normal commands: like \cmd{text}
         '''
         #printing the current tex for debug
-        logging.debug('CURRENT-TEX: ' + tex[:40])
+        #logging.debug('CURRENT-TEX: ' + tex[:40])
         #list of blocks parsed
         pblocks = []
         #checking if tex is void
