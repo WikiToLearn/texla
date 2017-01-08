@@ -1,4 +1,5 @@
 from ..Parser import Blocks
+from ..Parser.TreeExplorer import TreeExplorer
 import logging
 import importlib
 
@@ -16,23 +17,24 @@ class Renderer():
 
     def register_plugins(self, plugins):
         for plugin in plugins:
-            m = importlib.import_module("..plugins"+'.'+ plugin, __name__)
-            if hasattr(m, "plugin_render_hooks"):
-                self.loaded_plugins[plugin] = m.plugin_render_hooks
-                self.register_render_plugin_hooks(m.plugin_render_hooks)
+            module = importlib.import_module("..plugins"+'.'+ plugin, __name__)
+            if hasattr(module, "plugin_render_hooks"):
+                self.loaded_plugins[plugin] = module
+                self.register_render_plugin_hooks(module.plugin_render_hooks)
                 logging.info("Renderer.register_plugins "\
                              "@ Loaded plugin: {}".format(plugin))
                 logging.debug("Plugin {} render hooks: {}".format( plugin,
-                            list(m.plugin_render_hooks.keys())))
-            if hasattr(m, "plugin_lifecycle_hooks"):
-                self.register_lifecyle_plugin_hooks(m.plugin_lifecycle_hooks)
+                            list(module.plugin_render_hooks.keys())))
+            if hasattr(module, "plugin_lifecycle_hooks"):
+                self.register_lifecyle_plugin_hooks(module.plugin_lifecycle_hooks)
                 logging.info("Plugin {} lifecycle hooks: {}".format( plugin,
-                            list(m.plugin_lifecycle_hooks.keys())))
+                            list(module.plugin_lifecycle_hooks.keys())))
+
 
 
     def register_render_plugin_hooks(self, hooks):
         '''This function registers the hooks for renderer plugins.
-        # The plugins can define hooks for pre and post render actions.
+        The plugins can define hooks for pre and post render actions.
         The pre hook receives the block before the rendering and can
         only return the block itself, modified.
         The post hook receive the block and the text from the renderer:
@@ -79,7 +81,18 @@ class Renderer():
         self.end_hooks.append(hook)
 
     def start_rendering(self, root_block):
-        #starting plugins
+        '''This function create a TreeExplorer instance
+        and passes it to the plugin that has the variable
+        needs_tree_explorer=True. Then it starts the plugins'''
+        self.tree_explorer = TreeExplorer(root_block)
+        #passing the tree_explorer
+        for pl in self.loaded_plugins.values():
+            if hasattr(pl, "needs_tree_explorer"):
+                if pl.needs_tree_explorer:
+                    logging.debug("Renderer @ Inserting "\
+                                  "TreeExplorer into plugin {}".format(pl))
+                    pl.tree_explorer = self.tree_explorer
+        #starting the plugins
         for hook in self.start_hooks:
             hook(root_block)
 
