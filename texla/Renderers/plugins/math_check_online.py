@@ -61,13 +61,12 @@ def start_pool():
     with open(log_matherrors_file_path, "w") as f:
         f.write("Math Errors Tree Log: \n")
         f.write("---------------------\n")
+        ids = []
         while not bad_formulas.empty():
             form = bad_formulas.get()
-            parents = tree_explorer.get_parent_tree_id(form[1])
-            block = tree_explorer.get_block(form[1])
-            parents.append(block)
-            output = tree_explorer.print_tree(parents)
-            f.write(output + "\n\n")
+            ids.append(form[1])
+        output = tree_explorer.print_tree_to_blocks(ids)
+        f.write(output + "\n\n")
 
 
 def start_check():

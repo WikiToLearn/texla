@@ -46,21 +46,13 @@ class TreeExplorer:
         recalling register_blocks with the root_block'''
         self.register_blocks(self.root_block.ch_blocks)
 
-    def get_parent_tree(self, block):
+    def get_parents_list(self, block):
         '''This method returns the list of the parent
         blocks of the requested block'''
+        if isinstance(block, str):
+            block = self.blocks[block]
         parents = []
         current = block
-        while True:
-            if current == self.root_block:
-                break
-            parents.append(current.parent_block)
-            current = current.parent_block
-        return parents.reverse()
-
-    def get_parent_tree_id(self, blockid):
-        parents = []
-        current = self.blocks[blockid]
         while True:
             if current == self.root_block:
                 break
@@ -69,29 +61,46 @@ class TreeExplorer:
         parents.reverse()
         return parents
 
+    def get_parents_list_ids(self, block):
+        parents = self.get_parents_list(block)
+        return [x.id for x in parents]
+
     def get_block(self, blockid):
         return self.blocks.get(blockid)
 
-    def print_all_tree(self):
-        for bl, blo in self.blocks.items():
-            print("{} = {}".format(bl, blo))
-
-    def print_tree(self, blocks):
-        '''This methods prints a beautify tree out of
-        the list given. '''
+    def print_tree(self, block, filter_list=None):
+        '''This methods prints a beautified tree starting
+        from block parameter and his children. If filter_list
+        is present only the block with the id in the list
+        are printed. It returns a list of output strings'''
         output = []
-        lstr = "."
-        bstr = " "
-        for bl in blocks:
-            output.append(lstr+ bstr + "   "+ "  "+"_"*40 )
-            output.append(lstr+ "#"+"---"+ ">|ID : {}".format(bl.id))
-            output.append(lstr+ " "+"   "+ " |block_name : {}".
-                          format(bl.block_name))
-            output.append(lstr+ " "+"   "+ " |attributes: ")
-            for at,attr in bl.attributes.items():
-                output.append(lstr+ "    " + " |   - "+ "{} : {}".
+        if filter_list == None or block.id in filter_list:
+            lstr = ".    "* (block.tree_depth+1)
+            output.append(lstr+ ".   "+ "  "+"_"*40 )
+            output.append(lstr+ "#"+"---"+ ">|ID : {}".format(block.id))
+            output.append(lstr+ ".   "+ " |block_name : {}".
+                          format(block.block_name))
+            output.append(lstr+ ".   "+ " |attributes: ")
+            for at,attr in block.attributes.items():
+                output.append(lstr+ ".   " + " |   - "+ "{} : {}".
                               format(at, attr))
-            output.append(lstr+ "     |"+"\u203E"*40)
-            lstr += "     "
-            bstr = "|"
-        return "\n".join(output)
+            output.append(lstr+ ".    ."+"\u203E"*40+"\n")
+        output = "\n".join(output)
+        #iterating on the block children
+        for bl in block.ch_blocks:
+            output += self.print_tree(bl, filter_list)
+        return output
+
+    def print_tree_to_blocks(self, blocks):
+        '''This methods print the tree of parents
+        of the list of blocks passed as parameter.
+        First of all it gets all the parents ids and
+        then prints the tree using the list as filter.'''
+        fl = []
+        for bl in blocks:
+            fl+= self.get_parents_list_ids(bl)
+            if isinstance(bl, str):
+                fl.append(bl)
+            else:
+                fl.append(bl.id)
+        return self.print_tree(self.root_block, filter_list=fl)
