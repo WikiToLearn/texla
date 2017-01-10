@@ -59,8 +59,13 @@ def parse_macros(tex):
     #we reiterate the process until no macros are found.
     #This is useful for macros using other macros.
     while True:
-        for m in macros:
+        for m in macros:            
             logging.debug("preparsing MACRO: %s", m)
+
+            # Skip invalid macros
+            if (m == None):
+                continue
+
             #the macro name is \\name, but it's not
             #raw: we have to add a \\ in front of it.
             #we have to create the string for regex
@@ -171,6 +176,9 @@ def preparse_theorems(tex):
     #and we substitue them with \begin{theorem}{th_id} and \begin{theorem}
     #to use out theorem environment
     for key in th_dict:
+        # Skip invalid theorems
+        if (key == None):
+            return
         tag_open = '\\begin{' + key + '}'
         new_tag_open = '\\begin{theorem}{' + key + '}'
         tex = tex.replace(tag_open, new_tag_open)
@@ -223,6 +231,8 @@ def preparse_include(tex,input_path):
             name = m.group(1) + '.tex'
             #reading file
             file_name = base_path + "/"+ name
+            if (not os.path.exists(file_name)):
+                continue
             file_tex = open(file_name, 'r').read()
             result_tex = result_tex.replace(
                         m.group(0), file_tex)
