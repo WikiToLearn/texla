@@ -10,21 +10,28 @@ data = {}
 
 
 def preparse(tex, input_path):
-    '''
-    Entrypoint for preparsing of tex
-    '''
+    ''' Entrypoint for preparsing of tex '''
+    logging.info('\033[0;34m############### STARTING PRE-PARSING ###############\033[0m')
     tex = check_doc_integrity(tex)
+    logging.info("PreParser @ Preparsing include and subfiles")
     tex = preparse_include(tex, input_path)
     tex = preparse_subfiles(tex, input_path)
+    logging.info("PreParser @ Removing comments")
     tex = remove_comments(tex)
+    logging.info("PreParser @ Parsing macros")
     tex = parse_macros(tex)
+    logging.info("PreParser @ Preparsing Theorems")
     tex = preparse_theorems(tex)
+    logging.info("PreParser @ Preparsing par (\\n\\n)")
     tex = preparse_par(tex)
+    logging.info("PreParser @ Preparsing verb")
     tex = preparse_verb(tex)
+    logging.info("PreParser @ Preparsing header info (title, author, date)")
     data = preparse_header(tex)
+    #saving preparsed tex
     log_preparsed_file_path = path.relpath('sandbox/preparsed.tex')
-    o = open(log_preparsed_file_path, 'w')
-    o.write(tex)
+    with open(log_preparsed_file_path, 'w') as o:
+        o.write(tex)
     return (tex, data)
 
 def check_doc_integrity(tex):
@@ -198,7 +205,7 @@ def preparse_header(tex):
     mat = re.search(r'\\author{(.*?)}', tex)
     if mat:
         headerBlock['author'] = mat.group(1)
-    logging.info('PREPARSER @ preparse_header ')
+    logging.info('PreParser @ preparse_header ')
     logging.debug('\ntitle: %s\ndate: '\
             '%s\nauthor: %s', headerBlock['title'], headerBlock['date'],
             headerBlock['author'])
@@ -225,7 +232,7 @@ def preparse_include(tex,input_path):
             file_name = base_path + "/"+ name
             #checking if the file exits, otherwise skipping
             if (not os.path.exists(file_name)):
-                logging.error("Preparser @ prepase_include: file {} not found!".
+                logging.error("Preparser.prepase_include @ file {} not found!".
                               format(file_name))
                 continue
             file_tex = open(file_name, 'r').read()
@@ -239,7 +246,7 @@ def preparse_include(tex,input_path):
                         base_path + "/"+ name
             #checking if the file exits, otherwise skipping
             if (not os.path.exists(file_name)):
-                logging.error("Preparser @ prepase_include: file {} not found!".
+                logging.error("Preparser.repase_include @ file {} not found!".
                               format(file_name))
                 continue
             file_tex = open(file_name, 'r').read()

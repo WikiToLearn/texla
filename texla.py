@@ -10,7 +10,6 @@ import texla.PageTree.Exporter as exporter
 
 
 def execute_texla_mediawiki(config):
-    logging.info('######## STARTING PARSING ########')
     p = Parser(config)
     a = open(config['input_path'], 'r').read()
     tree = p.parse(a)
@@ -19,7 +18,7 @@ def execute_texla_mediawiki(config):
     n_blocks = tree.n_blocks()
     logging.info('PARSED %i Blocks', n_blocks)
     f.write(json_tree)
-    logging.info('######## STARTING RENDERING ########')
+    logging.info('\033[0;34m############### STARTING RENDERING ###############\033[0m')
     #rendering
     rend = MediaWikiRenderer(config)
     rend.start_rendering(tree)
@@ -30,7 +29,7 @@ def execute_texla_mediawiki(config):
     #print page tree before POST-PROCESSING
     logging.info('PageTree:\n'+rend.tree.get_tree_debug())
     #collpasing
-    logging.info('######## STARTING POST-PROCESSING ########')
+    logging.info('\033[0;34m############### STARTING POST-PROCESSING ###############\033[0m')
     tree = rend.tree
     tree.collapse_tree(config['collapse_content_level'],
                        config['collapse_pages_level'])
