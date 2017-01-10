@@ -6,6 +6,7 @@ from . import Blocks
 from .TreeExplorer import TreeExplorer
 from .Blocks.Utilities import *
 from .Blocks.DocumentBlock import DocumentBlock
+from ..  import ExceptionsHandler as exc_handler
 
 '''Commands that changes directly the subsequent letter'''
 letters_commands = ("'","`",'"','~','^','=','.')
@@ -26,15 +27,14 @@ class Parser:
         tex, doc_data = PreParser.preparse(tex,
                         self.configs['input_path'])
         self.doc_data = doc_data
-        logging.info('######## PREPARSED TEX ########')
-
+        logging.info('\033[0;34m############### STARTING PARSING ###############\033[0m')
         #Getting content of document
         r_doc = re.compile(r'\\begin(?P<options>\[.*?\])?{document}'+
                            r'(?P<content>.*?)\\end{document}', re.DOTALL)
         m_doc = r_doc.search(tex)
         #getting content
         content = m_doc.group("content")
-        logging.debug('PARSER @ got content of Document')
+        logging.debug('Parser @ got content of Document')
         #creating root block
         self.root_block = DocumentBlock(self.doc_data['title'],{})
         #creating the TreeExplorer
@@ -89,7 +89,7 @@ class Parser:
                 #the tuple with the result is saved
                 pblocks.append(self.call_parser_hook(level_key,
                         'env', tok, parent_block, sec_params))
-                logging.info('BLOCK @ %s%s',
+                logging.info('Block @ %s%s',
                     "\t"*pblocks[-1].tree_depth,
                     str(pblocks[-1]))
         else:
@@ -233,7 +233,7 @@ class Parser:
             #The strip is necessary to parse possible options.
             block = self.call_parser_hook(env,'env',
                     content.strip(), parent_block, env_params)
-            logging.info('BLOCK @ %s%s',
+            logging.info('Block @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
             #we return the block and left_tex
@@ -274,7 +274,7 @@ class Parser:
         params = {'env': env}
         block = self.call_parser_hook(env, 'env',
                 content, parent_block, params)
-        logging.info('BLOCK @ %s%s',
+        logging.info('Block @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
         return (block, left_tex)
@@ -314,7 +314,7 @@ class Parser:
                 #a list.  The first element is the parsed Block.
                 block, left_tex = self.call_parser_hook(matched_cmd,
                         'cmd', tex_to_parse, parent_block,params)
-                logging.info('BLOCK @ %s%s',
+                logging.info('Block @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
             else:
@@ -330,7 +330,7 @@ class Parser:
                 #parser_hook call
                 block, left_tex = self.call_parser_hook(matched_cmd,
                         'cmd', tex_to_parse, parent_block,params)
-                logging.info('BLOCK @ %s%s',
+                logging.info('Block @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
             return (block, left_tex)
@@ -390,7 +390,7 @@ class Parser:
                     tex[letter_m.end():]
             block, left_tex =  self.call_parser_hook(cmd,
                     'cmd', tex_to_parse, parent_block, params)
-        logging.info('BLOCK @ %s%s', "\t"*block.tree_depth,
+        logging.info('Block @ %s%s', "\t"*block.tree_depth,
                     str(block))
         return (block, left_tex)
 
@@ -407,7 +407,7 @@ class Parser:
         params = {'cmd':cmd, 'star':False}
         block, left_tex =  self.call_parser_hook(cmd,
                 'cmd', tex[2:], parent_block, params)
-        logging.info('BLOCK @ %s%s', "\t"*block.tree_depth,
+        logging.info('Block @ %s%s', "\t"*block.tree_depth,
                     str(block))
         return (block, left_tex)
 
@@ -420,7 +420,7 @@ class Parser:
         params = {'env':'text'}
         block = self.call_parser_hook('text','env',
                 tex, parent_block,params)
-        logging.info('BLOCK @ %s%s',
+        logging.info('Block @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
         return block
