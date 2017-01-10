@@ -104,3 +104,6 @@ class TreeExplorer:
             else:
                 fl.append(bl.id)
         return self.print_tree(self.root_block, filter_list=fl)
+
+    def print_tree_to_block(self, block):
+        return self.print_tree_to_blocks([block])
