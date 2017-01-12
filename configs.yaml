@@ -1,0 +1,26 @@
+renderer : mediawiki
+#for this example we will read from this file
+input_path : sandbox/test.tex
+#output filename without extensions (differen files will be created)
+output_path : sandbox/test_output
+#title of the docs
+doc_title: WikiToLearnConfIndia
+#base path for the pages: insert your username
+base_path: "User:<***>"
+#level to which collapse content in subparagraph (root level is -1)
+collapse_content_level: 1
+#max level for pages in the tree. Pages with higher level will be moved
+collapse_pages_level: 1
+#create index in the root page of the book
+create_index: True
+export_format: text
+export_single_pages: False
+#it exports all the pages in a tree of directories
+export_pages_tree: True
+export_book_page: False
+#prints the preparsed text in the sandbox folder
+print_preparsed_tex: True
+#the language is used for some keyboards defined in i18n.yaml
+lang: en
+#render plugins active
+plugins: [MathCheck,spaces_check]
