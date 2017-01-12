@@ -42,11 +42,13 @@ There are a few parameters to set:
 
 * __export_pages_tree__: if True the pages are exported in a tree of directory (root in __"output_path"_pages__ ) corresponding to the actual sectioning.
 
+* __export_book_page__: If True the page necessary to Project:Books is created.
+
 * __print_preparsed_tex__: if True a debug file called _preparsed.tex_ is saved with preparsed tex.
 
 * __lang__: localization for keywords. The avaiable languages are those inside __i18n.yaml__ file. Contributions appreciated :)
 
-* __plugins__: [...]  List of the enabled plugins. The order of this list is the order of executing, be careful.
+* __plugins__: [...]  List of the enabled plugins. The order of this list is the order of executing: Be Careful.
 
 
 Plugins
@@ -57,4 +59,4 @@ The available plugins are:
 
 * __math_check_online__: at the end of the rendering it calls the WikiToLearn math renderer to check if there are errors in the math.
 
-* __space_check__: it removes the singles spaces after a newline.
+* __space_check__: it removes the single spaces after a newline.
