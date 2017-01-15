@@ -165,7 +165,7 @@ def preparse_theorems(tex):
     for match in p.finditer(tex):
         t = tex[match.end():]
         data = CommandParser.parse_options(
-            t, [('th_typd WI    e', '{', '}'), ('counter', '[', ']'),
+            t, [('th_type', '{', '}'), ('counter', '[', ']'),
                 ('definition', '{', '}'), ('numberby', '[', ']')])
         if match.group('star') != "":
             data[0]['star'] = True
