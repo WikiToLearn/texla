@@ -23,4 +23,4 @@ print_preparsed_tex: True
 #the language is used for some keyboards defined in i18n.yaml
 lang: en
 #render plugins active
-plugins: [MathCheck,spaces_check]
+plugins: [MathCheck,math_check_online, spaces_check]
