@@ -1,18 +1,17 @@
 import logging
-import yaml
 
 class TreeExplorer:
-    '''
+    """
     The TreeExplorer class is an utility to navigate
     and extract information from the tree of parsed blocks.
     For example it is useful to extract the tree of the
     parents of a block for debugging reasons. It is useful
     also in rendering to localize blocks inside the document.
-    '''
+    """
 
     def __init__(self, root_block):
-        ''' The constructor needs a root_block to
-        begin the tree'''
+        """ The constructor needs a root_block to
+        begin the tree"""
         self.root_block = root_block
         self.blocks = {'@': root_block}
         #registering blocks by id
@@ -22,9 +21,8 @@ class TreeExplorer:
     def create_tree_from_children(block):
         #first of all we need the root_block
         current = block
-        root_block = block
         while True:
-            if current.parent_block == None:
+            if current.parent_block is None:
                 root_block = current
                 break
             current = current.parent_block
@@ -33,22 +31,22 @@ class TreeExplorer:
         return TreeExplorer(root_block)
 
     def register_blocks(self, blocks):
-        '''This methods reads all the blocks tree
+        """This methods reads all the blocks tree
         from the root_block and created a dictionary
-        with id:block'''
+        with id:block"""
         for block in blocks:
             self.blocks[block.id] = block
             if block.N_chblocks > 0:
                 self.register_blocks(block.ch_blocks)
 
     def update_blocks_register(self):
-        '''This methods update the blocks' ids register
-        recalling register_blocks with the root_block'''
+        """This methods update the blocks' ids register
+        recalling register_blocks with the root_block"""
         self.register_blocks(self.root_block.ch_blocks)
 
     def get_parents_list(self, block):
-        '''This method returns the list of the parent
-        blocks of the requested block'''
+        """This method returns the list of the parent
+        blocks of the requested block """
         if isinstance(block, str):
             block = self.blocks[block]
         parents = []
@@ -74,7 +72,7 @@ class TreeExplorer:
         is present only the block with the id in the list
         are printed. It returns a list of output strings'''
         output = []
-        if filter_list == None or block.id in filter_list:
+        if filter_list is None or block.id in filter_list:
             lstr = ".    "* (block.tree_depth+1)
             output.append(lstr+ ".   "+ "  "+"_"*40 )
             output.append(lstr+ "#"+"---"+ ">|ID : {}".format(block.id))
