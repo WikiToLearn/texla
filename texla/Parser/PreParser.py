@@ -1,38 +1,44 @@
+import logging
+import os
+import re
+from collections import deque
+from os import path
+from ..Exceptions.TexlaExceptions import *
 from .Blocks import TheoremBlocks
 from .Blocks.Utilities import *
-from collections import deque
-import logging
-import re
-import os
-from os import path
+
 
 data = {}
 
 
 def preparse(tex, input_path):
     ''' Entrypoint for preparsing of tex '''
-    logging.info('\033[0;34m############### STARTING PRE-PARSING ###############\033[0m')
-    tex = check_doc_integrity(tex)
-    logging.info("PreParser @ Preparsing include and subfiles")
-    tex = preparse_include(tex, input_path)
-    tex = preparse_subfiles(tex, input_path)
-    logging.info("PreParser @ Removing comments")
-    tex = remove_comments(tex)
-    logging.info("PreParser @ Parsing macros")
-    tex = parse_macros(tex)
-    logging.info("PreParser @ Preparsing Theorems")
-    tex = preparse_theorems(tex)
-    logging.info("PreParser @ Preparsing par (\\n\\n)")
-    tex = preparse_par(tex)
-    logging.info("PreParser @ Preparsing verb")
-    tex = preparse_verb(tex)
-    logging.info("PreParser @ Preparsing header info (title, author, date)")
-    data = preparse_header(tex)
-    #saving preparsed tex
-    log_preparsed_file_path = path.relpath('sandbox/preparsed.tex')
-    with open(log_preparsed_file_path, 'w') as o:
-        o.write(tex)
-    return (tex, data)
+    try:
+        logging.info('\033[0;34m############### STARTING PRE-PARSING ###############\033[0m')
+        tex = check_doc_integrity(tex)
+        logging.info("PreParser @ Preparsing include and subfiles")
+        tex = preparse_include(tex, input_path)
+        tex = preparse_subfiles(tex, input_path)
+        logging.info("PreParser @ Removing comments")
+        tex = remove_comments(tex)
+        logging.info("PreParser @ Parsing macros")
+        tex = parse_macros(tex)
+        logging.info("PreParser @ Preparsing Theorems")
+        tex = preparse_theorems(tex)
+        logging.info("PreParser @ Preparsing par (\\n\\n)")
+        tex = preparse_par(tex)
+        logging.info("PreParser @ Preparsing verb")
+        tex = preparse_verb(tex)
+        logging.info("PreParser @ Preparsing header info (title, author, date)")
+        data = preparse_header(tex)
+        #saving preparsed tex
+        log_preparsed_file_path = path.relpath('sandbox/preparsed.tex')
+        with open(log_preparsed_file_path, 'w') as o:
+            o.write(tex)
+        return tex, data
+    except PreparserError as err:
+        err.print_error()
+        exit()
 
 def check_doc_integrity(tex):
     '''checking if the source has \begin{document}'''
@@ -144,7 +150,7 @@ def remove_comments(tex):
     '''
     com_re = re.compile(r'(?<!\\)(%.*)(?=\n)')
     final_tex = tex
-    while(True):
+    while True:
         m = com_re.search(tex)
         if m:
             final_tex = tex[:m.start()]+ tex[m.end():]
@@ -171,6 +177,8 @@ def preparse_theorems(tex):
             data[0]['star'] = True
         else:
             data[0]['star'] = False
+        if data[0]['definition'] is None:
+            pass
         the = TheoremBlocks.Theorem(**data[0])
         logging.info('PREPARSER @ theorem: %s', the.th_type)
         th_dict[the.th_type] = the
@@ -225,13 +233,13 @@ def preparse_include(tex,input_path):
     r2 = re.compile(r'\\include{(.*?)}')
     inputs_found = 0
     result_tex = tex
-    while(True):
+    while True:
         for m in r1.finditer(tex):
             name = m.group(1) + '.tex'
             #reading file
             file_name = base_path + "/"+ name
             #checking if the file exits, otherwise skipping
-            if (not os.path.exists(file_name)):
+            if not os.path.exists(file_name):
                 logging.error("Preparser.prepase_include @ file {} not found!".
                               format(file_name))
                 continue
@@ -245,7 +253,7 @@ def preparse_include(tex,input_path):
             file_name =os.getcwd()+ '/'+\
                         base_path + "/"+ name
             #checking if the file exits, otherwise skipping
-            if (not os.path.exists(file_name)):
+            if not os.path.exists(file_name):
                 logging.error("Preparser.repase_include @ file {} not found!".
                               format(file_name))
                 continue
@@ -266,7 +274,7 @@ def preparse_subfiles(tex, input_path):
     r = re.compile(r'\\subfile{(.*?)}')
     inputs_found = 0
     result_tex = tex
-    while(True):
+    while True:
         for m in r.finditer(tex):
             name = m.group(1) + '.tex'
             #reading file

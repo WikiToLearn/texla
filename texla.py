@@ -1,18 +1,21 @@
 import logging
-import sys
 import json
-import log
 import yaml
-
 from texla.Parser import Parser
 from texla.Renderers.MediaWikiRenderer import MediaWikiRenderer
 import texla.PageTree.Exporter as exporter
+from texla.Exceptions.TexlaExceptions import *
 
 
 def execute_texla_mediawiki(config):
     p = Parser(config)
     a = open(config['input_path'], 'r').read()
-    tree = p.parse(a)
+    try:
+        tree = p.parse(a)
+    except (PreparserError, ParserError) as err:
+        err.print_error()
+        exit()
+
     f = open(config['output_path'] + '.tree', 'w')
     json_tree = tree.to_json(0)
     n_blocks = tree.n_blocks()
