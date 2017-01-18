@@ -105,3 +105,6 @@ class TreeExplorer:
 
     def print_tree_to_block(self, block):
         return self.print_tree_to_blocks([block])
+
+    def print_all_tree(self):
+        return self.print_tree(self.root_block)
