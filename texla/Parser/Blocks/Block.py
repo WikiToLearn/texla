@@ -18,7 +18,7 @@ class Block:
     '''
 
     @staticmethod
-    def parse(parser, tex, parent_block, params={}):
+    def parse(parser, tex, parent_block, params):
         '''
         The method must return a tuple with the created
         Block and the last used index of tex string.'''
