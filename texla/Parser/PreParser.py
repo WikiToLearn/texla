@@ -54,7 +54,7 @@ def parse_macros(tex):
     are replaced with the tex from the macro.
     '''
     #regex for newcommand
-    new_re = re.compile(r'\\(re)?newcommand[*]?')
+    new_re = re.compile(r'\\(re)?newcommand[*]?|\\providecommand[*]?')
     macros = {}
     log = {}
     tex_to_parse = tex[:]
