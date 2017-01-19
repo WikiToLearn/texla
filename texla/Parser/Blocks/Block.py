@@ -37,7 +37,7 @@ class Block:
         '''
         self.block_name = block_name
         self.content = content
-        if not parent_block == None:
+        if not parent_block is None:
             self.parent_block = parent_block
             self.id = parent_block.id + '-' + utility.get_random_string(3)
             #Section level:
