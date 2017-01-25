@@ -322,7 +322,7 @@ class MediaWikiRenderer(Renderer):
 
     def r_enumerate(self, block):
         self.list_level += '#'
-        s = ['\n']
+        s = []
         for item in block.ch_blocks:
             s.append(self.list_level)
             s.append(self.render_children_blocks(item).strip())
