@@ -67,10 +67,10 @@ class TreeExplorer:
         return self.blocks.get(blockid)
 
     def print_tree(self, block, filter_list=None):
-        '''This methods prints a beautified tree starting
+        """This methods prints a beautified tree starting
         from block parameter and his children. If filter_list
         is present only the block with the id in the list
-        are printed. It returns a list of output strings'''
+        are printed. It returns a list of output strings"""
         output = []
         if filter_list is None or block.id in filter_list:
             lstr = ".    "* (block.tree_depth+1)
@@ -90,10 +90,10 @@ class TreeExplorer:
         return output
 
     def print_tree_to_blocks(self, blocks):
-        '''This methods print the tree of parents
+        """This methods print the tree of parents
         of the list of blocks passed as parameter.
         First of all it gets all the parents ids and
-        then prints the tree using the list as filter.'''
+        then prints the tree using the list as filter."""
         fl = []
         for bl in blocks:
             fl+= self.get_parents_list_ids(bl)

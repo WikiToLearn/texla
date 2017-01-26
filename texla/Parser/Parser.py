@@ -144,7 +144,7 @@ class Parser:
         graph = tex.find('{')
         if slash == -1 and dollar == -1 and graph==-1:
             #we check if the string is only space or \n
-            if (len(tex.strip())):
+            if len(tex.strip()):
                 #it's plain text
                 pblocks.append(self.parse_plain_text(tex,
                         parent_block))
@@ -164,7 +164,7 @@ class Parser:
         #tex to parse
         tex_tp = tex[first_index:]
         #creating a plain text block
-        if (len(before_tex.strip())):
+        if len(before_tex.strip()):
             pblocks.append(self.parse_plain_text(before_tex,
                     parent_block))
         #what's the first token: slash, dollar, group
@@ -223,7 +223,7 @@ class Parser:
         re_env1 = re.compile(r'\\begin(?: *)\{(?: *)(?P<env>\w*?)'+\
                             r'(?P<star>[*]?)(?: *)\}')
         match = re_env1.match(tex)
-        if not match == None:
+        if not match is None:
             env = match.group('env')
             star = True if match.group('star')!='' else False
             env_tot = env + '\*' if star else env
@@ -302,7 +302,7 @@ class Parser:
         re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z]+)"+\
                             r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
         match = re_cmd.match(tex)
-        if match!=None:
+        if not match is None:
             #managing match.
             #checking if the part of the match with the regular
             #command is present--> math.group != None!!!
