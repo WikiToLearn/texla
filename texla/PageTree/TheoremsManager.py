@@ -9,6 +9,7 @@ class TheoremsManager:
 
     def addTheorem(self, theorem):
         page = theorem.page
+        logging.info("TheoremsManager @ adding Theorem: {}".format(theorem))
         if page not in self.pages_ths:
             self.pages_ths[page] = []
         self.pages_ths[page].append(theorem)
@@ -35,6 +36,7 @@ class TheoremsManager:
                         number = th_numbering[th.th_type] +1
                     else:
                         number = 1
+                        th_numbering[th.th_type] = 1
                     th_numbering[th.th_type] = number
                     th.fixNumber(chapter_number+"."+str(number))
                     th.fixUrl()
@@ -44,7 +46,7 @@ class TheoremsManager:
         for subp in page.subpages:
             if subp in self.pages_ths:
                 pages.append(subp)
-                pages += self.get_subpages_ordered(subp)
+            pages += self.get_subpages_ordered(subp)
         return pages
 
 
@@ -88,5 +90,5 @@ class Theorem:
         logging.debug("Theorem @ Fixing URL of theorem {}".format(self))
 
     def __str__(self):
-        return "Theorem. Type: {}, Page: {}, Number: {}".format(
-            self.th_type, self.page.title, self.number )
+        return "Theorem. ID: {}. Type: {}, Page: {}, Number: {}".format(
+            self.id, self.th_type, self.page.title, self.number )
