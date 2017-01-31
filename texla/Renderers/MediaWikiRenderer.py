@@ -541,7 +541,10 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #ACCENTED letters
     def r_accented_letter(self, block):
-        if block.attributes["accent_type"] in ['"',"'","`"]:
+        if block.attributes["accent_type"] == '"' \
+                and block.attributes["letter"] == "a":
+            return "ä"
+        if block.attributes["accent_type"] in ["'","`"]:
             return block.attributes["letter"]+\
                     block.attributes["accent_type"]
         else:
