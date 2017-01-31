@@ -14,6 +14,7 @@ class Renderer():
         self.end_hooks = []
         self.loaded_plugins = {}
         self.used_tags = {}
+        self.tree_explorer = None
 
     def register_plugins(self, plugins):
         for plugin in plugins:

@@ -13,7 +13,7 @@ class Babel:
         babel. The label is unique but can be overwritten.
         '''
         if label in self.anchors:
-            logging.warn("Babel @ label: {} already present".format(label))
+            logging.warning("Babel @ label: {} already present".format(label))
         #saving the anchor that has to be unique
         self.anchors[label] = anchor
         logging.info("Babel @ Adding label: \"{}\" to anchor: {}".
@@ -62,12 +62,11 @@ class Babel:
             obj = self.anchors[label]
             title = obj.title
             url = obj.url
-            replace_string = ""
-            if url == None and title == None:
+            if url is None and title is None:
                 continue
-            elif url == None and title != None:
+            elif url is None and title is not None:
                 replace_string = title
-            elif url != None and title == None:
+            elif url is not None and title is None:
                 replace_string = "[["+ url + "]]"
             else:
                 replace_string = "[[{}|{}]]".format(url,title)

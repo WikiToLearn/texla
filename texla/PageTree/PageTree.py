@@ -34,8 +34,8 @@ class PageTree():
         self.current_anchor = ro
 
     def createPage(self, title, page_type):
-        '''This method creates a new page and enters
-        in his enviroment setting current variables'''
+        """This method creates a new page and enters
+        in his enviroment setting current variables"""
         title = self.get_normalized_title(title)
         #finding level
         level = len(self.pageid_stack) - 1
@@ -52,7 +52,7 @@ class PageTree():
         self.current_anchor = p
 
     def exitPage(self):
-        '''Return to the parent page enviroment'''
+        """Return to the parent page enviroment"""
         self.current_page_id = self.pageid_stack[-2]
         self.pageid_stack.pop()
         self.current_anchor = self.pages[self.current_page_id]
@@ -61,30 +61,30 @@ class PageTree():
         self.pages[self.current_page_id].addText(text)
 
     def addLabel(self, label):
-        '''adding label to the babel with the current
-        page as the anchor'''
+        """adding label to the babel with the current
+        page as the anchor"""
         self.babel.add_label(label, self.current_anchor)
 
     def addReference(self, label):
-        '''adding the current_anchor as a reference for the
-        requesting label'''
+        """adding the current_anchor as a reference for the
+        requesting label"""
         self.babel.add_reference(label, self.current_anchor)
 
     def addTheorem(self, id, th_type):
-        '''Adding a theorem also as anchor'''
+        """Adding a theorem also as anchor"""
         th = Theorem(id,self.current_anchor, th_type)
         self.theorems_manager.addTheorem(th)
         #setting current anchor on the theorem
         self.current_anchor = th
 
     def exitTheorem(self):
-        '''Removing the anchor from the theorem and setting it
-        to the last used page'''
+        """Removing the anchor from the theorem and setting it
+        to the last used page"""
         self.current_anchor = self.pages[self.current_page_id]
 
     @staticmethod
     def get_normalized_title(title):
-        '''Function that removes bad symbols from title'''
+        """Function that removes bad symbols from title"""
         title = title.replace('$', '')
         title = title.replace('{','')
         title = title.replace('}','')
@@ -101,18 +101,18 @@ class PageTree():
         return title
 
     def get_tree_json(self):
-        '''This function return the json tree'''
+        """This function return the json tree"""
         return self.root_page.get_json_dictionary(self.pages)
 
     def get_tree_debug(self):
-        '''This function prints the tree for debug'''
+        """This function prints the tree for debug"""
         s = []
         for p in self.root_page.get_subpages():
             s.append(p.get_str())
         return('\n'.join(s))
 
     def after_render(self):
-        '''This function does some fixes after rendering'''
+        """This function does some fixes after rendering"""
         for page in self.pages.values():
             page.after_render()
 
@@ -121,19 +121,19 @@ class PageTree():
 
 
     def remove_page_from_tree(self, page, parent=None):
-        '''This function remove a page from the tree,
+        """This function remove a page from the tree,
         but doesn't delete it. The page remains in the self.pages
         dictionary but not in the subpages of the pages in the tree.
         If a parent page is passed the research for the removal
-        starts from that page with performance improvements'''
+        starts from that page with performance improvements"""
         if parent:
             parent.removeSubpage(page)
         else:
             self.root_page.removeSubpage(page)
 
     def move_page_references(self, oldpage, newpage):
-        '''This function fixes the reference in TheoremsManager
-        and Babel when a page is moved'''
+        """This function fixes the reference in TheoremsManager
+        and Babel when a page is moved"""
         #we need to fix anchors in Babel
         self.babel.move_anchor(oldpage, newpage)
         #we need also to fix the theorems page
@@ -141,7 +141,7 @@ class PageTree():
 
 
     def collapse_tree(self, content_level, max_page_level):
-        '''This function contains all the tree collapsing
+        """This function contains all the tree collapsing
         procedures in the order:
         1) Mark the pages for the content collapsing without
            actually move the text
@@ -155,7 +155,7 @@ class PageTree():
            content so this has to be done after the url fixing
            but before the actual text collapsing.
         7) Finally collapse the pages text to the
-           right content level'''
+           right content level"""
         self.collapse_content_level(content_level)
         self.collapse_page_level(max_page_level)
         self.collapse_urls()
@@ -167,25 +167,25 @@ class PageTree():
         self.collapse_content_level_text(content_level)
 
     def collapse_content_level(self, max_level):
-        '''This function marks pages with level higher than
-        choosen level to be collapsed. It DOESN'T move the text.'''
+        """This function marks pages with level higher than
+        choosen level to be collapsed. It DOESN'T move the text."""
         for p in self.pages.values():
             if p.level > max_level:
                 p.collapsed = True
 
     def collapse_content_level_text(self, max_level):
-        '''This function collapses the content
+        """This function collapses the content
         of the pages at the choosen level. The content
         of the pages with level higher than max_level
         is moved up to the tree to the page with the max_level,
         creating titles in the page text. The pages touched
-        are marked as collapsed=True.'''
+        are marked as collapsed=True."""
         for p in self.pages.values():
             if p.level == max_level:
                 p.collapseSubpagesText()
 
     def collapse_page_level(self, max_level):
-        '''This function fixes the level of the pages
+        """This function fixes the level of the pages
         in the index according to a max_level.
         Pages with a level higher than the max_level are moved
         up in the tree till the max_level. The order related
@@ -194,7 +194,7 @@ class PageTree():
         Moreover the level=0 is a special level and it's content
         is moved to an intro page, because level=0 pages must
         contain the index of their subpages.
-        '''
+        """
         #PAGES LEVEL = 0
         #If they contain text we have to create a new page
         #called introduction (localized)
@@ -236,14 +236,14 @@ class PageTree():
             #is AUTOMATICALLY refreshed for all pages added.
 
     def collapse_urls(self):
-        '''This function creates the urls of the pages,
+        """This function creates the urls of the pages,
         checking is they are collapsed or not. If they are collapsed
         the url is parent_page#title.
-        Then the references are resolved to urls throught labes'''
+        Then the references are resolved to urls throught labes"""
         self.root_page.collapseURL(self.configs['base_path'])
 
     def create_pagenumbers(self):
-        '''Every page will have a pagenumber like 1.2.1'''
+        """Every page will have a pagenumber like 1.2.1"""
         self.root_page.pagenumber = "0"
         i = 1
         for pages in self.root_page.subpages:
@@ -251,14 +251,14 @@ class PageTree():
             i += 1
 
     def create_indexes(self, export_book_page=False):
-        '''This function create sections index and
-        book total index'''
+        """This function create sections index and
+        book total index"""
         self.create_sections_index()
         self.create_book_index(export_book_page=False)
 
     def create_sections_index(self):
-        '''This function create the index for the
-        sections (level=0) pages'''
+        """This function create the index for the
+        sections (level=0) pages"""
         for page in self.pages.values():
             if page.level == 0:
                 index = []
@@ -275,8 +275,8 @@ class PageTree():
 
 
     def create_book_index(self, export_book_page=False):
-        '''This function create the book total index
-        and the book export page index'''
+        """This function create the book total index
+        and the book export page index"""
         base_page = self.root_page
         #book export: link
         book_url = self.doc_title.replace(' ','_')

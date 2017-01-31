@@ -107,7 +107,7 @@ class MediaWikiRenderer(Renderer):
     #STARTING POINT
 
     def start_rendering(self, root_block):
-        '''starting rendering from root-block'''
+        """starting rendering from root-block"""
         #start rendering of base class
         super(MediaWikiRenderer, self).start_rendering(root_block)
         self.render_block(root_block)
@@ -541,7 +541,10 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #ACCENTED letters
     def r_accented_letter(self, block):
-        if block.attributes["accent_type"] in ['"',"'","`"]:
+        if block.attributes["accent_type"] == '"' \
+                and block.attributes["letter"] == "a":
+            return "ä"
+        if block.attributes["accent_type"] in ["'","`"]:
             return block.attributes["letter"]+\
                     block.attributes["accent_type"]
         else:

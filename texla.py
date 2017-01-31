@@ -1,4 +1,4 @@
-import logging
+from log import *
 import json
 import yaml
 from texla.Parser import Parser
@@ -15,7 +15,6 @@ def execute_texla_mediawiki(config):
     except (PreparserError, ParserError) as err:
         err.print_error()
         exit()
-
     f = open(config['output_path'] + '.tree', 'w')
     json_tree = tree.to_json(0)
     n_blocks = tree.n_blocks()

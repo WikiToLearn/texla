@@ -5,7 +5,7 @@ from ..Parser.Blocks.Utilities import *
 
 
 class Page():
-    ''' Class that manages the pages content.
+    """ Class that manages the pages content.
     Data members of Page
     -self.id = randon id of the page
     -self.title is the title normalized for urls
@@ -13,7 +13,7 @@ class Page():
     -self.level memorize the level of the page.(root=-1))
     -self.url contains the unique internal url of the page
     -self.type is 'root',part,chapter,section,subsection,subsubection,paragraph.
-    -self.keywords is a dictionary with localized keywords for output'''
+    -self.keywords is a dictionary with localized keywords for output"""
     def __init__(self,title, page_type, level, keywords ):
         self.id = utility.get_random_string(8)
         self.title = title
@@ -31,9 +31,9 @@ class Page():
         self.text = text.strip()
 
     def addSubpage(self, page, after=None):
-        '''This methods add a subpage
+        """This methods add a subpage
         refreshing the levels of ALL subpages.
-        It sets also the parent of the subpage'''
+        It sets also the parent of the subpage"""
         if after:
             i = self.subpages.index(after)
             self.subpages.insert(i+1, page)
@@ -45,8 +45,8 @@ class Page():
         page.parent = self
 
     def addSubpages(self, pages, after=None):
-        '''This function add a list of subpages,
-        setting levels and parent page.'''
+        """This function add a list of subpages,
+        setting levels and parent page."""
         if after:
             i = self.subpages.index(after) +1
             self.subpages = self.subpages[:i] + pages +\
@@ -59,13 +59,13 @@ class Page():
             p.parent = self
 
     def addSubpage_top(self, page):
-        '''This function add a subpage before all the others.'''
+        """This function add a subpage before all the others."""
         self.subpages.insert(0,page)
         page.parent = self
 
     def removeSubpage(self, page):
-        '''This function removes the subpage
-        recursively looking also at subpages'''
+        """This function removes the subpage
+        recursively looking also at subpages"""
         if page in self.subpages:
             self.subpages.remove(page)
             page.parent = None
@@ -77,7 +77,7 @@ class Page():
         return page in self.subpages
 
     def get_subpages(self):
-        '''This function returns a list with all the subpages
+        """This function returns a list with all the subpages
         of the current page walking the subtree
         KEEPING THE ORDER (REALLY IMPORTANT):
         -subpage:
@@ -85,7 +85,7 @@ class Page():
             --subsub2:
                 ---subsubsub
         -subpage2...
-        => [subpage, subsub1, subsub2, subsubsub, subpage2, ...]'''
+        => [subpage, subsub1, subsub2, subsubsub, subpage2, ...]"""
         subpag = []
         for p in self.subpages:
             subpag.append(p)
@@ -93,14 +93,14 @@ class Page():
         return subpag
 
     def refresh_level(self, new_level):
-        '''This function change the level of this page
-        refreshing recursively all the subpages'''
+        """This function change the level of this page
+        refreshing recursively all the subpages"""
         self.level = new_level
         for p in self.subpages:
             p.refresh_level(self.level+1)
 
     def after_render(self):
-        '''This function does some fixes after rendering'''
+        """This function does some fixes after rendering"""
         #first of all the text is fixed
         self.fix_text_characters()
         #check math inside titles
@@ -108,8 +108,8 @@ class Page():
 
 
     def collapseSubpagesText(self, level=0):
-        ''' This method insert the text of subpages in this
-        page and returns the complete text.'''
+        """ This method insert the text of subpages in this
+        page and returns the complete text."""
         for subpage in self.subpages:
             t = subpage.collapseSubpagesText(level+1)
             #add text
@@ -128,9 +128,9 @@ class Page():
 
 
     def collapseURL(self, base_url):
-        '''This functions creates the url of the page
+        """This functions creates the url of the page
         checking if it is collapsed. Then it continues
-        with the subpages'''
+        with the subpages"""
         if self.collapsed:
             self.url = base_url + '#' + self.title
             for p in self.subpages:
@@ -144,9 +144,9 @@ class Page():
                 p.collapseURL(self.url)
 
     def create_pagenumbers(self, parent, current):
-        '''This function creates the pagenumber string appending to the
+        """This function creates the pagenumber string appending to the
         parent number its position in the pages of the same level. Then
-        the process continues with subpages'''
+        the process continues with subpages"""
         if parent != None:
             self.pagenumber = parent+ ".{}".format(current)
         else:
@@ -157,8 +157,8 @@ class Page():
             i += 1
 
     def fix_text_characters(self):
-        '''Utility function to fix apostrophes and other characters
-        inside the text of the page'''
+        """Utility function to fix apostrophes and other characters
+        inside the text of the page"""
         #fix for double apostrophes quotes
         s = re.findall(u'(\`\`)\s?(.*?)\s?(\'\')', self.text, re.DOTALL)
         for item in s:
@@ -173,7 +173,7 @@ class Page():
         self.text = self.text.replace(u'`',u"'")
 
     def is_math_inside_title(self):
-        '''This function checkes if there is math inside titles'''
+        """This function checkes if there is math inside titles"""
         mre = re.search(r'(?<![\$])\$([^$]+)\$(?!\$)|'+
                         r'(?<![\$])\$\$([^$]+)\$\$(?!\$)|'+
                         r'\\\((.*?)\\\)|\\\[(.*?)\\\]',
@@ -184,8 +184,8 @@ class Page():
             return False
 
     def get_json_dictionary(self, pages):
-        '''This function return the json dictionary of the page
-        with all its children'''
+        """This function return the json dictionary of the page
+        with all its children"""
         s = {}
         s['ID'] = self.id
         s['title'] = self.title
