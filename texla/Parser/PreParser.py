@@ -16,10 +16,12 @@ def preparse(tex, input_path):
     try:
         logging.info('\033[0;34m############### STARTING PRE-PARSING ###############\033[0m')
         tex = check_doc_integrity(tex)
+        logging.info("PreParser @ Removing comments")
+        tex = remove_comments(tex)
         logging.info("PreParser @ Preparsing include and subfiles")
         tex = preparse_include(tex, input_path)
         tex = preparse_subfiles(tex, input_path)
-        logging.info("PreParser @ Removing comments")
+        logging.info("PreParser @ Removing comments...again")
         tex = remove_comments(tex)
         logging.info("PreParser @ Parsing macros")
         tex = parse_macros(tex)
@@ -263,6 +265,8 @@ def preparse_include(tex,input_path):
             inputs_found+=1
         if inputs_found>0:
             tex = result_tex
+            #removing comments
+            tex = remove_comments(tex)
             inputs_found = 0
         else:
             break
