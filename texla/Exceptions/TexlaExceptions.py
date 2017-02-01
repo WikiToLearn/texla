@@ -27,11 +27,31 @@ class ParserError(TexlaError):
 
     def print_error(self):
         output = ["#" * 50 + "\nCRASH REPORT\n" + "-" * 30]
+        output.append("\nMESSAGE: " + self.message)
         if len(self.error_tex) < 200:
-            output.append("ERROR TEX: " + self.error_tex)
+            output.append("\nERROR TEX: " + self.error_tex)
         else:
-            output.append("ERROR TEX: " + self.error_tex[:200])
+            output.append("\nERROR TEX: " + self.error_tex[:200])
         output.append(self.tree_explorer.print_tree_to_block(self.block))
         print("\n".join(output))
 
+class BlockError(ParserError):
+    def __init__(self, block_type, error_tex, block, message):
+        self.block_type = block_type
+        self.error_tex = error_tex
+        self.block = block
+        self.message = message
+        #creating tree explorer
+        self.tree_explorer = TreeExplorer.create_tree_from_children(block)
+
+    def print_error(self):
+        output = ["#" * 50 + "\nCRASH REPORT\n" + "-" * 30]
+        output.append("\nMESSAGE: " + self.message)
+        if len(self.error_tex) < 200:
+            output.append("\nERROR TEX: " + self.error_tex)
+        else:
+            output.append("\nERROR TEX: " + self.error_tex[:200])
+        output.append("\nBLOCK TYPE: " + self.block_type)
+        output.append(self.tree_explorer.print_tree_to_block(self.block))
+        print("\n".join(output))
 

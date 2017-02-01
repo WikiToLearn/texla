@@ -1,5 +1,5 @@
 import logging
-import re
+from ...Exceptions.TexlaExceptions import *
 from .Utilities import *
 from .Block import Block
 
@@ -36,6 +36,9 @@ class TheoremBlock(Block):
                     [('th_type','{','}'),('title','[',']')])
         th_type = data['th_type']
         title = data['title']
+        if th_type not in parsed_theorems:
+            raise BlockError("theorem", tex, parent_block,
+                             "Theorem type not found between preparsed ones")
         block = TheoremBlock(parsed_theorems[th_type],
                     title, left_tex, parent_block)
         ch_blocks = parser.parse_instructions(left_tex,
