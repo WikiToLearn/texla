@@ -60,13 +60,15 @@ class Theorem:
         self.text = page.text
         self.th_type = th_type
         self.number = 0
+        self.title = None
+        self.url = None
 
     def fixNumber(self, number):
         """This method fix the number of the theorem
         inside its page text replacing the string {{thnum:id}}.
         The number is also appended to the title"""
         self.page.text = self.page.text.replace(
-                "{{thnum:"+ self.id + "}}", str(number))
+                "{{thnum@"+ self.id + "}}", str(number))
         #creating title for label management. Only the number as latex.
         self.title = str(number)
         self.number = number
@@ -78,15 +80,15 @@ class Theorem:
         N.B.: to be called after pages' urls fixing"""
         #getting not collapsed url
         current_page = self.page
-        while(True):
+        while True:
             if current_page.collapsed:
                 current_page = current_page.parent
             else:
                 break
-        self.url = current_page.url + "#" + self.title.replace(".", "_")
+        self.url = current_page.url + "#" + self.th_type + self.title.replace(".", "_")
         #replacing anchor in the text
         self.page.text = self.page.text.replace(
-                "{{thanchor:"+ self.id + "}}", self.title.replace(".","_"))
+                "{{thanchor@"+ self.id + "}}", self.th_type + self.title.replace(".","_"))
         logging.debug("Theorem @ Fixing URL of theorem {}".format(self))
 
     def __str__(self):
