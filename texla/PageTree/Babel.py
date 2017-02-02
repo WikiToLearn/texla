@@ -78,4 +78,4 @@ class Babel:
                 logging.info("Babel @ Fixing ref to label: \"{}\", in page: {}".
                              format(label,ref.title))
                 logging.debug("From page: {}, to page: {}".format(ref, obj))
-                ref.text = ref.text.replace("{{ref:"+ label +"}}", replace_string)
+                ref.text = ref.text.replace("{{ref@"+ label +"}}", replace_string)
