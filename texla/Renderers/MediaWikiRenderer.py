@@ -137,7 +137,10 @@ class MediaWikiRenderer(Renderer):
 
     def r_text(self, block):
         text = block.attributes['text']
-        return text
+        
+        # The following replace happens as ~ is the latex symbol
+        # for unbreakable space
+        return text.replace("~", " ")
 
     def r_newline(self, block):
         return '\n'
