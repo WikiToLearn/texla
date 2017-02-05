@@ -315,7 +315,7 @@ class MediaWikiRenderer(Renderer):
         s = ['\n']
         for item in block.ch_blocks:
             s.append(self.list_level)
-            s.append(self.render_children_blocks(item))
+            s.append(self.render_children_blocks(item).strip())
             s.append("\n")
         self.list_level = self.list_level[:-1]
         return ''.join(s)
