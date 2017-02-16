@@ -56,7 +56,26 @@ class IncludeGraphicsBlock(Block):
         self.attributes['img_name'] = img_name
         self.attributes['img_options'] = ar_img_info
 
+
+
+class CaptionBlock(Block):
+
+    @staticmethod
+    def parse(parser, tex, parent_block, params):
+        options, left_tex = CommandParser.parse_options(tex,
+                [('caption','{','}')])
+        caption = options['caption']
+        block = CaptionBlock(caption, parent_block)
+        return (block, left_tex)
+
+    def __init__(self, caption, parent_block):
+        super().__init__('caption', caption, parent_block)
+        self.attributes["caption"] = caption
+
+
+
 parser_hooks = {
     'figure' : FigureBlock.parse_env,
     'includegraphics' :  IncludeGraphicsBlock.parse
+    'caption' : CaptionBlock.parse
 }
