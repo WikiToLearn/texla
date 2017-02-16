@@ -39,16 +39,6 @@ class DefaultBlock(Block):
 		return (block, match[1])
 
 	def __init__(self, tex, block_name, parent_block):
-		'''
-		Constructor for sections:
-		-title: main title
-		-index_title: title for table of content
-		-numbered: True/False
-		-level: sections level
-		-parent_block
-		'''
-		#base constructor for Block. It created the id
-		#nd basic data structures
 		super().__init__('default-'+block_name, tex, parent_block)
 		#the tex is added also as attribute
 		self.attributes['content'] = tex
