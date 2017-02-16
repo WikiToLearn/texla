@@ -226,16 +226,20 @@ class MediaWikiRenderer(Renderer):
         captions = block.get_children("caption")
         includegraphics = block.get_children("includegraphics")
         s = "[[File:"
-        if len(includegraphics) != 0:
+        if len(includegraphics):
             inc = includegraphics[0]
             s += inc.attributes["img_name"]
         else:
             return ""
-        if len(captions) != 0:
+        if len(block.get_children("centering")):
+                s += "|" + self.configs["keywords"]["center"]
+
+        if len(captions):
             cap = captions[0]
             s += "|" + cap.attributes["caption"]
         s += "]]"
         return s;
+
 
 
     #########################################
