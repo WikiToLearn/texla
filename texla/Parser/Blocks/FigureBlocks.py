@@ -76,6 +76,6 @@ class CaptionBlock(Block):
 
 parser_hooks = {
     'figure' : FigureBlock.parse_env,
-    'includegraphics' :  IncludeGraphicsBlock.parse
+    'includegraphics' :  IncludeGraphicsBlock.parse,
     'caption' : CaptionBlock.parse
 }
