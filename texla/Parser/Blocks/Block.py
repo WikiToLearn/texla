@@ -1,7 +1,8 @@
 from .Utilities import *
 
 
-"""e Block definition"""ass Block:
+"""Base Block definition"""
+class Block:
     """
     Block general attributes:
     -block_name: the new of the "type" of the block
@@ -80,7 +81,8 @@ from .Utilities import *
         block. It changes parent object, id, and tree_depth.
         The section level is not changes for consistency.
         All children are updated.
-        """      self.parent_block = new_parent
+        """      
+        self.parent_block = new_parent
         #rebuiding id
         self.id = new_parent.id + '-' + utility.get_random_string(3)
         #the section level is not changed,
@@ -115,7 +117,7 @@ from .Utilities import *
         json += (' '*levelb + '"block_name":"'+ self.block_name+'",\n')
         json += (' '*levelb + '"tree_depth":"'+ str(self.tree_depth)+'",\n')
         for k,v in self.attributes.items():
-            json += (' '*levelb + '"'+k+ '":"'+tr(v)+ '",\n' )
+            json += (' '*levelb + '"'+k+ '":"'+str(v)+ '",\n' )
         json += (' '*levelb + '"children_blocks":[\n')
         for b in self.ch_blocks:
             json+= b.to_json(levelb+3)
@@ -125,7 +127,8 @@ from .Utilities import *
 
     def n_blocks(self):
         """s function returns the
-        number of all children blocks recursively."""      n = len(self.ch_blocks)
+        number of all children blocks recursively."""      
+        n = len(self.ch_blocks)
         for c in self.ch_blocks:
             n+= c.n_blocks()
         return n
