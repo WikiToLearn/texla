@@ -9,7 +9,7 @@ class TheoremsManager:
 
     def addTheorem(self, theorem):
         page = theorem.page
-        logging.info("TheoremsManager @ adding Theorem: {}".format(theorem))
+        logging.debug("TheoremsManager @ adding Theorem: {}".format(theorem))
         if page not in self.pages_ths:
             self.pages_ths[page] = []
         self.pages_ths[page].append(theorem)
@@ -72,7 +72,7 @@ class Theorem:
         #creating title for label management. Only the number as latex.
         self.title = str(number)
         self.number = number
-        logging.info("Theorem @ Fixing number {} of theorem: {}".
+        logging.debug("Theorem @ Fixing number {} of theorem: {}".
                       format(number, self))
 
     def fixUrl(self):

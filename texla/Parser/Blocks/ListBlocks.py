@@ -23,7 +23,6 @@ class ListBlock(Block):
         list_type = params['env']
         block = ListBlock(list_type,
                 tex, parent_block)
-        logging.debug('ListBlock.parse @' )
         #parsing children blocks
         ch_blocks = parser.parse_instructions(
                 tex, parent_block,{})
@@ -73,7 +72,6 @@ class ItemBlock(Block):
         if word==None:
             word = ''
         block = ItemBlock(word, parent_block)
-        logging.debug('ItemBlock.parse @ word: %s',str(word))
         #if there's a column in the left text is removed
         left_tex = left_tex.strip()
         if left_tex[0] == ':':

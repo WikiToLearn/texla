@@ -17,9 +17,9 @@ class FigureBlock(Block):
     def parse_env(parser, tex, parent_block, params):
         options, left_tex = CommandParser.parse_options(tex,
               [('placement_specifier','[',']')])
-        ps = 'tbp';
+        ps = 'tbp'
         if options['placement_specifier']:
-            ps = options['placement_specifier'];
+            ps = options['placement_specifier']
         block = FigureBlock(ps, left_tex, parent_block)
         #now we parse the content
         children_blocks = parser.parse_instructions(left_tex, block, {})
@@ -44,9 +44,8 @@ class IncludeGraphicsBlock(Block):
             str_splits = options['img_info'].split(
                 ',', options['img_info'].count(','))
             for str_split in str_splits:
-                spl = str_split.split('=', 1);
+                spl = str_split.split('=', 1)
                 ar_img_info[spl[0].strip(' ')] = spl[1].strip(' ')
-            logging.info('FigureBlock.parse_env @ ar_img_info: %s', ar_img_info)
         block = IncludeGraphicsBlock(options['img_name'],
                 ar_img_info, left_tex, parent_block)
         return (block, left_tex)

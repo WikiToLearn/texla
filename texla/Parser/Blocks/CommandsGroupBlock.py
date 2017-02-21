@@ -15,7 +15,6 @@ class CommandsGroupBlock(Block):
 
     @staticmethod
     def parse(parser, tex, parent_block, params):
-        logging.debug('FormattingText.parse @ tex: %s', tex[:30] )
         options, left_tex = CommandParser.parse_options(tex,
             [('content','{','}')])
         content = options['content']

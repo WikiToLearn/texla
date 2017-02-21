@@ -1,4 +1,5 @@
 from .Parser.TreeExplorer import TreeExplorer
+import logging
 
 class Reporter:
 
@@ -24,7 +25,8 @@ class Reporter:
         self.not_rendered_types[block.block_name].append(block)
 
     def print_report(self, console=True):
-        s = ["-----------------------\nTeXLa Report\n-----------------------"]
+        logging.info('\033[0;34m############### TEXLA REPORT  ###############\033[0m')
+        s = []
         s.append("\n- NOT PARSED blocks:")
         for bl, v in self.not_parsed_types.items():
             s.append("\t- {} : {}".format(bl, len(v)))
@@ -33,6 +35,6 @@ class Reporter:
             s.append("\t- {} : {}".format(bl, len(v)))
         text= "\n".join(s)
         if console:
-            print(text)
+            logging.info(text)
         with open("sandbox/texla_report.txt",'w') as file:
             file.write(text)

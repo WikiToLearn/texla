@@ -10,7 +10,6 @@ class LabelBlock(Block):
         options, left_tex = CommandParser.parse_options(
             tex, [('label','{','}')])
         label = options['label']
-        logging.debug('LabelBlock.parse @ label: %s', label)
         block =  LabelBlock(label, parent_block)
         return (block, left_tex)
 
@@ -25,14 +24,13 @@ class LabelBlock(Block):
 
 class RefBlock(Block):
     '''Block thar represents reference'''
-    
+
     @staticmethod
     def parse_ref(parser, tex, parent_block, params):
         options, left_tex = CommandParser.parse_options(
             tex, [('ref','{','}')])
         ref = options['ref']
         ref_type = params['cmd']
-        logging.debug('RefBlock.parse @ label: %s', ref)
         block = RefBlock(ref, ref_type, parent_block)
         return (block, left_tex)
 

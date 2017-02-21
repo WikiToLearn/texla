@@ -17,7 +17,6 @@ class DefaultBlock(Block):
 		if 'star' in params:
 			env_name = env_name + '*' if params['star'] else env_name
 		#default block is created
-		logging.debug('DefaultBlock.parse_env @ %s:',tex[:5]+'...')
 		block = DefaultBlock(tex, env_name, parent_block)
 		#We cannot look inside tex, we don't know
 		#what to parser.
@@ -32,7 +31,6 @@ class DefaultBlock(Block):
 		match = CommandParser.get_command_options(tex)
 		#match is (options string, left tex
 		ptex = '\\'+cmd+match[0]
-		logging.debug('DefaultBlock.parse_cmd @ %s:',ptex)
 		#default block is created
 		block = DefaultBlock(ptex, cmd, parent_block)
 		#we return the block and the left tex to parse

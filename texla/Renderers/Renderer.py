@@ -22,13 +22,13 @@ class Renderer():
             if hasattr(module, "plugin_render_hooks"):
                 self.loaded_plugins[plugin] = module
                 self.register_render_plugin_hooks(module.plugin_render_hooks)
-                logging.info("Renderer.register_plugins "\
+                logging.debug("Renderer.register_plugins "\
                              "@ Loaded plugin: {}".format(plugin))
                 logging.debug("Plugin {} render hooks: {}".format( plugin,
                             list(module.plugin_render_hooks.keys())))
             if hasattr(module, "plugin_lifecycle_hooks"):
                 self.register_lifecyle_plugin_hooks(module.plugin_lifecycle_hooks)
-                logging.info("Plugin {} lifecycle hooks: {}".format( plugin,
+                logging.debug("Plugin {} lifecycle hooks: {}".format( plugin,
                             list(module.plugin_lifecycle_hooks.keys())))
 
 
@@ -115,7 +115,6 @@ class Renderer():
             #it's not necessary checking for renderer_hook
             #because default hook is mandatory
             output.append((bl.block_name, self.render_block(bl)))
-        logging.debug('Render.ch_blocks @ %s', output)
         if collapse:
             return ''.join([x[1] for x in output])
         else:

@@ -6,7 +6,6 @@ class FormattingTextBlock(Block):
 
     @staticmethod
     def parse(parser, tex, parent_block, params):
-        logging.debug('FormattingTextBlock.parse @ tex: %s', tex[:30] )
         options, left_tex = CommandParser.parse_options(tex,
             [('text','{','}')])
         text = options['text']
@@ -17,7 +16,6 @@ class FormattingTextBlock(Block):
         return (block, left_tex)
 
     def __init__(self, format_type, text, parent_block):
-        logging.debug('format type: %s', format_type )
         super().__init__(format_type,text,parent_block)
         self.attributes['text'] = text
         self.attributes['text_length'] = len(text)
@@ -29,12 +27,10 @@ class FormattingGroupBlock(Block):
 
     @staticmethod
     def parse(parser, tex, parent_block, params):
-        logging.debug('FormattingGroupBlock.parse @ tex: %s', tex[:30] )
         block = FormattingGroupBlock(params['cmd'], parent_block)
         return (block, tex)
 
     def __init__(self, format_type, parent_block):
-        logging.debug('format type: %s', format_type )
         super().__init__(format_type,'',parent_block)
         self.attributes['format_type'] = format_type
 

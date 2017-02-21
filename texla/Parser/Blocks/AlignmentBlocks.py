@@ -10,7 +10,6 @@ class AlignmentBlock(Block):
     def parse_env(parser, tex, parent_block, params):
         #we first create the Block
         block = AlignmentBlock(params['env'], tex, parent_block)
-        logging.debug('AlignmentBlock.parse_env @ type: %s', params['env'])
         #now we parse the content
         children_blocks = parser.parse_instructions(tex, block, {})
         #now we can add the children nodes
@@ -20,7 +19,6 @@ class AlignmentBlock(Block):
     @staticmethod
     def parse_command(parser, tex, parent_block, params):
         block = AlignmentBlock(params['cmd'], '' , parent_block)
-        logging.debug('AlignmentBlock.parse_cmd @ type: %s', params['cmd'])
         return (block,tex)
 
     @staticmethod
@@ -32,7 +30,6 @@ class AlignmentBlock(Block):
         children_blocks = parser.parse_instructions(
                     options['content'], block,{})
         block.add_children_blocks(children_blocks)
-        logging.debug('AlignmentBlock.parse_cmd @ type: %s', params['cmd'])
         return (block, left_text)
 
 

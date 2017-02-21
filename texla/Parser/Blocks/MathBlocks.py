@@ -16,11 +16,10 @@ class MathBlock(Block):
         tex, labels = MathBlock.parse_labels(tex)
         #the content of the math is stripped
         block = MathBlock(env, star, tex.strip(), parent_block)
-        logging.debug('MathBlock.parse_math_env @ env: %s', env)
         #creating and adding labels blocks
         for l in labels:
             lblock = LabelBlock(l, block)
-            logging.info('BLOCK @ %s%s',
+            logging.debug('BLOCK @ %s%s',
                     "\t"*lblock.tree_depth, str(lblock))
             block.labels.append(lblock)
         return block
@@ -32,7 +31,6 @@ class MathBlock(Block):
             [('math','{','}')])
         text = options['math']
         block = MathBlock('ensuremath', False, text, parent_block)
-        logging.debug('MathBlock.parse_ensure_math')
         return (block, left_tex)
 
     @staticmethod

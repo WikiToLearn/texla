@@ -12,7 +12,6 @@ class VerbatimBlock(Block):
         #we first create the Block
         block = VerbatimBlock('verbatim', tex,
                         params['star'], parent_block)
-        logging.debug('VerbatimBlock.parse_env @')
         #there are no children 'cause it's verbatim
         return block
 

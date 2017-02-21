@@ -13,7 +13,6 @@ class FootnoteBlock(Block):
 		content = options['content']
 		#we first create the Block
 		block = FootnoteBlock(content, parent_block)
-		logging.debug('FootnoteBlock.parse @')
 		#now we parse the content
 		children_blocks = parser.parse_instructions(
 			content, block, {})
@@ -31,7 +30,6 @@ class QuotationBlock(Block):
 	def parse(parser, tex, parent_block, params):
 		#we first create the Block
 		block = QuotationBlock(tex, params['env'], parent_block)
-		logging.debug('QuotationBlock.parse @')
 		#now we parse the content
 		children_blocks = parser.parse_instructions(
 			tex, block, {})

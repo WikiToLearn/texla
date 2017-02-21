@@ -40,7 +40,7 @@ def execute_texla_mediawiki(config):
     logging.info('PageTree:\n'+rend.tree.get_tree_debug())
     oc = open(config['output_path'] + '-coll.json', 'w')
     oc.write(json.dumps(rend.tree.get_tree_json(), indent=3))
-    logging.info('######## STARTING EXPORTING ########')
+    logging.info('\033[0;34m############### EXPORTING ###############\033[0m')
     if config['create_index']:
         tree.create_indexes(config["export_book_page"])
     exporter.exportPages(tree.pages, config['output_path'] + '.mw',

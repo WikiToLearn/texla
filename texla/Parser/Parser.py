@@ -91,7 +91,7 @@ class Parser:
                     #the tuple with the result is saved
                     pblocks.append(self.call_parser_hook(level_key,
                             'env', tok, parent_block, sec_params))
-                    logging.info('Block @ %s%s',
+                    logging.debug('Block @ %s%s',
                         "\t"*pblocks[-1].tree_depth,
                         str(pblocks[-1]))
             else:
@@ -239,7 +239,7 @@ class Parser:
             #The strip is necessary to parse possible options.
             block = self.call_parser_hook(env,'env',
                     content.strip(), parent_block, env_params)
-            logging.info('Block @ %s%s',
+            logging.debug('Block @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
             #we return the block and left_tex
@@ -280,7 +280,7 @@ class Parser:
         params = {'env': env}
         block = self.call_parser_hook(env, 'env',
                 content, parent_block, params)
-        logging.info('Block @ %s%s',
+        logging.debug('Block @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
         return (block, left_tex)
@@ -320,7 +320,7 @@ class Parser:
                 #a list.  The first element is the parsed Block.
                 block, left_tex = self.call_parser_hook(matched_cmd,
                         'cmd', tex_to_parse, parent_block,params)
-                logging.info('Block @ %s%s',
+                logging.debug('Block @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
             else:
@@ -336,7 +336,7 @@ class Parser:
                 #parser_hook call
                 block, left_tex = self.call_parser_hook(matched_cmd,
                         'cmd', tex_to_parse, parent_block,params)
-                logging.info('Block @ %s%s',
+                logging.debug('Block @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
             return (block, left_tex)
@@ -396,7 +396,7 @@ class Parser:
                     tex[letter_m.end():]
             block, left_tex =  self.call_parser_hook(cmd,
                     'cmd', tex_to_parse, parent_block, params)
-        logging.info('Block @ %s%s', "\t"*block.tree_depth,
+        logging.debug('Block @ %s%s', "\t"*block.tree_depth,
                     str(block))
         return (block, left_tex)
 
@@ -413,7 +413,7 @@ class Parser:
         params = {'cmd':cmd, 'star':False}
         block, left_tex =  self.call_parser_hook(cmd,
                 'cmd', tex[2:], parent_block, params)
-        logging.info('Block @ %s%s', "\t"*block.tree_depth,
+        logging.debug('Block @ %s%s', "\t"*block.tree_depth,
                     str(block))
         return (block, left_tex)
 
@@ -426,7 +426,7 @@ class Parser:
         params = {'env':'text'}
         block = self.call_parser_hook('text','env',
                 tex, parent_block,params)
-        logging.info('Block @ %s%s',
+        logging.debug('Block @ %s%s',
                     "\t"*block.tree_depth,
                     str(block))
         return block

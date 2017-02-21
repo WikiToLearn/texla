@@ -16,7 +16,6 @@ class BreakBlock(Block):
 
         block = BreakBlock(params['cmd'],
                 priority ,tex, parent_block)
-        logging.debug('BreakBlock.parse')
         return (block, left_text)
 
 
@@ -28,7 +27,6 @@ class BreakBlock(Block):
 class NewlineBlock(Block):
 
     def parse_newline(parser, tex, parent_block, params):
-        logging.debug('NewlineBlock.parse @ ')
         block = NewlineBlock(params['star'], parent_block)
         left_tex = CommandParser.parse_options(tex,[])[1]
         return (block, left_tex)
@@ -45,7 +43,6 @@ class NewPageBlock(Block):
     def parse_newpage(parser, tex, parent_block, params):
         block = NewPageBlock(params['star'],
                  parent_block)
-        logging.debug('NewPageBlock.parse_newpage @ cmd: %s',params['cmd'])
         return (block,tex)
 
     def __init__(self, star, parent_block):

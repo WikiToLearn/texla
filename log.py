@@ -2,7 +2,11 @@ import logging
 import sys
 
 if len(sys.argv) > 1:
-    loglevel = sys.argv[1].split('=')[1]
+    loglevelstr = sys.argv[1][2:]
+    if loglevelstr in ["info", "debug", "error", "warn"]:
+        loglevel = loglevelstr
+    else:
+        loglevel = "info"
 else:
     loglevel = "info"
 

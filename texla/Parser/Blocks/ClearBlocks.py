@@ -10,7 +10,6 @@ class ClearBlock(Block):
     @staticmethod
     def parse(parser, tex, parent_block, params):
         block = ClearBlock(params['cmd'], parent_block)
-        logging.debug('ClearBlock.parse')
         return (block, tex)
 
 

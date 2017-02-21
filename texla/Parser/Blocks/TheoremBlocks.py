@@ -44,7 +44,6 @@ class TheoremBlock(Block):
         ch_blocks = parser.parse_instructions(left_tex,
                         block, {})
         block.add_children_blocks(ch_blocks)
-        logging.debug('TheoremBlock.parse @ name: %s',th_type)
         return block
 
     def __init__(self, theorem, title, content, parent_block):
@@ -69,7 +68,6 @@ class ProofBlock(Block):
         ch_blocks = parser.parse_instructions(left_tex,
                         block, {})
         block.add_children_blocks(ch_blocks)
-        logging.debug('ProofBlock.parse @ title: %s', title)
         return block
 
     def __init__(self, title, content, parent_block):

@@ -15,8 +15,6 @@ class SectionBlock(Block):
         #the regex MUST MATCH if not the parse wouldn't be called
         title = options['title']
         index_title = options['index_title']
-        logging.debug('SectionBlock.parse @ level: %s, title: %s',
-            level_key, title)
         #first of all we can create the new block
         sec_block = SectionBlock(title, index_title,
             star, sec_level, parent_block)
