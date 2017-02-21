@@ -25,7 +25,7 @@ bad_formulas = Queue()
 def save_math(block):
     tex = block.attributes["content"]
     #saving the formula only if it's longer than 10
-    if len(tex) > 10:
+    if len(tex) > 5:
         logging.debug("Plugin math_check_online @ saving formula {}".format(
             tex))
         formulas.append((tex, block.id))
