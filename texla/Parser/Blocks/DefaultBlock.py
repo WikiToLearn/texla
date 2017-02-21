@@ -39,8 +39,9 @@ class DefaultBlock(Block):
 		return (block, match[1])
 
 	def __init__(self, tex, block_name, parent_block):
-		super().__init__('default-'+block_name, tex, parent_block)
+		super().__init__('default', tex, parent_block)
 		#the tex is added also as attribute
+		self.type = block_name
 		self.attributes['content'] = tex
 
 

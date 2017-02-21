@@ -4,8 +4,8 @@ from ..PageTree.PageTree import *
 
 class MediaWikiRenderer(Renderer):
 
-    def __init__(self, configs):
-        super().__init__()
+    def __init__(self, configs, reporter):
+        super().__init__(reporter)
         self.configs = configs
         self.doc_title = configs['doc_title']
         #saving the hooks
