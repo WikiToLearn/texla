@@ -9,8 +9,6 @@ class NoOptCommandBlock(Block):
     def parse(parser, tex, parent_block, params):
         block = NoOptCommandBlock(params['cmd'],params['star'],
         		parent_block)
-        logging.debug('NoOptCommandBlock.parse @ cmd: %s',
-        			params['cmd'])
         return (block,tex)
 
     def __init__(self, block_name, star, parent_block):

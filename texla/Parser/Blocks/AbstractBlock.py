@@ -9,7 +9,6 @@ class AbstractBlock(Block):
     def parse(parser, tex, parent_block, params):
         #we first create the Block
         block = AbstractBlock( tex, parent_block)
-        logging.debug('AbstractBlock.parse_env @')
         #now we parse the content
         children_blocks = parser.parse_instructions(tex, block, {})
         #now we can add the children nodes

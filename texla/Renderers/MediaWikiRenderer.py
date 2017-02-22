@@ -4,8 +4,8 @@ from ..PageTree.PageTree import *
 
 class MediaWikiRenderer(Renderer):
 
-    def __init__(self, configs):
-        super().__init__()
+    def __init__(self, configs, reporter):
+        super().__init__(reporter)
         self.configs = configs
         self.doc_title = configs['doc_title']
         #saving the hooks
@@ -91,6 +91,8 @@ class MediaWikiRenderer(Renderer):
             'eqref': self.r_ref,
             #accents
             "accented_letter": self.r_accented_letter,
+            #figures
+            "figure": self.r_figure
             }
         #register plugins
         self.register_plugins(configs["plugins"])
@@ -216,6 +218,29 @@ class MediaWikiRenderer(Renderer):
         #saving ref in Babel of PageTree
         self.tree.addReference(ref)
         return "{{ref@"+ ref+ "}}"
+
+    #########################################
+    #FIGURE
+
+    def r_figure(self, block):
+        captions = block.get_children("caption")
+        includegraphics = block.get_children("includegraphics")
+        s = "[[File:"
+        if len(includegraphics):
+            inc = includegraphics[0]
+            s += inc.attributes["img_name"]
+        else:
+            return ""
+        if len(block.get_children("centering")):
+                s += "|" + self.configs["keywords"]["center"]
+
+        if len(captions):
+            cap = captions[0]
+            s += "|" + cap.attributes["caption"]
+        s += "]]"
+        return s;
+
+
 
     #########################################
     #FORMATTING

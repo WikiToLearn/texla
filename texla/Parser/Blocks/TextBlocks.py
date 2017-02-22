@@ -9,8 +9,6 @@ class TextBlock(Block):
     def parse_plain_text(parser, tex, parent_block, params):
         '''Plain text is seen as and env. It has only to return
         the block'''
-        logging.debug('TextBlock.parse_plain_text @ %s',
-                      tex[:10].strip() + '...')
         #first of all we can create the new block
         text_block = TextBlock(tex, parent_block)
         #the block is returned
@@ -42,7 +40,6 @@ class AccentedLetterBlock(Block):
     @staticmethod
     def parse_accents(parser, tex, parent_block, params):
         accent_type = params['cmd']
-        logging.debug('AccentedLetterBlock.parse @ ')
         #we can extract the letter using grammar
         params, left_tex = CommandParser.parse_options(tex,
                                     [('letter', '{', '}')])
@@ -63,7 +60,6 @@ class AccentedLetterBlock(Block):
 
 class SpecialCharacterBlock(Block):
     def parse(parser, tex, parent_block, params):
-        logging.debug('SpecialCharacter.parse @ char: %s ', params['cmd'])
         block = SpecialCharacterBlock(params['cmd'], parent_block)
         return (block, tex)
 

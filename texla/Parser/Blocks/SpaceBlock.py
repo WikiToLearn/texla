@@ -13,7 +13,6 @@ class SpaceBlock(Block):
             tex, [('length','{','}')])
         block = SpaceBlock(params['cmd'],
                 options['length'], parent_block)
-        logging.debug('SpaceBlock.parse @')
         return (block, left_text)
 
 

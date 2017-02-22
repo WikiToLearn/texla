@@ -4,7 +4,8 @@ import logging
 import importlib
 
 class Renderer():
-    def __init__(self):
+    def __init__(self, reporter):
+        self.reporter = reporter
         #hooks implemented directly by the Renderer class.
         self.render_hooks = {}
         #plugins hooks
@@ -13,7 +14,6 @@ class Renderer():
         self.start_hooks = []
         self.end_hooks = []
         self.loaded_plugins = {}
-        self.used_tags = {}
         self.tree_explorer = None
 
     def register_plugins(self, plugins):
@@ -22,13 +22,13 @@ class Renderer():
             if hasattr(module, "plugin_render_hooks"):
                 self.loaded_plugins[plugin] = module
                 self.register_render_plugin_hooks(module.plugin_render_hooks)
-                logging.info("Renderer.register_plugins "\
+                logging.debug("Renderer.register_plugins "\
                              "@ Loaded plugin: {}".format(plugin))
                 logging.debug("Plugin {} render hooks: {}".format( plugin,
                             list(module.plugin_render_hooks.keys())))
             if hasattr(module, "plugin_lifecycle_hooks"):
                 self.register_lifecyle_plugin_hooks(module.plugin_lifecycle_hooks)
-                logging.info("Plugin {} lifecycle hooks: {}".format( plugin,
+                logging.debug("Plugin {} lifecycle hooks: {}".format( plugin,
                             list(module.plugin_lifecycle_hooks.keys())))
 
 
@@ -115,7 +115,6 @@ class Renderer():
             #it's not necessary checking for renderer_hook
             #because default hook is mandatory
             output.append((bl.block_name, self.render_block(bl)))
-        logging.debug('Render.ch_blocks @ %s', output)
         if collapse:
             return ''.join([x[1] for x in output])
         else:
@@ -140,13 +139,14 @@ class Renderer():
                 prehook(bl)
         ######## rendering #############
         if bl.block_name in self.render_hooks:
-            self.used_tag('ok      | ' + bl.block_name)
             logging.debug('Render @ block: ' + bl.block_name)
             output = self.render_hooks[bl.block_name](bl)
         else:
             #default hook is mandatory
-            self.used_tag('default | ' + bl.block_name)
             logging.debug('Render @ block: default@' + bl.block_name)
+            #reporting to the Reporter
+            if bl.block_name != "default":
+                self.reporter.add_not_rendered_block(bl)
             output = self.render_hooks['default'](bl)
         ######## post hooks ###########
         #hooks executed in the order of inserction.
@@ -176,10 +176,3 @@ class Renderer():
             return ''.join([x[1] for x in output])
         else:
             return output
-
-    #Utils for debug
-    def used_tag(self, tag):
-        if tag in self.used_tags:
-            self.used_tags[tag] += 1
-        else:
-            self.used_tags[tag] = 1

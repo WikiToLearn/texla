@@ -17,9 +17,9 @@ class FigureBlock(Block):
     def parse_env(parser, tex, parent_block, params):
         options, left_tex = CommandParser.parse_options(tex,
               [('placement_specifier','[',']')])
-        ps = 'tbp';
+        ps = 'tbp'
         if options['placement_specifier']:
-            ps = options['placement_specifier'];
+            ps = options['placement_specifier']
         block = FigureBlock(ps, left_tex, parent_block)
         #now we parse the content
         children_blocks = parser.parse_instructions(left_tex, block, {})
@@ -44,9 +44,8 @@ class IncludeGraphicsBlock(Block):
             str_splits = options['img_info'].split(
                 ',', options['img_info'].count(','))
             for str_split in str_splits:
-                spl = str_split.split('=', 1);
+                spl = str_split.split('=', 1)
                 ar_img_info[spl[0].strip(' ')] = spl[1].strip(' ')
-            logging.info('FigureBlock.parse_env @ ar_img_info: %s', ar_img_info)
         block = IncludeGraphicsBlock(options['img_name'],
                 ar_img_info, left_tex, parent_block)
         return (block, left_tex)
@@ -56,7 +55,26 @@ class IncludeGraphicsBlock(Block):
         self.attributes['img_name'] = img_name
         self.attributes['img_options'] = ar_img_info
 
+
+
+class CaptionBlock(Block):
+
+    @staticmethod
+    def parse(parser, tex, parent_block, params):
+        options, left_tex = CommandParser.parse_options(tex,
+                [('caption','{','}')])
+        caption = options['caption']
+        block = CaptionBlock(caption, parent_block)
+        return (block, left_tex)
+
+    def __init__(self, caption, parent_block):
+        super().__init__('caption', caption, parent_block)
+        self.attributes["caption"] = caption
+
+
+
 parser_hooks = {
     'figure' : FigureBlock.parse_env,
-    'includegraphics' :  IncludeGraphicsBlock.parse
+    'includegraphics' :  IncludeGraphicsBlock.parse,
+    'caption' : CaptionBlock.parse
 }

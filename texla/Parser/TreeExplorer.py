@@ -14,6 +14,7 @@ class TreeExplorer:
         begin the tree"""
         self.root_block = root_block
         self.blocks = {'@': root_block}
+        self.block_names = {}
         #registering blocks by id
         self.register_blocks(root_block.ch_blocks)
 
@@ -108,3 +109,12 @@ class TreeExplorer:
 
     def print_all_tree(self):
         return self.print_tree(self.root_block)
+
+    def register_block_names(self):
+        """This function registers the block_names, creating
+         a dictionary with blocks groups by type"""
+        self.block_names.clear()
+        for bl in self.blocks.values():
+            if not bl in self.block_names:
+                self.block_names[bl.block_name] = []
+            self.block_names[bl.block_name].append(bl)

@@ -142,7 +142,7 @@ def parse_macros(tex):
             break
     #logging
     for m in log:
-        logging.info('PREPARSER @ macro: %s, %s occurrences', m, log[m])
+        logging.debug('PREPARSER @ macro: %s, %s occurrences', m, log[m])
     return tex_to_parse
 
 
@@ -182,7 +182,7 @@ def preparse_theorems(tex):
         if data[0]['definition'] is None:
             pass
         the = TheoremBlocks.Theorem(**data[0])
-        logging.info('PREPARSER @ theorem: %s', the.th_type)
+        logging.debug('PREPARSER @ theorem: %s', the.th_type)
         th_dict[the.th_type] = the
     #now we search for every theorem \beging{th_id} and \end{th_id}
     #and we substitue them with \begin{theorem}{th_id} and \begin{theorem}
@@ -215,7 +215,7 @@ def preparse_header(tex):
     mat = re.search(r'\\author{(.*?)}', tex)
     if mat:
         headerBlock['author'] = mat.group(1)
-    logging.info('PreParser @ preparse_header ')
+    logging.debug('PreParser @ preparse_header ')
     logging.debug('\ntitle: %s\ndate: '\
             '%s\nauthor: %s', headerBlock['title'], headerBlock['date'],
             headerBlock['author'])

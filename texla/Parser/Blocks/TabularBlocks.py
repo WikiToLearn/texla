@@ -75,8 +75,6 @@ class HlineBlock(Block):
 
     def parse(parser, tex, parent_block, params):
         block = HlineBlock(parent_block)
-        logging.debug('Hline.parse @ cmd: %s',
-        			params['cmd'])
         return (block,tex)
 
     def __init__(self, parent_block):
@@ -95,8 +93,6 @@ class ClineBlock(Block):
         end = clinerange.split('-')[1]
 
         block = ClineBlock(start, end, parent_block)
-        logging.debug('Cline.parse @ cmd: %s',
-                    params['cmd'])
         return (block, tex)
 
 

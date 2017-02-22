@@ -14,6 +14,13 @@ Python class that defines a new Block. Moreover options and arguments of Latex c
 
 Further documentation can be found at: https://meta.wikitolearn.org/Texla
 
+Run Texla
+=========
+To run Texla you'll need Python3 and PyYaml installed.
+
+    python texla.py
+    python texla.py --debug
+
 Texla Configuration
 ===================
 

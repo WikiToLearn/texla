@@ -5,6 +5,7 @@ from texla.Parser import Parser
 from texla.Renderers.MediaWikiRenderer import MediaWikiRenderer
 import texla.PageTree.Exporter as exporter
 from texla.Exceptions.TexlaExceptions import *
+from texla.Reporter import Reporter
 
 
 def execute_texla_mediawiki(config):
@@ -21,13 +22,13 @@ def execute_texla_mediawiki(config):
     logging.info('PARSED %i Blocks', n_blocks)
     f.write(json_tree)
     logging.info('\033[0;34m############### STARTING RENDERING ###############\033[0m')
+    #creating Reporter
+    reporter = Reporter(p.tree_explorer)
     #rendering
-    rend = MediaWikiRenderer(config)
+    rend = MediaWikiRenderer(config, reporter)
     rend.start_rendering(tree)
     o = open(config['output_path'] + '.json', 'w')
     o.write(json.dumps(rend.tree.get_tree_json(), indent=3))
-    p = open(config['output_path'] + '.debug', 'w')
-    p.write(json.dumps(rend.used_tags, indent=2))
     #print page tree before POST-PROCESSING
     logging.info('PageTree:\n'+rend.tree.get_tree_debug())
     #collpasing
@@ -39,7 +40,7 @@ def execute_texla_mediawiki(config):
     logging.info('PageTree:\n'+rend.tree.get_tree_debug())
     oc = open(config['output_path'] + '-coll.json', 'w')
     oc.write(json.dumps(rend.tree.get_tree_json(), indent=3))
-    logging.info('######## STARTING EXPORTING ########')
+    logging.info('\033[0;34m############### EXPORTING ###############\033[0m')
     if config['create_index']:
         tree.create_indexes(config["export_book_page"])
     exporter.exportPages(tree.pages, config['output_path'] + '.mw',
@@ -51,7 +52,7 @@ def execute_texla_mediawiki(config):
     if config['export_pages_tree']:
         exporter.export_pages_tree(tree.pages.values(),
                                    config['output_path'] + "_pages")
-
+    reporter.print_report(console=True)
     logging.info('Finished')
 
 

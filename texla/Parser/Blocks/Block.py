@@ -1,9 +1,9 @@
 from .Utilities import *
 
 
-'''Base Block definition'''
+"""Base Block definition"""
 class Block:
-    '''
+    """
     Block general attributes:
     -block_name: the new of the "type" of the block
     -id: unique id for the block in the tree
@@ -15,18 +15,18 @@ class Block:
         sectioning levels defined in utility.py
 
     Derived Block could add more attributes.
-    '''
+    """
 
     @staticmethod
     def parse(parser, tex, parent_block, params):
-        '''
+        """
         The method must return a tuple with the created
-        Block and the last used index of tex string.'''
+        Block and the last used index of tex string."""
         pass
 
 
     def __init__(self, block_name, content, parent_block):
-        '''
+        """
         Base constructor for Block.
         It saves the parent_block and block name and create
         the new id for the new block. It creates data structures
@@ -34,7 +34,7 @@ class Block:
         It always saves a content variable.
         By default, it sets the section_level of the block
         to that of the parend_block.
-        '''
+        """
         self.block_name = block_name
         self.content = content
         if not parent_block is None:
@@ -59,29 +59,29 @@ class Block:
 
 
     def add_child_block(self, block):
-        '''
+        """
         IMPORTANT: this function is called by the self.parse fuction.
         It MUST NOT be called from outside, expecially the parser
-        '''
+        """
         self.ch_blocks.append(block)
         self.N_chblocks +=1
         self.attributes['N_chblocks']+=1
 
     def add_children_blocks(self, blocks):
-        '''
+        """
         IMPORTANT: this function is called by the self.parse fuction.
         It MUST NOT be called from outside, expecially the parser
-        '''
+        """
         self.ch_blocks += blocks
         self.N_chblocks +=len(blocks)
         self.attributes['N_chblocks']+=len(blocks)
 
     def change_parent_block(self, new_parent):
-        '''This function changes the parent of the
+        """s function changes the parent of the
         block. It changes parent object, id, and tree_depth.
         The section level is not changes for consistency.
         All children are updated.
-        '''
+        """      
         self.parent_block = new_parent
         #rebuiding id
         self.id = new_parent.id + '-' + utility.get_random_string(3)
@@ -92,14 +92,24 @@ class Block:
         for ch in self.ch_blocks:
             ch.change_parent_block(self)
 
+    def get_children(self, bl_name):
+        """ This function return a list of children blocks
+        corresponding to the requested type. If there are not
+        children blocks of that type it returns a void list."""
+        result = []
+        for bl in self.ch_blocks:
+            if bl.block_name == bl_name:
+                result.append(bl)
+        return result
+
     def __str__(self):
         return '<Block:{}, ID:{}>'.format( self.block_name, self.id)
 
     def to_json(self, level=0):
-        '''
+        """
         This functions create a json ouput that
         represents the tree of subblocks of the called block.
-        '''
+        """
         json = ''
         levelb = level+3
         json += (' '*level + '{\n')
@@ -116,8 +126,8 @@ class Block:
         return json
 
     def n_blocks(self):
-        '''This function returns the
-        number of all children blocks recursively.'''
+        """s function returns the
+        number of all children blocks recursively."""      
         n = len(self.ch_blocks)
         for c in self.ch_blocks:
             n+= c.n_blocks()

@@ -17,7 +17,6 @@ class DefaultBlock(Block):
 		if 'star' in params:
 			env_name = env_name + '*' if params['star'] else env_name
 		#default block is created
-		logging.debug('DefaultBlock.parse_env @ %s:',tex[:5]+'...')
 		block = DefaultBlock(tex, env_name, parent_block)
 		#We cannot look inside tex, we don't know
 		#what to parser.
@@ -32,25 +31,15 @@ class DefaultBlock(Block):
 		match = CommandParser.get_command_options(tex)
 		#match is (options string, left tex
 		ptex = '\\'+cmd+match[0]
-		logging.debug('DefaultBlock.parse_cmd @ %s:',ptex)
 		#default block is created
 		block = DefaultBlock(ptex, cmd, parent_block)
 		#we return the block and the left tex to parse
 		return (block, match[1])
 
 	def __init__(self, tex, block_name, parent_block):
-		'''
-		Constructor for sections:
-		-title: main title
-		-index_title: title for table of content
-		-numbered: True/False
-		-level: sections level
-		-parent_block
-		'''
-		#base constructor for Block. It created the id
-		#nd basic data structures
-		super().__init__('default-'+block_name, tex, parent_block)
+		super().__init__('default', tex, parent_block)
 		#the tex is added also as attribute
+		self.type = block_name
 		self.attributes['content'] = tex
 
 
