@@ -1,7 +1,7 @@
 *.pyc
 .directory
 __pycache__
-#configs.yaml
+configs.yaml
 test/
 #import/
 !/sandbox/.placeholder

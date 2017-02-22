@@ -6,6 +6,7 @@ from os import path
 
 def request_formula(tex):
     url_check = 'http://restbase.wikitolearn.org/pool.wikitolearn.org/v1/media/math/check/tex'
+#    url_check = 'http://restbase.tuttorotto.biz/pool.tuttorotto.biz/v1/media/math/check/tex'
     header = {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded'
