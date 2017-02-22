@@ -36,5 +36,17 @@ class Reporter:
         text= "\n".join(s)
         if console:
             logging.info(text)
+        #saving to file also the block trees
         with open("sandbox/texla_report.txt",'w') as file:
-            file.write(text)
+            t = ["############### TEXLA REPORT  ###############"]
+            t.append("\n- NOT PARSED blocks:")
+            for bl, v in self.not_parsed_types.items():
+                t.append("\t- {} : {}".format(bl, len(v)))
+            t.append("\n- NOT PARSED blocks details:")
+            t.append(self.tree_explorer.print_tree_to_blocks(self.not_parsed_blocks))
+            t.append("\n- NOT RENDERED blocks:")
+            for bl, v in self.not_rendered_types.items():
+                t.append("\t- {} : {}".format(bl, len(v)))
+            t.append("\n- NOT RENDERED blocks details:")
+            t.append(self.tree_explorer.print_tree_to_blocks(self.not_rendered_blocks))
+            file.write("\n".join(t))

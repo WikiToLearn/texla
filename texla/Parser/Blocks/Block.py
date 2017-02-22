@@ -52,7 +52,7 @@ class Block:
             self.section_level = -1
             self.tree_depth = 0
         #dictionary for attributes
-        self.attributes = {'N_chblocks' : 0}
+        self.attributes = {}
         #list for childrend blocks
         self.ch_blocks = []
         self.N_chblocks = 0
@@ -65,7 +65,6 @@ class Block:
         """
         self.ch_blocks.append(block)
         self.N_chblocks +=1
-        self.attributes['N_chblocks']+=1
 
     def add_children_blocks(self, blocks):
         """
@@ -74,14 +73,13 @@ class Block:
         """
         self.ch_blocks += blocks
         self.N_chblocks +=len(blocks)
-        self.attributes['N_chblocks']+=len(blocks)
 
     def change_parent_block(self, new_parent):
         """s function changes the parent of the
         block. It changes parent object, id, and tree_depth.
         The section level is not changes for consistency.
         All children are updated.
-        """      
+        """
         self.parent_block = new_parent
         #rebuiding id
         self.id = new_parent.id + '-' + utility.get_random_string(3)
@@ -115,6 +113,7 @@ class Block:
         json += (' '*level + '{\n')
         json += (' '*levelb + '"ID":"'+ self.id+'",\n')
         json += (' '*levelb + '"block_name":"'+ self.block_name+'",\n')
+        json += (' '*levelb + '"N. ch_blocks":"'+ str(self.N_chblocks)+'",\n')
         json += (' '*levelb + '"tree_depth":"'+ str(self.tree_depth)+'",\n')
         for k,v in self.attributes.items():
             json += (' '*levelb + '"'+k+ '":"'+str(v)+ '",\n' )
@@ -127,7 +126,7 @@ class Block:
 
     def n_blocks(self):
         """s function returns the
-        number of all children blocks recursively."""      
+        number of all children blocks recursively."""
         n = len(self.ch_blocks)
         for c in self.ch_blocks:
             n+= c.n_blocks()
