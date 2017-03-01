@@ -34,6 +34,20 @@ class MathBlock(Block):
         return (block, left_tex)
 
     @staticmethod
+    def parse_empheq(parser, tex, parent_block, params):
+        '''We need to extract the right environment from the options '''
+        options, content = CommandParser.parse_options(tex,
+                [("emph_opt","[","]"), ("env", "{","}")])
+        env = options["env"]
+        star = False
+        if env.endswith("*"):
+            env = env[:-1]
+            star = True
+        block = MathBlock(env, star, content, parent_block)
+        return block
+
+
+    @staticmethod
     def parse_labels(tex):
         '''
         The function get labels from math.
@@ -78,6 +92,6 @@ parser_hooks = {
     'alignat' : MathBlock.parse_math_env,
     'gather' : MathBlock.parse_math_env,
     'ensuremath' : MathBlock.parse_ensure_math,
-    'empheq' : MathBlock.parse_math_env,
+    'empheq' : MathBlock.parse_empheq,
     'math': MathBlock.parse_math_env
 }
