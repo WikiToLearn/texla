@@ -5,7 +5,7 @@ from os import path
 
 
 def request_formula(tex):
-    url_check = 'http://restbase.wikitolearn.org/pool.wikitolearn.org/v1/media/math/check/tex'
+    url_check = 'http://restbase.{0}/pool.{0}/v1/media/math/check/tex'.format(configs["domain"])
     header = {
         'Accept': 'application/json',
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -52,7 +52,7 @@ def check_math(formula):
 
 
 def start_pool():
-    pool = Pool(processes=6)
+    pool = Pool(processes=int(configs["threads"]))
     logging.info("Plugin math_check_online @ total formulas to check: {}".
                  format(len(formulas)))
     pool.map(check_math, formulas)
@@ -107,3 +107,4 @@ plugin_lifecycle_hooks = {"end": start_check}
 
 needs_tree_explorer = True
 tree_explorer = None
+configs = {}
