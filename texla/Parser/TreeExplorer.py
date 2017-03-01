@@ -83,6 +83,8 @@ class TreeExplorer:
             for at,attr in block.attributes.items():
                 output.append(lstr+ ".   " + " |   - "+ "{} : {}".
                               format(at, attr))
+            output.append(lstr+ ".   "+ " |content : {}".
+                        format(block.content))
             output.append(lstr+ ".    ."+"\u203E"*40+"\n")
         output = "\n".join(output)
         #iterating on the block children

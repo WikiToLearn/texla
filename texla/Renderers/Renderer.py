@@ -4,7 +4,8 @@ import logging
 import importlib
 
 class Renderer():
-    def __init__(self, reporter):
+    def __init__(self, configs, reporter):
+        self.configs = configs
         self.reporter = reporter
         #hooks implemented directly by the Renderer class.
         self.render_hooks = {}
@@ -15,9 +16,11 @@ class Renderer():
         self.end_hooks = []
         self.loaded_plugins = {}
         self.tree_explorer = None
+        #registering plugins from the configs
+        self.register_plugins()
 
-    def register_plugins(self, plugins):
-        for plugin in plugins:
+    def register_plugins(self):
+        for plugin in self.configs["plugins"]:
             module = importlib.import_module("..plugins"+'.'+ plugin, __name__)
             if hasattr(module, "plugin_render_hooks"):
                 self.loaded_plugins[plugin] = module
@@ -30,6 +33,11 @@ class Renderer():
                 self.register_lifecyle_plugin_hooks(module.plugin_lifecycle_hooks)
                 logging.debug("Plugin {} lifecycle hooks: {}".format( plugin,
                             list(module.plugin_lifecycle_hooks.keys())))
+            #adding the configurations to the plugin
+            if "plugins_configs" in self.configs:
+                if plugin in self.configs["plugins_configs"]:
+                    logging.debug("Plugin {} passing configs...".format(plugin))
+                    module.configs = self.configs["plugins_configs"][plugin]
 
 
 

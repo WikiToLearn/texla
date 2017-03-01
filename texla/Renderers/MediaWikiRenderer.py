@@ -5,7 +5,7 @@ from ..PageTree.PageTree import *
 class MediaWikiRenderer(Renderer):
 
     def __init__(self, configs, reporter):
-        super().__init__(reporter)
+        super().__init__(configs, reporter)
         self.configs = configs
         self.doc_title = configs['doc_title']
         #saving the hooks
@@ -94,8 +94,6 @@ class MediaWikiRenderer(Renderer):
             #figures
             "figure": self.r_figure
             }
-        #register plugins
-        self.register_plugins(configs["plugins"])
         #tree object
         self.tree = PageTree(configs)
         #parameter for list formatting
@@ -139,7 +137,7 @@ class MediaWikiRenderer(Renderer):
 
     def r_text(self, block):
         text = block.attributes['text']
-        
+
         # The following replace happens as ~ is the latex symbol
         # for unbreakable space
         return text.replace("~", " ")

@@ -40,7 +40,8 @@ class DefaultBlock(Block):
 		super().__init__('default', tex, parent_block)
 		#the tex is added also as attribute
 		self.type = block_name
-		self.attributes['content'] = tex
+		self.attributes["type"] = block_name
+        #the content is already saved by the base block
 
 
 parser_hooks = {
