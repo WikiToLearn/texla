@@ -5,8 +5,9 @@ import re, os, json
 
 
 class PageTree():
-    def __init__(self, configs):
+    def __init__(self, configs, reporter):
         self.configs = configs
+        self.reporter = reporter
         self.doc_title = configs['doc_title']
         self.keywords = configs['keywords']
         self.output_path = configs['output_path']
@@ -15,7 +16,7 @@ class PageTree():
         #id : titles
         self.titles = {}
         #label manager
-        self.babel = Babel()
+        self.babel = Babel(reporter)
         #theorems manager
         self.theorems_manager = TheoremsManager(self.pages)
         #urls (they are created after collapsing).

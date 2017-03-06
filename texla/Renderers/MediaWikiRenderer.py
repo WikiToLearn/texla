@@ -95,7 +95,7 @@ class MediaWikiRenderer(Renderer):
             "figure": self.r_figure
             }
         #tree object
-        self.tree = PageTree(configs)
+        self.tree = PageTree(configs, reporter)
         #parameter for list formatting
         self.list_level = ''
         #parameters for theorem handling

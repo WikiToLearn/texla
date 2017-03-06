@@ -3,9 +3,10 @@ import logging
 class Babel:
     #Label babel
 
-    def __init__(self):
+    def __init__(self, reporter):
         self.refs = {}
         self.anchors = {}
+        self.reporter = reporter
 
     def add_label(self, label, anchor):
         '''
@@ -55,6 +56,8 @@ class Babel:
         self.refs. The text {{ref:label}} in the objects' .text properties
         will be replaces by a url made of [url|title]. The url and the title
         MUST be properties of the anchor saved.
+        Finally this method will send to the reporter the references having a
+        label without anchor.
         '''
         #iterating over anchor to fix only the right labels
         #and ignoring the missing ones
@@ -78,3 +81,7 @@ class Babel:
                 logging.debug("Babel @ Fixing ref to label: \"{}\", from page {} to page: {}".
                              format(label,ref, obj))
                 ref.text = ref.text.replace("{{ref@"+ label +"}}", replace_string)
+        #checking references without anchors
+        for label in self.refs:
+            if label not in self.anchors:
+                self.reporter.add_missing_anchor(label, self.refs[label])

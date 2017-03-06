@@ -209,10 +209,10 @@ class Page():
 
     def __str__(self):
         s =[]
-        s.append('title='+self.title)
+        s.append('title="'+self.title+'"')
         if hasattr(self, "url"):
-            s.append('url='+self.url)
-        s.append('subpages='+str(self.subpages))
+            s.append('url="'+self.url + '"')
+        s.append('subpages='+str(len(self.subpages)))
         s.append('level='+str(self.level))
         s.append('collapsed='+ str(self.collapsed))
         return '  '.join(s)
