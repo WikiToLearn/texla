@@ -59,7 +59,7 @@ def start_pool():
     #saving results
     logging.info("GOOD FORMULAS: {}  --- BAD FORMULAS: {}".format(
         len(formulas)-bad_formulas.qsize(), bad_formulas.qsize()))
-    log_matherrors_file_path = path.relpath("sandbox/math_errors.txt")
+    log_matherrors_file_path = path.relpath("debug/math_errors.txt")
     with open(log_matherrors_file_path, "w") as f:
         f.write("Math Errors Tree Log: \n")
         f.write("---------------------\n")

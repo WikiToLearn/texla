@@ -4,6 +4,4 @@ __pycache__
 configs.yaml
 test/
 #import/
-!/sandbox/.placeholder
-sandbox/*
-
+!/debug/.placeholder

@@ -37,7 +37,7 @@ class Reporter:
         if console:
             logging.info(text)
         #saving to file also the block trees
-        with open("sandbox/texla_report.txt",'w') as file:
+        with open("debug/texla_report.txt",'w') as file:
             t = ["############### TEXLA REPORT  ###############"]
             t.append("\n- NOT PARSED blocks:")
             for bl, v in self.not_parsed_types.items():

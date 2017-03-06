@@ -34,7 +34,7 @@ def preparse(tex, input_path):
         logging.info("PreParser @ Preparsing header info (title, author, date)")
         data = preparse_header(tex)
         #saving preparsed tex
-        log_preparsed_file_path = path.relpath('sandbox/preparsed.tex')
+        log_preparsed_file_path = path.relpath('debug/preparsed.tex')
         with open(log_preparsed_file_path, 'w') as o:
             o.write(tex)
         return tex, data
