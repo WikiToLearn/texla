@@ -58,6 +58,8 @@ There are a few parameters to set:
 
 * __plugins__: [...]  List of the enabled plugins. The order of this list is the order of executing: Be Careful.
 
+* __plugins_configs__: yaml dictionary containing the key-value configuration for each plugin (see configs_example.yaml)
+
 
 Plugins
 =======

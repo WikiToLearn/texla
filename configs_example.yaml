@@ -13,3 +13,7 @@ export_book_page: (True/False)
 print_preparsed_tex: (True/False)
 lang: (Look at i18n.yaml)
 plugins: [MathCheck]
+plugins_configs:
+    math_check_online:
+        threads: 3
+        domain: wikitolearn.org
