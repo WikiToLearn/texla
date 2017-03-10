@@ -14,9 +14,10 @@ class TreeExplorer:
         begin the tree"""
         self.root_block = root_block
         self.blocks = {'@': root_block}
-        self.block_names = {}
+        self.block_names = {"default":[]}
         #registering blocks by id
         self.register_blocks(root_block.ch_blocks)
+        self.register_block_names()
 
     @staticmethod
     def create_tree_from_children(block):
@@ -40,10 +41,20 @@ class TreeExplorer:
             if block.N_chblocks > 0:
                 self.register_blocks(block.ch_blocks)
 
+    def register_block_names(self):
+        """This function registers the block_names, creating
+         a dictionary with blocks groups by type"""
+        for bl in self.blocks.values():
+            if not bl in self.block_names:
+                self.block_names[bl.block_name] = []
+            if not bl in self.block_names[bl.block_name]:
+                self.block_names[bl.block_name].append(bl)
+
     def update_blocks_register(self):
         """This methods update the blocks' ids register
         recalling register_blocks with the root_block"""
         self.register_blocks(self.root_block.ch_blocks)
+        self.register_block_names()
 
     def get_parents_list(self, block):
         """This method returns the list of the parent
@@ -111,12 +122,3 @@ class TreeExplorer:
 
     def print_all_tree(self):
         return self.print_tree(self.root_block)
-
-    def register_block_names(self):
-        """This function registers the block_names, creating
-         a dictionary with blocks groups by type"""
-        self.block_names.clear()
-        for bl in self.blocks.values():
-            if not bl in self.block_names:
-                self.block_names[bl.block_name] = []
-            self.block_names[bl.block_name].append(bl)

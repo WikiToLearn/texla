@@ -5,8 +5,6 @@ class Reporter:
 
     def __init__(self, tree):
         self.tree_explorer = tree
-        #registering the block_names
-        self.tree_explorer.register_block_names()
         self.not_parsed_blocks = self.tree_explorer.block_names["default"]
         self.not_rendered_blocks = []
         self.not_parsed_types = {}
