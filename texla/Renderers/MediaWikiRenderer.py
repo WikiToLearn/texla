@@ -236,7 +236,7 @@ class MediaWikiRenderer(Renderer):
             cap = captions[0]
             s += "|" + cap.attributes["caption"]
         s += "]]"
-        return s;
+        return s
 
 
 

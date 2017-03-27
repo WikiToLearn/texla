@@ -43,7 +43,16 @@ class MathBlock(Block):
         if env.endswith("*"):
             env = env[:-1]
             star = True
-        block = MathBlock(env, star, content, parent_block)
+        #getting labels and tex without labels
+        tex, labels = MathBlock.parse_labels(content)
+        #the content of the math is stripped
+        block = MathBlock(env, star, tex.strip(), parent_block)
+        #creating and adding labels blocks
+        for l in labels:
+            lblock = LabelBlock(l, block)
+            logging.debug('BLOCK @ %s%s',
+                    "\t"*lblock.tree_depth, str(lblock))
+            block.labels.append(lblock)
         return block
 
 
