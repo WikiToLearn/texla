@@ -62,6 +62,8 @@ def math_check(block):
     mtxt = mtxt.replace('"', "''")
     mtxt = mtxt.replace('``', "''")
     mtxt = mtxt.replace('`', "'")
+    #remove newline characters in math
+    mtxt = mtxt.replace('\n', '')
     #saving content
     block.attributes["content"] = mtxt
 
