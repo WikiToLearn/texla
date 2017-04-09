@@ -7,7 +7,8 @@ from .Block import Block
 class TextBlock(Block):
     @staticmethod
     def parse_plain_text(parser, tex, parent_block, params):
-        '''Plain text is seen as and env. It has only to return
+        '''Plain text is handled directly by the Parser as
+        an environment. We have only to return
         the block'''
         #first of all we can create the new block
         text_block = TextBlock(tex, parent_block)

@@ -82,7 +82,7 @@ class TreeExplorer:
         """This methods prints a beautified tree starting
         from block parameter and his children. If filter_list
         is present only the block with the id in the list
-        are printed. It returns a list of output strings"""
+        are printed. It returns a single string. """
         output = []
         if filter_list is None or block.id in filter_list:
             lstr = ".    "* (block.tree_depth+1)
@@ -95,7 +95,7 @@ class TreeExplorer:
                 output.append(lstr+ ".   " + " |   - "+ "{} : {}".
                               format(at, attr))
             output.append(lstr+ ".   "+ " |content : {}".
-                        format(block.content))
+                        format(block.get_content()))
             output.append(lstr+ ".    ."+"\u203E"*40+"\n")
         output = "\n".join(output)
         #iterating on the block children

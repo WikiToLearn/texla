@@ -15,6 +15,7 @@ def execute_texla_mediawiki(config):
         tree = p.parse(a)
     except (PreparserError, ParserError) as err:
         err.print_error()
+        err.print_complete_tree('debug/crash_tree')
         exit()
     f = open(config['output_path'] + '.tree', 'w')
     json_tree = tree.to_json(0)

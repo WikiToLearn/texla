@@ -125,9 +125,17 @@ class Block:
         return json
 
     def n_blocks(self):
-        """s function returns the
+        """This function returns the
         number of all children blocks recursively."""
         n = len(self.ch_blocks)
         for c in self.ch_blocks:
             n+= c.n_blocks()
         return n
+
+    def get_content(self):
+        """
+        This function can be overrided by a specific
+        block in order to provide a personalized representation
+        of the content of the block for logging/reporting.
+        """
+        return self.content

@@ -219,34 +219,39 @@ class Parser:
         A new block is created and returned with the tex
         remained to parse.
         """
-        #we search for the first enviroment
-        re_env1 = re.compile(r'\\begin(?: *)\{(?: *)(?P<env>\w*?)'+\
-                            r'(?P<star>[*]?)(?: *)\}')
-        match = re_env1.match(tex)
-        if not match is None:
-            env = match.group('env')
-            star = True if match.group('star')!='' else False
-            env_tot = env + '\*' if star else env
-            #now we extract the env greedy
-            s,e,content = EnvironmentParser.get_environment(
-                                            tex,env_tot)
-            #the name of catched env is inserted in params
-            #with the star param
-            env_params = {'env':env, 'star':star}
-            #we can call the parser hooks.
-            #N.B.: the tex passed to parser hook is the CONTENT STRIPPED
-            #of the environment, without \begin{} and \end{} part.
-            #The strip is necessary to parse possible options.
-            block = self.call_parser_hook(env,'env',
-                    content.strip(), parent_block, env_params)
-            logging.debug('Block @ %s%s',
-                    "\t"*block.tree_depth,
-                    str(block))
-            #we return the block and left_tex
-            return (block, tex[e:])
-        else:
-            #it's an error
-            logging.error('PARSER.parse_enviroment @ env NOT FOUND')
+        try:
+            #we search for the first enviroment
+            re_env1 = re.compile(r'\\begin(?: *)\{(?: *)(?P<env>\w*?)'+\
+                                r'(?P<star>[*]?)(?: *)\}')
+            match = re_env1.match(tex)
+            if not match is None:
+                env = match.group('env')
+                star = True if match.group('star')!='' else False
+                env_tot = env + '\*' if star else env
+                #now we extract the env greedy
+                s,e,content = EnvironmentParser.get_environment(
+                                                tex,env_tot)
+                #the name of catched env is inserted in params
+                #with the star param
+                env_params = {'env':env, 'star':star}
+                #we can call the parser hooks.
+                #N.B.: the tex passed to parser hook is the CONTENT STRIPPED
+                #of the environment, without \begin{} and \end{} part.
+                #The strip is necessary to parse possible options.
+                block = self.call_parser_hook(env,'env',
+                        content.strip(), parent_block, env_params)
+                logging.debug('Block @ %s%s',
+                        "\t"*block.tree_depth,
+                        str(block))
+                #we return the block and left_tex
+                return (block, tex[e:])
+            else:
+                #it's an error
+                logging.error('PARSER.parse_enviroment @ env NOT FOUND')
+        except ParserError:
+            raise
+        except:
+            raise ParserError(tex, parent_block, "Error in parse_enviroment")
 
 
     def parse_math(self, tex, parent_block, options):
@@ -256,34 +261,39 @@ class Parser:
         is inserted in "display_math" or "inline_math" block.
         The function returnes the block and left_tex.
         """
-        #firt we have to check the double dollar
-        if tex.startswith("$$"):
-            i = tex.find("$$", 2)
-            content = tex[2:i]
-            left_tex = tex[i+2:]
-            env = "displaymath"
-        elif tex.startswith("$"):
-            i = tex.find("$", 1)
-            content = tex[1:i]
-            left_tex = tex[i+1:]
-            env = "inlinemath"
-        elif tex.startswith("\\["):
-            i = tex.find("\\]", 2)
-            content = tex[2:i]
-            left_tex = tex[i+2:]
-            env = "displaymath"
-        elif tex.startswith("\\("):
-            i = tex.find("\\)", 2)
-            content = tex[2:i]
-            left_tex = tex[i+2:]
-            env = "inlinemath"
-        params = {'env': env}
-        block = self.call_parser_hook(env, 'env',
-                content, parent_block, params)
-        logging.debug('Block @ %s%s',
-                    "\t"*block.tree_depth,
-                    str(block))
-        return (block, left_tex)
+        try:
+            #firt we have to check the double dollar
+            if tex.startswith("$$"):
+                i = tex.find("$$", 2)
+                content = tex[2:i]
+                left_tex = tex[i+2:]
+                env = "displaymath"
+            elif tex.startswith("$"):
+                i = tex.find("$", 1)
+                content = tex[1:i]
+                left_tex = tex[i+1:]
+                env = "inlinemath"
+            elif tex.startswith("\\["):
+                i = tex.find("\\]", 2)
+                content = tex[2:i]
+                left_tex = tex[i+2:]
+                env = "displaymath"
+            elif tex.startswith("\\("):
+                i = tex.find("\\)", 2)
+                content = tex[2:i]
+                left_tex = tex[i+2:]
+                env = "inlinemath"
+            params = {'env': env}
+            block = self.call_parser_hook(env, 'env',
+                    content, parent_block, params)
+            logging.debug('Block @ %s%s',
+                        "\t"*block.tree_depth,
+                        str(block))
+            return (block, left_tex)
+        except ParserError:
+            raise
+        except:
+            raise ParserError(tex, parent_block, "Error in parse_math")
 
 
     def parse_command(self, tex, parent_block, options):
@@ -298,52 +308,58 @@ class Parser:
         It returns the block and the left tex that must
         be parsed by another cycle of parse_instructions()
         """
-        #regex to catch commands
-        re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z]+)"+\
-                            r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
-        match = re_cmd.match(tex)
-        if not match is None:
-            #managing match.
-            #checking if the part of the match with the regular
-            #command is present--> math.group != None!!!
-            if match.group('cmd') != None:
-                matched_cmd = match.group('cmd')
-                star = True if match.group('star')!='' else False
-                #we insert the matched options in the dict for hooks
-                params = {'cmd':matched_cmd, 'star':star}
-                #the text passed to hooks is STRIPPED to remove
-                #useless spaces.
-                #N.B the matched part is not sent to hook
-                tex_to_parse = tex[match.end():].strip()
-                #the matched command is parsed by the parser_hook
-                #and the remaining tex is returned as the second element of
-                #a list.  The first element is the parsed Block.
-                block, left_tex = self.call_parser_hook(matched_cmd,
-                        'cmd', tex_to_parse, parent_block,params)
-                logging.debug('Block @ %s%s',
-                    "\t"*block.tree_depth,
-                    str(block))
+        try:
+            #regex to catch commands
+            re_cmd = re.compile(r"\\(?:(?P<cmd>[a-zA-Z]+)"+\
+                                r"(?P<star>[*]?)|(?P<n>\\))", re.DOTALL)
+            match = re_cmd.match(tex)
+            if not match is None:
+                #managing match.
+                #checking if the part of the match with the regular
+                #command is present--> math.group != None!!!
+                if match.group('cmd') != None:
+                    matched_cmd = match.group('cmd')
+                    star = True if match.group('star')!='' else False
+                    #we insert the matched options in the dict for hooks
+                    params = {'cmd':matched_cmd, 'star':star}
+                    #the text passed to hooks is STRIPPED to remove
+                    #useless spaces.
+                    #N.B the matched part is not sent to hook
+                    tex_to_parse = tex[match.end():].strip()
+                    #the matched command is parsed by the parser_hook
+                    #and the remaining tex is returned as the second element of
+                    #a list.  The first element is the parsed Block.
+                    block, left_tex = self.call_parser_hook(matched_cmd,
+                            'cmd', tex_to_parse, parent_block,params)
+                    logging.debug('Block @ %s%s',
+                        "\t"*block.tree_depth,
+                        str(block))
+                else:
+                    #we have a \\ command
+                    matched_cmd = '\\'
+                    tex_to_parse = tex[match.end():].strip()
+                    #we insert the matched options in the dict for hooks
+                    params = {'cmd':'\\', 'star':False}
+                    #check if we have \\*
+                    if tex_to_parse.startswith('*'):
+                        params['star'] = True
+                        tex_to_parse = tex_to_parse[1:]
+                    #parser_hook call
+                    block, left_tex = self.call_parser_hook(matched_cmd,
+                            'cmd', tex_to_parse, parent_block,params)
+                    logging.debug('Block @ %s%s',
+                        "\t"*block.tree_depth,
+                        str(block))
+                return (block, left_tex)
             else:
-                #we have a \\ command
-                matched_cmd = '\\'
-                tex_to_parse = tex[match.end():].strip()
-                #we insert the matched options in the dict for hooks
-                params = {'cmd':'\\', 'star':False}
-                #check if we have \\*
-                if tex_to_parse.startswith('*'):
-                    params['star'] = True
-                    tex_to_parse = tex_to_parse[1:]
-                #parser_hook call
-                block, left_tex = self.call_parser_hook(matched_cmd,
-                        'cmd', tex_to_parse, parent_block,params)
-                logging.debug('Block @ %s%s',
-                    "\t"*block.tree_depth,
-                    str(block))
-            return (block, left_tex)
-        else:
-            #it's an error
-            logging.error('PARSER.parse_command @ command NOT FOUND: {}'.
-                          format(tex[0:10]))
+                #it's an error
+                logging.error('PARSER.parse_command @ command NOT FOUND: {}'.
+                              format(tex[0:10]))
+                raise ParserError(tex, parent_block, "command NOT FOUND in parse_command")
+        except ParserError:
+            raise
+        except:
+            raise ParserError(tex, parent_block, "Error in parse_command")
 
 
     def parse_commands_group(self, tex, parent_block, options):
