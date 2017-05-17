@@ -92,7 +92,9 @@ class MediaWikiRenderer(Renderer):
             #accents
             "accented_letter": self.r_accented_letter,
             #figures
-            "figure": self.r_figure
+            "figure": self.r_figure,
+            #code
+            "lstlisting": self.r_lstlisting
             }
         #tree object
         self.tree = PageTree(configs, reporter)
@@ -390,6 +392,20 @@ class MediaWikiRenderer(Renderer):
         s.append("</ref>")
         return ''.join(s)
 
+    ########################################
+    #Code
+
+    def r_lstlisting(self, block):
+        s = []
+        if "language" in block.options:
+            s.append('<source lang="{}" line>'.format(block.options["language"]))
+        else:
+            s.append('<source line>')
+        s.append(block.content)
+        s.append('</source>')
+        return '\n'.join(s)
+
+    
     #########################################
     #Theorems
 

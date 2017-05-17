@@ -6,21 +6,17 @@ class ListingsEnvironment(Block):
 
     @staticmethod
     def parse_environment(parser, tex, parent_block, params):
-        print(tex)
         opts , content = CommandParser.parse_options(tex,
                 [('options', '[',']')])
         options = {}
 
         if (opts['options'] != None):
             for l in opts['options'].split(','):
-                print(l)
                 ll = l.split('=')
                 options[ll[0].strip()] = ll[1].strip()
         block = ListingsEnvironment(content, options, parent_block)
         return block      
-
-        
-        
+          
 
     def __init__(self, content, options,  parent_block):
         super().__init__('lstlisting', content, parent_block)
