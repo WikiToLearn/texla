@@ -7,6 +7,8 @@ class Renderer():
     def __init__(self, configs, reporter):
         self.configs = configs
         self.reporter = reporter
+        #Parser TreeExplorer with parsed blocks tree. It will be filled at start
+        self.parser_tree_explorer = None
         #hooks implemented directly by the Renderer class.
         self.render_hooks = {}
         #plugins hooks
@@ -15,7 +17,6 @@ class Renderer():
         self.start_hooks = []
         self.end_hooks = []
         self.loaded_plugins = {}
-        self.tree_explorer = None
         #registering plugins from the configs
         self.register_plugins()
 
@@ -89,21 +90,23 @@ class Renderer():
     def register_end_hook(self, hook):
         self.end_hooks.append(hook)
 
-    def start_rendering(self, root_block):
-        '''This function create a TreeExplorer instance
-        and passes it to the plugin that has the variable
+    def start_rendering(self, parser_tree_explorer):
+        '''
+        Entrypoing for the rendering process.
+        This function requests the TreeExplorer containing the parsed blocks
+        and passes it to the plugins that have the variable
         needs_tree_explorer=True. Then it starts the plugins'''
-        self.tree_explorer = TreeExplorer(root_block)
+        self.parser_tree_explorer = parser_tree_explorer
         #passing the tree_explorer
         for pl in self.loaded_plugins.values():
             if hasattr(pl, "needs_tree_explorer"):
                 if pl.needs_tree_explorer:
                     logging.debug("Renderer @ Inserting "\
                                   "TreeExplorer into plugin {}".format(pl))
-                    pl.tree_explorer = self.tree_explorer
+                    pl.tree_explorer = self.parser_tree_explorer
         #starting the plugins
         for hook in self.start_hooks:
-            hook(root_block)
+            hook()
 
     def end_rendering(self):
         #ending plugins
