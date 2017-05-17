@@ -37,7 +37,8 @@ class TreeExplorer:
         from the root_block and created a dictionary
         with id:block"""
         for block in blocks:
-            self.blocks[block.id] = block
+            if not block.id in self.blocks:
+                self.blocks[block.id] = block
             if block.N_chblocks > 0:
                 self.register_blocks(block.ch_blocks)
 

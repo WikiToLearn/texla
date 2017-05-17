@@ -47,7 +47,7 @@ class Parser:
         self.root_block.add_children_blocks(blocks)
         #updating the tree_explorer
         self.tree_explorer.update_blocks_register()
-        return self.root_block
+        return self.tree_explorer
 
 
     def parse_sections(self, tex, level, parent_block, options):

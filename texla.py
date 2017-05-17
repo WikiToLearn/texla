@@ -18,13 +18,13 @@ def execute_texla_mediawiki(config):
         err.print_complete_tree('debug/crash_tree')
         exit()
     f = open(config['output_path'] + '.tree', 'w')
-    json_tree = tree.to_json(0)
-    n_blocks = tree.n_blocks()
+    json_tree = tree.root_block.to_json(0)
+    n_blocks = tree.root_block.n_children_blocks_total()
     logging.info('PARSED %i Blocks', n_blocks)
     f.write(json_tree)
     logging.info('\033[0;34m############### STARTING RENDERING ###############\033[0m')
     #creating Reporter
-    reporter = Reporter(p.tree_explorer)
+    reporter = Reporter(tree)
     #rendering
     rend = MediaWikiRenderer(config, reporter)
     rend.start_rendering(tree)

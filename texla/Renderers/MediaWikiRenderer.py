@@ -96,7 +96,9 @@ class MediaWikiRenderer(Renderer):
             #code
             "lstlisting": self.r_lstlisting
             }
-        #tree object
+        #Parser tree blocks
+        self.parser_blocks_explorer = None
+        #PageTree object
         self.tree = PageTree(configs, reporter)
         #parameter for list formatting
         self.list_level = ''
@@ -108,8 +110,10 @@ class MediaWikiRenderer(Renderer):
     ########################################
     #STARTING POINT
 
-    def start_rendering(self, root_block):
+    def start_rendering(self, parser_blocks_explorer):
         """starting rendering from root-block"""
+        self.parser_blocks_explorer = parser_blocks_explorer
+        root_block =  self.parser_blocks_explorer.root_block
         #start rendering of base class
         super(MediaWikiRenderer, self).start_rendering(root_block)
         self.render_block(root_block)
