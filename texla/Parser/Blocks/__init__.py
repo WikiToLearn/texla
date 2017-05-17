@@ -9,7 +9,7 @@ of parser__hooks
 parser_hooks={}
 
 not_import = ('__init__.py', 'utility.py', 'DocumentBlock.py',
-    'CommandParser.py', 'MacroParser.py')
+              'CommandParser.py','EnvironmentParser.py', 'MacroParser.py')
 
 #getting path of the modules
 for module in os.listdir(os.path.dirname(__file__)):
