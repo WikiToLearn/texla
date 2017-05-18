@@ -401,7 +401,12 @@ class MediaWikiRenderer(Renderer):
         if "language" in block.options:
             s.append('<source lang="{}" line>'.format(block.options["language"]))
         else:
-            s.append('<source line>')
+            #check if there are any lstset block
+            query = self.parser_tree_explorer.query_block_by_name("lstset")
+            if len(query) == 0:
+                s.append('<source line>')
+            else:
+                s.append('<source lang="{}" line>'.format(query[0].options["language"]))
         s.append(block.content)
         s.append('</source>')
         return '\n'.join(s)
