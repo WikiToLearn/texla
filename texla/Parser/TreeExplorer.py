@@ -7,6 +7,9 @@ class TreeExplorer:
     For example it is useful to extract the tree of the
     parents of a block for debugging reasons. It is useful
     also in rendering to localize blocks inside the document.
+    It is the default container of the result of the parsing process
+    because it handles the chain of block with several utilities for
+    quering.
     """
 
     def __init__(self, root_block):
@@ -27,7 +30,14 @@ class TreeExplorer:
             if current.parent_block is None:
                 root_block = current
                 break
+            #populating ch_blocks of parent block if not present
+            #in order to have a fully functional TreeExplorer.
+            #This is necessary if the TreeExplorer is used before
+            #the end of Parsing process. 
+            if current not in current.parent_block.ch_blocks:
+                current.parent_block.ch_blocks.append(current)
             current = current.parent_block
+
         #now we can return a new TreeExplorer
         #constructed from the found root.
         return TreeExplorer(root_block)
@@ -79,6 +89,21 @@ class TreeExplorer:
     def get_block(self, blockid):
         return self.blocks.get(blockid)
 
+    #############################################################
+    # Quering functions
+    
+    def query_block_by_name(self, block_name, depth_first=False):
+        """
+        This methods queries recursively the tree of blocks
+        and returns a list of blocks with the requested block_name.
+        depth_first controls the type of query.
+        """
+        return self.root_block.query_children_blocks(block_name, depth_first)
+
+    
+    #############################################################
+    #  Printing functions   
+    
     def print_tree(self, block, filter_list=None):
         """This methods prints a beautified tree starting
         from block parameter and his children. If filter_list

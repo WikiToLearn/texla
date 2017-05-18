@@ -75,7 +75,7 @@ class Block:
         self.N_chblocks +=len(blocks)
 
     def change_parent_block(self, new_parent):
-        """s function changes the parent of the
+        """This function changes the parent of the
         block. It changes parent object, id, and tree_depth.
         The section level is not changes for consistency.
         All children are updated.
@@ -139,3 +139,22 @@ class Block:
         of the content of the block for logging/reporting.
         """
         return self.content
+
+    def query_children_blocks(self, block_name, depth_first=False):
+        """
+        This function looks for a block with a specific block_name 
+        in the children of the block. If depth_first=True it recursiverly
+        check in every children before continuing. 
+        """
+        results = []
+        for block in self.ch_blocks:
+            if block.block_name == block_name:
+                results.append(block)
+            if depth_first:
+                results += block.query_children_blocks(block_name, depth_first)
+        if not depth_first:
+            for bl in self.ch_blocks:
+                results += bl.query_children_blocks(block_name, depth_first)
+        return results
+                
+            
