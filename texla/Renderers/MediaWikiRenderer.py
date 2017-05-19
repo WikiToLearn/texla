@@ -109,15 +109,21 @@ class MediaWikiRenderer(Renderer):
     #STARTING POINT
 
     def start_rendering(self, parser_tree_explorer):
-        #start rendering of base class
+        """
+        Entrypoint for rendering. It requires the
+        tree of parsed blocks as parameter
+        """
+        #start rendering of Rendering base class to activate plugins...
         super(MediaWikiRenderer, self).start_rendering(parser_tree_explorer)
-        """starting rendering from root-block"""
         root_block =  self.parser_tree_explorer.root_block
+        #start the rendering from root_block
         self.render_block(root_block)
-        #after rendering
+        #after rendering for PageTree structure
         self.tree.after_render()
-        #end rendering of base class
+        #end rendering of base class to stop plugins
         super(MediaWikiRenderer, self).end_rendering()
+        #return the PageTree as a result
+        return self.tree
 
     ####### ROOT BLOCK
     def r_document(self, block):
@@ -411,7 +417,7 @@ class MediaWikiRenderer(Renderer):
         s.append('</source>')
         return '\n'.join(s)
 
-    
+
     #########################################
     #Theorems
 

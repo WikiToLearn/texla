@@ -33,7 +33,7 @@ class TreeExplorer:
             #populating ch_blocks of parent block if not present
             #in order to have a fully functional TreeExplorer.
             #This is necessary if the TreeExplorer is used before
-            #the end of Parsing process. 
+            #the end of Parsing process.
             if current not in current.parent_block.ch_blocks:
                 current.parent_block.ch_blocks.append(current)
             current = current.parent_block
@@ -89,9 +89,12 @@ class TreeExplorer:
     def get_block(self, blockid):
         return self.blocks.get(blockid)
 
+    def get_number_blocks(self):
+        return self.root_block.n_children_blocks_total()
+
     #############################################################
     # Quering functions
-    
+
     def query_block_by_name(self, block_name, depth_first=False):
         """
         This methods queries recursively the tree of blocks
@@ -100,10 +103,10 @@ class TreeExplorer:
         """
         return self.root_block.query_children_blocks(block_name, depth_first)
 
-    
+
     #############################################################
-    #  Printing functions   
-    
+    #  Printing functions
+
     def print_tree(self, block, filter_list=None):
         """This methods prints a beautified tree starting
         from block parameter and his children. If filter_list
@@ -148,3 +151,9 @@ class TreeExplorer:
 
     def print_all_tree(self):
         return self.print_tree(self.root_block)
+
+    def print_raw_tree(self):
+        """
+        This function returns the tree of blocks in the raw format (json). 
+        """
+        return self.root_block.to_json()
