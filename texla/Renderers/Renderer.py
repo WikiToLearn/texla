@@ -2,15 +2,20 @@ from ..Parser import Blocks
 from ..Parser.TreeExplorer import TreeExplorer
 import logging
 import importlib
+from functools import wraps
 
 class Renderer():
+    """ Base class for Renderers """
+
     def __init__(self, configs, reporter):
         self.configs = configs
         self.reporter = reporter
         #Parser TreeExplorer with parsed blocks tree. It will be filled at start
         self.parser_tree_explorer = None
-        #hooks implemented directly by the Renderer class.
+        #hooks dictionary
         self.render_hooks = {}
+        #Read the render hooks of the Renderer. It reads the hook of the derived Renderer.
+        self.parse_render_hooks()
         #plugins hooks
         self.pre_render_hooks = {}
         self.post_render_hooks = {}
@@ -21,6 +26,7 @@ class Renderer():
         self.register_plugins()
 
     def register_plugins(self):
+        """This function loads the plugins declared in the configuration."""
         for plugin in self.configs["plugins"]:
             module = importlib.import_module("..plugins"+'.'+ plugin, __name__)
             if hasattr(module, "plugin_render_hooks"):
@@ -89,6 +95,20 @@ class Renderer():
 
     def register_end_hook(self, hook):
         self.end_hooks.append(hook)
+
+    def parse_render_hooks(self):
+        """
+        The function scans the Renderer (sub)class to find the functions
+        annotated with @render_hooks(list_of_block_names). It inserts
+        the function in the render_hooks using the provided block_names.
+        """
+        for member_name in dir(self):
+            member = getattr(self, member_name)
+            if hasattr(member, "block_names"):
+                for hook in getattr(member, "block_names"):
+                    logging.debug("Renderer @ render_hook registered: {} -> {}"
+                                  .format(hook, member_name))
+                    self.render_hooks[hook] = member
 
     def start_rendering(self, parser_tree_explorer):
         '''
@@ -187,3 +207,19 @@ class Renderer():
             return ''.join([x[1] for x in output])
         else:
             return output
+
+
+###############################################################################
+# Decorators for renderers
+
+def render_hook(*block_names):
+    """This decorate assigns to a function the list of block_names
+    that it will handle as a render_hook."""
+    def decorate(func):
+        #adding the list of block names as an attribute of the function
+        setattr(func, "block_names", block_names)
+        @wraps(func)
+        def wrapper(*args,**kwargs):
+            return func(*args, **kwargs)
+        return wrapper
+    return decorate

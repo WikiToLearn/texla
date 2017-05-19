@@ -1,5 +1,6 @@
 import logging
 from .Renderer import Renderer
+from .Renderer import render_hook
 from ..PageTree.PageTree import *
 
 class MediaWikiRenderer(Renderer):
@@ -8,95 +9,7 @@ class MediaWikiRenderer(Renderer):
         super().__init__(configs, reporter)
         self.configs = configs
         self.doc_title = configs['doc_title']
-        #saving the hooks
-        self.render_hooks = {
-            #root
-            'root-block': self.r_document,
-            'default': self.default,
-            #text
-            'par': self.r_par,
-            'newpage': self.r_newpage,
-            'newline': self.r_newline,
-            '\\': self.r_newline,
-            'text': self.r_text,
-            'clearpage': self.r_newpage,
-            'cleardoublepage': self.r_newpage,
-            #formatting
-            'emph': self.r_textit,
-            'textbf': self.r_textbf,
-            'textit': self.r_textit,
-            'textsc': self.r_textsc,
-            'textsuperscript': self.r_superscript,
-            'textsubscript': self.r_subscript,
-            'underline': self.r_underline,
-            'uline': self.r_underline,
-            '%': self.r_special_character,
-            '&': self.r_special_character,
-            '$': self.r_special_character,
-            '{': self.r_special_character,
-            '}': self.r_special_character,
-            '#': self.r_special_character,
-            '_': self.r_special_character,
-            'dots': self.r_dots,
-            'ldots': self.r_dots,
-            'flushright': self.r_flushright,
-            'flushleft': self.r_flushleft,
-            'center': self.r_center,
-            'centerline': self.r_center,
-            'abstract': self.r_abstract,
-            'linebreak': self.r_break,
-            'pagebreak': self.r_break,
-            'nolinebreak': self.r_break,
-            'nopagebreak': self.r_break,
-            'verbatim': self.r_verbatim,
-            'verb': self.r_verb,
-            #spaces
-            'vspace': self.r_vspace,
-            'mandatory_space': self.r_mandatory_space,
-            #theorems
-            'theorem' : self.r_theorem,
-            'proof' : self.r_proof,
-            #sectioning
-            'part': self.sectioning,
-            'chapter': self.sectioning,
-            'section': self.sectioning,
-            'subsection': self.sectioning,
-            'subsubsection': self.sectioning,
-            'paragraph': self.sectioning,
-            'subparagraph': self.sectioning,
-            #math
-            'displaymath': self.r_display_math,
-            'inlinemath': self.r_inline_math,
-            'ensuremath': self.r_inline_math,
-            'equation': self.r_display_math,
-            'eqnarray': self.r_align,
-            'multline': self.r_align,
-            'align': self.r_align,
-            'alignat': self.r_align,
-            'gather': self.r_gather,
-            #lists
-            'itemize': self.r_itemize,
-            'enumerate': self.r_enumerate,
-            'description': self.r_description,
-            #quotes
-            'quotation': self.r_quotes,
-            'quote': self.r_quotes,
-            'verse': self.r_verse,
-            'footnote': self.r_footnote,
-            #labels
-            'label': self.r_label,
-            'ref': self.r_ref,
-            'vref': self.r_ref,
-            'pageref': self.r_ref,
-            'eqref': self.r_ref,
-            #accents
-            "accented_letter": self.r_accented_letter,
-            #figures
-            "figure": self.r_figure,
-            #code
-            "lstlisting": self.r_lstlisting
-            }
-        #PageTree object
+                #PageTree object
         self.tree = PageTree(configs, reporter)
         #parameter for list formatting
         self.list_level = ''
@@ -126,6 +39,7 @@ class MediaWikiRenderer(Renderer):
         return self.tree
 
     ####### ROOT BLOCK
+    @render_hook("root-block")
     def r_document(self, block):
         #we trigger the rendering of content
         text = self.render_children_blocks(block)
@@ -137,13 +51,14 @@ class MediaWikiRenderer(Renderer):
     ########################################
     #DEFAULT
 
+    @render_hook("default")
     def default(self, block):
         #we don't print anything
         return ''
 
     #########################################
     #TEXT
-
+    @render_hook("text")
     def r_text(self, block):
         text = block.attributes['text']
 
@@ -151,18 +66,23 @@ class MediaWikiRenderer(Renderer):
         # for unbreakable space
         return text.replace("~", " ")
 
+    @render_hook("newline")
     def r_newline(self, block):
         return '\n'
 
+    @render_hook("newpage")
     def r_newpage(self, block):
         return '\n\n'
 
+    @render_hook("par")
     def r_par(self, block):
         return '\n\n'
 
     #########################################
     #SECTIONING
 
+    @render_hook("part", "chapter", "section", "subsection",
+                 "subsubsection", "paragraph", "subparagraph")
     def sectioning(self, block):
         title = block.attributes['title']
         section_name = block.attributes['section_name']
@@ -181,18 +101,21 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #MATH
 
+    @render_hook("displaymath")
     def r_display_math(self, block):
         s = block.attributes['content']
         #rendering labels
         self.render_blocks(block.labels)
         return '<math display="block">' + s + '</math>'
 
+    @render_hook("inlinemath", "ensuremath")
     def r_inline_math(self, block):
         s = block.attributes['content']
         #rendering labels
         self.render_blocks(block.labels)
         return '<math>' + s + '</math>'
 
+    @render_hook("align", "eqnarray", "multiline", "alignat")
     def r_align(self, block):
         s = block.attributes['content']
         #rendering labels
@@ -200,6 +123,7 @@ class MediaWikiRenderer(Renderer):
         return '<math display="block">\\begin{align}' +\
                     s + '\end{align}</math>'
 
+    @render_hook("gather")
     def r_gather(self, block):
         s = block.attributes['content']
         output = []
@@ -215,11 +139,13 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #LABELS and refs
 
+    @render_hook("label")
     def r_label(self, block):
         label = block.attributes['label']
         self.tree.addLabel(label)
         return ''
 
+    @render_hook("ref", "vref", "pageref", "eqref")
     def r_ref(self, block):
         ref = block.attributes['ref']
         #saving ref in Babel of PageTree
@@ -229,6 +155,7 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #FIGURE
 
+    @render_hook("figure")
     def r_figure(self, block):
         captions = block.get_children("caption")
         includegraphics = block.get_children("includegraphics")
@@ -252,12 +179,15 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #FORMATTING
 
+    @render_hook("%", "&", "$", "{", "}", "#", "_")
     def r_special_character(self, block):
         return block.attributes['character']
 
+    @render_hook("dots", "ldots")
     def r_dots(self, block):
         return '...'
 
+    @render_hook("textbf")
     def r_textbf(self, block):
         s = []
         s.append("\'\'\'")
@@ -265,6 +195,7 @@ class MediaWikiRenderer(Renderer):
         s.append("\'\'\'")
         return ''.join(s)
 
+    @render_hook("textit", "emph")
     def r_textit(self, block):
         s = []
         s.append("\'\'")
@@ -272,9 +203,11 @@ class MediaWikiRenderer(Renderer):
         s.append("\'\'")
         return ''.join(s)
 
+    @render_hook("textsc")
     def r_textsc(self, block):
         return self.render_children_blocks(block).upper()
 
+    @render_hook("textsuperscript")
     def r_superscript(self, block):
         s = []
         s.append('<sup>')
@@ -282,6 +215,7 @@ class MediaWikiRenderer(Renderer):
         s.append('</sup>')
         return ''.join(s)
 
+    @render_hook("textsubscript")
     def r_subscript(self, block):
         s = []
         s.append('<sub>')
@@ -289,6 +223,7 @@ class MediaWikiRenderer(Renderer):
         s.append('</sub>')
         return ''.join(s)
 
+    @render_hook("underline", "uline")
     def r_underline(self, block):
         s = []
         s.append('{{Sottolineato|')
@@ -296,6 +231,7 @@ class MediaWikiRenderer(Renderer):
         s.append('}}')
         return ''.join(s)
 
+    @render_hook("abstract")
     def r_abstract(self, block):
         s = []
         s.append('{{Abstract|')
@@ -303,24 +239,30 @@ class MediaWikiRenderer(Renderer):
         s.append('}}')
         return ''.join(s)
 
+    @render_hook("linebreak", "pagebreak", "nolinebreak", "nopagebreak")
     def r_break(self, block):
         return ''
 
+    @render_hook("vspace")
     def r_vspace(self,block):
         return '\n\n'
 
+    @render_hook("mandatory_space")
     def r_mandatory_space(self,block):
         return ' '
 
+    @render_hook("verbatim")
     def r_verbatim(self, block):
         return '<pre>' + block.attributes['content'] +'</pre>'
 
+    @render_hook("verb")
     def r_verb(self, block):
         return '<tt>' + block.attributes['content'] +'</tt>'
 
     #########################################
     #ALIGNMENT
 
+    @render_hook("center", "centerline")
     def r_center(self, block):
         s = []
         s.append('{{Center|')
@@ -328,6 +270,7 @@ class MediaWikiRenderer(Renderer):
         s.append('}}')
         return ''.join(s)
 
+    @render_hook("flushleft")
     def r_flushleft(self, block):
         s = []
         s.append('{{Flushleft|')
@@ -335,6 +278,7 @@ class MediaWikiRenderer(Renderer):
         s.append('}}')
         return ''.join(s)
 
+    @render_hook("flushright")
     def r_flushright(self, block):
         s = []
         s.append('{{Flushright|')
@@ -345,6 +289,7 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #LISTS
 
+    @render_hook("itemize")
     def r_itemize(self, block):
         self.list_level += '*'
         s = ['\n']
@@ -355,6 +300,7 @@ class MediaWikiRenderer(Renderer):
         self.list_level = self.list_level[:-1]
         return ''.join(s)
 
+    @render_hook("enumerate")
     def r_enumerate(self, block):
         self.list_level += '#'
         s = ['\n']
@@ -365,6 +311,7 @@ class MediaWikiRenderer(Renderer):
         self.list_level = self.list_level[:-1]
         return ''.join(s)
 
+    @render_hook("description")
     def r_description(self, block):
         s = ['\n']
         for item in block.ch_blocks:
@@ -378,6 +325,7 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #QUOTES
 
+    @render_hook("quotation", "quote")
     def r_quotes(self, block):
         s = []
         s.append('<blockquote>')
@@ -385,6 +333,7 @@ class MediaWikiRenderer(Renderer):
         s.append('</blockquote>')
         return ''.join(s)
 
+    @render_hook("verse")
     def r_verse(self, block):
         s = []
         s.append('<blockquote>')
@@ -392,6 +341,7 @@ class MediaWikiRenderer(Renderer):
         s.append('</blockquote>')
         return ''.join(s)
 
+    @render_hook("footnote")
     def r_footnote(self, block):
         s = []
         s.append("<ref>")
@@ -402,6 +352,7 @@ class MediaWikiRenderer(Renderer):
     ########################################
     #Code
 
+    @render_hook("lstlisting")
     def r_lstlisting(self, block):
         s = []
         if "language" in block.options:
@@ -421,6 +372,7 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #Theorems
 
+    @render_hook("theorem")
     def r_theorem(self, block):
         #the label in theorems is not working for now
         th_definition = block.attributes['definition']
@@ -567,6 +519,7 @@ class MediaWikiRenderer(Renderer):
         self.tree.exitTheorem()
         return '\n'.join(s)
 
+    @render_hook("proof")
     def r_proof(self, block):
         s=[]
         if self.configs['lang'] == 'it':
@@ -594,6 +547,8 @@ class MediaWikiRenderer(Renderer):
 
     #########################################
     #ACCENTED letters
+
+    @render_hook("accented_letter")
     def r_accented_letter(self, block):
         if block.attributes["accent_type"] == '"' \
                 and block.attributes["letter"] == "a":
