@@ -242,7 +242,7 @@ def preparse_include(tex,input_path):
             file_name = base_path + "/"+ name
             #checking if the file exits, otherwise skipping
             if not os.path.exists(file_name):
-                logging.error("Preparser.prepase_include @ file {} not found!".
+                logging.error("Preparser.preparse_include @ file {} not found!".
                               format(file_name))
                 continue
             file_tex = open(file_name, 'r').read()
@@ -256,7 +256,7 @@ def preparse_include(tex,input_path):
                         base_path + "/"+ name
             #checking if the file exits, otherwise skipping
             if not os.path.exists(file_name):
-                logging.error("Preparser.repase_include @ file {} not found!".
+                logging.error("Preparser.preparse_include @ file {} not found!".
                               format(file_name))
                 continue
             file_tex = open(file_name, 'r').read()

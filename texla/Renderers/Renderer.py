@@ -115,7 +115,9 @@ class Renderer():
         Entrypoing for the rendering process.
         This function requests the TreeExplorer containing the parsed blocks
         and passes it to the plugins that have the variable
-        needs_tree_explorer=True. Then it starts the plugins'''
+        needs_tree_explorer=True. Then it starts the plugins.
+        It doesn't start the real processing, the specific Renderer can start the
+        chain using render_block()'''
         self.parser_tree_explorer = parser_tree_explorer
         #passing the tree_explorer
         for pl in self.loaded_plugins.values():

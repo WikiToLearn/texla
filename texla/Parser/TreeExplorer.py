@@ -24,6 +24,11 @@ class TreeExplorer:
 
     @staticmethod
     def create_tree_from_children(block):
+        """This function populates a TreeExplorer from a children_block
+        using the chains of parent_block. Every parent_block should have
+        the ch_blocks list populated, if not the function populates the list 
+        of children to have a consistent tree (it's necessary when the TreeExplorer
+        is used before the end of parsing)."""
         #first of all we need the root_block
         current = block
         while True:
