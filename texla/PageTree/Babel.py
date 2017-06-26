@@ -70,9 +70,9 @@ class Babel:
             elif url is None and title is not None:
                 replace_string = title
             elif url is not None and title is None:
-                replace_string = "[["+ url + "]]"
+                replace_string = "[["+ url + "]] "
             else:
-                replace_string = "[[{}|{}]]".format(url,title)
+                replace_string = "[[{}|{}]] ".format(url,title)
             #checking if the babel has refs
             if label not in self.refs:
                 continue

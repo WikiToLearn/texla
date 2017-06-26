@@ -7,7 +7,6 @@ class MediaWikiRenderer(Renderer):
 
     def __init__(self, configs, reporter):
         super().__init__(configs, reporter)
-        self.configs = configs
         self.doc_title = configs['doc_title']
                 #PageTree object
         self.tree = PageTree(configs, reporter)
@@ -101,7 +100,7 @@ class MediaWikiRenderer(Renderer):
     #########################################
     #MATH
 
-    @render_hook("displaymath")
+    @render_hook("displaymath", "equation")
     def r_display_math(self, block):
         s = block.attributes['content']
         #rendering labels
@@ -115,7 +114,7 @@ class MediaWikiRenderer(Renderer):
         self.render_blocks(block.labels)
         return '<math>' + s + '</math>'
 
-    @render_hook("align", "eqnarray", "multiline", "alignat")
+    @render_hook("align", "eqnarray", "multline", "alignat")
     def r_align(self, block):
         s = block.attributes['content']
         #rendering labels
