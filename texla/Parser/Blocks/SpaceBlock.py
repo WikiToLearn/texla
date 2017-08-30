@@ -12,13 +12,14 @@ class SpaceBlock(Block):
         options, left_text = CommandParser.parse_options(
             tex, [('length','{','}')])
         block = SpaceBlock(params['cmd'],
-                options['length'], parent_block)
+                options['length'], params['star'], parent_block)
         return (block, left_text)
 
 
-    def __init__(self, space_type, length, parent_block):
+    def __init__(self, space_type, length, star, parent_block):
         super().__init__(space_type, '', parent_block)
         self.attributes['length'] = length
+        self.attributes['star'] = star
 
 parser_hooks = {
     'hspace' : SpaceBlock.parse,
