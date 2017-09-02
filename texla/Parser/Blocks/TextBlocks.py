@@ -1,6 +1,6 @@
 import re
 import logging
-from .Utilities import *
+from ..Utilities import *
 from .Block import Block
 
 

@@ -1,5 +1,5 @@
 import logging
-from .Utilities import *
+from ..Utilities import *
 from .Block import Block
 import re
 
@@ -28,7 +28,7 @@ class ListingsEnvironment(Block):
             options[ll[0]] = ll[1]
         block = ListingsEnvironment('lstset', content, options, parent_block)
         return (block, left_text)
-          
+
 
     def __init__(self, name, content, options,  parent_block):
         super().__init__(name, content, parent_block)
@@ -40,4 +40,3 @@ parser_hooks = {
     "lstlisting": ListingsEnvironment.parse_environment,
     "lstset": ListingsEnvironment.parse_options_command
 }
-

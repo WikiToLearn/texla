@@ -1,6 +1,6 @@
 import re
 import texla.Parser.Blocks
-from texla.Parser.Blocks.Utilities import *
+from texla.Parser.Utilities import *
 import texla.Renderers.utils as ut
 import texla.Renderers.plugins.MathCheck as mc
 import texla.PageTree.PageTree as pt

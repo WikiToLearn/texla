@@ -5,7 +5,7 @@ from collections import deque
 from os import path
 from ..Exceptions.TexlaExceptions import *
 from .Blocks import TheoremBlocks
-from .Blocks.Utilities import *
+from .Utilities import *
 
 
 data = {}

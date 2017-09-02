@@ -1,6 +1,6 @@
 '''Default Block'''
 import logging
-from .Utilities import *
+from ..Utilities import *
 from .Block import Block
 
 class DefaultBlock(Block):
