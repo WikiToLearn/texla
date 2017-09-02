@@ -367,6 +367,13 @@ class MediaWikiRenderer(Renderer):
         s.append('</source>')
         return '\n'.join(s)
 
+    @render_hook("texttt")
+    def r_quotes(self, block):
+        s = []
+        s.append('<code>')
+        s.append(self.render_children_blocks(block))
+        s.append('</code>')
+        return ''.join(s)
 
     #########################################
     #Theorems

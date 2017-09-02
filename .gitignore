@@ -4,4 +4,12 @@ __pycache__
 configs.yaml
 test/
 #import/
+
+debug
 !/debug/.placeholder
+
+input/
+!/input/.placeholder
+
+output/
+!/output/.placeholder
