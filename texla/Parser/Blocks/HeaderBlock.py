@@ -1,5 +1,5 @@
 from .Block import Block
-from .Utilities import *
+from ..Utilities import *
 import logging
 import re
 

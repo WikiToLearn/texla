@@ -1,7 +1,7 @@
 ### UTILITY FUNCTIONS ###
 from string import *
 import re, json
-from ..Parser.Blocks.Utilities import EnvironmentParser
+from ..Parser.Utilities import EnvironmentParser
 
 
 def remove_command_greedy(tex, command, delete_content=False):

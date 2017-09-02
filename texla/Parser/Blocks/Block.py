@@ -1,4 +1,4 @@
-from .Utilities import *
+from ..Utilities import *
 
 
 """Base Block definition"""
@@ -142,9 +142,9 @@ class Block:
 
     def query_children_blocks(self, block_name, depth_first=False):
         """
-        This function looks for a block with a specific block_name 
+        This function looks for a block with a specific block_name
         in the children of the block. If depth_first=True it recursiverly
-        check in every children before continuing. 
+        check in every children before continuing.
         """
         results = []
         for block in self.ch_blocks:
@@ -156,5 +156,3 @@ class Block:
             for bl in self.ch_blocks:
                 results += bl.query_children_blocks(block_name, depth_first)
         return results
-                
-            

@@ -5,7 +5,7 @@ from collections import deque
 from os import path
 from ..Exceptions.TexlaExceptions import *
 from .Blocks import TheoremBlocks
-from .Blocks.Utilities import *
+from .Utilities import *
 
 
 data = {}
@@ -95,29 +95,36 @@ def parse_macros(tex):
                     continue
                 log[m] += 1
                 macros_found += 1
-                #we get command complete tex
-                cmd_tex = CommandParser.get_command_options(tex_to_parse[
-                    cmd_ma.end():])
-                #cmd_tex contains also the index of the star  of
-                #tex after the macro. We need it later.
-                #we get parenthesis
-                parenthesis = CommandParser.get_parenthesis(cmd_tex[0])
-                if parenthesis[0][0] == '[':
-                    param_default = parenthesis[0][1]
-                    parenthesis.pop(0)
+                #In case the macro doesn't have argument we skip the preparsing
+                #of the parenthesis
+                if macros[m].n_param > 0:
+                    #we get command complete tex
+                    cmd_tex = CommandParser.get_command_options(tex_to_parse[
+                        cmd_ma.end():])
+                    #cmd_tex contains also the index of the start  of
+                    #tex after the macro. We need it later.
+                    #we get parenthesis
+                    parenthesis = CommandParser.get_parenthesis(cmd_tex[0])
+                    if parenthesis[0][0] == '[':
+                        param_default = parenthesis[0][1]
+                        parenthesis.pop(0)
+                    else:
+                        param_default = None
+                    params = [parenthesis[i][1]
+                              for i in range(len(parenthesis) - 1)]
+                    #asking the tex to the macro
+                    replace_tex = macros[m].get_tex(params, param_default)
+                    #adding a space for safety is necessary
+                    if cmd_tex[1][0] not in ["\\", " ", '_', '^', '[', '(','{',"'"]:
+                        replace_tex = replace_tex + " "
+                    #saving data
+                    replaces.append(replace_tex)
+                    pos+= [cmd_ma.start(), cmd_ma.end()+cmd_tex[2]]
                 else:
-                    param_default = None
-                params = [parenthesis[i][1]
-                          for i in range(len(parenthesis) - 1)]
-                #asking the tex to the macro
-                replace_tex = macros[m].get_tex(params, param_default)
-                #adding a space for safety is necessary
-                if cmd_tex[1][0] not in ["\\", " ", '_', '^', '[', '(','{',"'"]:
-                    replace_tex = replace_tex + " "
-                #saving data
-                replaces.append(replace_tex)
-                pos+= [cmd_ma.start(), cmd_ma.end()+cmd_tex[2]]
-
+                    #we have to do a simple substitusion
+                    replace_tex = macros[m].get_tex([])
+                    replaces.append(replace_tex)
+                    pos+= [cmd_ma.start(), cmd_ma.end()]
             #now that we have all macros we can replace them
             if (len(pos) ==0):
                 continue
@@ -228,7 +235,7 @@ def preparse_par(tex):
     return re.sub(r'(\n\n)+','\\par ',tex)
 
 def preparse_include(tex,input_path):
-    ''' This function replace \input{} commands
+    ''' This function replace \input{} and \include commands
     with the content of the files.  '''
     base_path = os.path.dirname(input_path)
     r1 = re.compile(r'\\input{(.*?)}')

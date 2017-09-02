@@ -1,6 +1,6 @@
 import logging
 from ...Exceptions.TexlaExceptions import *
-from .Utilities import *
+from ..Utilities import *
 from .Block import Block
 
 '''Dictionary of parsed Theorems.

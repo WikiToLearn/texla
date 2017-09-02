@@ -3,7 +3,7 @@ import logging
 from . import PreParser
 from . import Blocks
 from .TreeExplorer import TreeExplorer
-from .Blocks.Utilities import *
+from .Utilities import *
 from .Blocks.DocumentBlock import DocumentBlock
 from ..Exceptions.TexlaExceptions import *
 

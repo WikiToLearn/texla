@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 import logging
-from ..Parser.Blocks.Utilities import *
+from ..Parser.Utilities import *
 
 
 class Page():

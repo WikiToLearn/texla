@@ -1,6 +1,6 @@
 import logging
 import re
-from .Utilities import *
+from ..Utilities import *
 from .Block import Block
 
 class TabularBlock(Block):
@@ -30,6 +30,8 @@ class TabularBlock(Block):
         '''
         spec_list = []
         i = 0
+        #remove whitespaces
+        spec = spec.replace(" ", "")
         while True:
             if i == len(spec):
                 break
