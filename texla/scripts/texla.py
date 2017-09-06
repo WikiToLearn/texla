@@ -1,14 +1,27 @@
-from log import *
+#!/usr/bin/env python
+import os
+from ..log import *
 import json
 import yaml
-from texla.Parser import Parser
-from texla.Renderers.MediaWikiRenderer import MediaWikiRenderer
-import texla.PageTree.Exporter as exporter
-from texla.Exceptions.TexlaExceptions import *
-from texla.Reporter import Reporter
+from ..Parser import Parser
+from ..Renderers.MediaWikiRenderer import MediaWikiRenderer
+from ..PageTree import Exporter as exporter
+from  ..Exceptions.TexlaExceptions import *
+from ..Reporter import Reporter
 
 
-def execute_texla_mediawiki(config):
+def main():
+    #reading local yaml
+    try:
+        config = yaml.load(open('configs.yaml','r'))
+    except Exception as err:
+        logging.error("File configs.yaml not found!")
+        exit()
+    #creating folders for the process
+    os.makedirs("debug", exist_ok=True)
+    #loading localized keywords
+    config['keywords'] = yaml.load(open(__file__[:-16]+ "i18n.yaml",'r'))[config['lang']]
+    #executing process for MediaWikiRenderer (ignoring configs for now)
     p = Parser(config)
     a = open(config['input_path'], 'r').read()
     try:
@@ -55,13 +68,3 @@ def execute_texla_mediawiki(config):
                                    config['output_path'] + "_pages")
     reporter.print_report(console=True)
     logging.info('Finished')
-
-
-if __name__ == '__main__':
-    #reading JSON configs
-    config = yaml.load(open('configs.yaml','r'))
-    #loading localized keywords
-    config['keywords'] = yaml.load(open('i18n.yaml','r'))[config['lang']]
-    #executing process for alla renderers
-    if config['renderer'] == 'mediawiki':
-        execute_texla_mediawiki(config)

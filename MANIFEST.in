@@ -1,0 +1,2 @@
+#Include localization
+include texla/i18n.yaml
