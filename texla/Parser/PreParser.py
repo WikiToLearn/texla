@@ -246,7 +246,8 @@ def preparse_include(tex,input_path):
         for m in r1.finditer(tex):
             name = m.group(1) + '.tex'
             #reading file
-            file_name = base_path + "/"+ name
+            file_name =os.getcwd()+ '/'+\
+                        base_path + "/"+ name
             #checking if the file exits, otherwise skipping
             if not os.path.exists(file_name):
                 logging.error("Preparser.preparse_include @ file {} not found!".
@@ -289,7 +290,8 @@ def preparse_subfiles(tex, input_path):
         for m in r.finditer(tex):
             name = m.group(1) + '.tex'
             #reading file
-            file_name = base_path + "/"+ name
+            file_name =os.getcwd()+ '/'+\
+                        base_path + "/"+ name
             file_tex = open(file_name, 'r').read()
             #we have to catch the content of the doc
             r_doc = re.compile(r'\\begin(?P<options>\[.*?\])?{document}'+
