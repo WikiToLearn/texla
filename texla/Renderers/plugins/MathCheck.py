@@ -38,6 +38,7 @@ def math_check(block):
     mtxt = mtxt.replace('\\rvert', '|')
     mtxt = mtxt.replace("\\middle|", '|')
     mtxt = mtxt.replace('\\coloneq', ':=')
+    mtxt = mtxt.replace('\idotsint', '\int\dots\int')
     mtxt = replace_command_greedy(mtxt, 'modul', '', False,
                                   '|', '|',rm_slash=False)
     #removing \nonumber command
