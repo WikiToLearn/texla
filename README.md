@@ -14,12 +14,21 @@ Python class that defines a new Block. Moreover options and arguments of Latex c
 
 Further documentation can be found at: https://meta.wikitolearn.org/Texla
 
+Install Texla
+=============
+You can use Texla from source or install it from PyPi.
+
+    pip install texla
+
+The command `texla` will be available on globally.
+
 Run Texla
 =========
-To run Texla you'll need Python3 and PyYaml installed.
+Just put a **configs.yaml** in your working directory and run `texla` from the command line.
+A `--debug` option is available for a more verbose output.
 
-    python texla.py
-    python texla.py --debug
+    texla
+    texla --debug
 
 Texla Configuration
 ===================
