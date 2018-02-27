@@ -1,5 +1,16 @@
 *.pyc
 .directory
-texla.egg-info/
+__pycache__
+configs.yaml
+test/
+#import/
+
+debug
+!/debug/.placeholder
 build/
 dist/
+input/
+!/input/.placeholder
+
+output/
+!/output/.placeholder

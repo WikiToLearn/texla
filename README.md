@@ -20,7 +20,7 @@ You can use Texla from source or install it from PyPi.
 
     pip install texla
 
-The command `texla` will be available on globally.
+The command `texla` will be available globally.
 
 Run Texla
 =========
