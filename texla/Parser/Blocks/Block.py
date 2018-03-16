@@ -140,6 +140,18 @@ class Block:
         """
         return self.content
 
+    def get_content_children(self):
+        '''
+        This function returns recursively the content of all 
+        the children of the block
+        '''
+        content = ""
+        for ch in self.ch_blocks:
+            content += ch.get_content()
+            if ch.N_chblocks > 0:
+                content += ch.get_content_children()
+        return content
+
     def query_children_blocks(self, block_name, depth_first=False):
         """
         This function looks for a block with a specific block_name
