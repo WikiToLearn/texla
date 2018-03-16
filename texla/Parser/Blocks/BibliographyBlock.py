@@ -27,6 +27,8 @@ class ThebibliographyBlock(Block):
         for i,bl in enumerate(ch_blocks):
             if isinstance(bl,BibitemBlock):
                 item_blocks.append(bl)
+                # Save the bibitem in the thebibliography map
+                block.items[bl.attributes["label"]] = bl
                 #all block until we reach another
                 #item is added to the item block
                 j = i
@@ -50,6 +52,7 @@ class ThebibliographyBlock(Block):
     def __init__(self, options, tex, parent_block):
         super().__init__("thebibliography",tex,parent_block)
         self.attributes["options"] = options
+        self.items = {}
 
 
 class BibitemBlock(Block):
