@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 setup(
     name="texla",
-    version="0.1.2",
+    version="0.1.3",
     author="Davide Valsecchi",
     author_email="valsecchi.davide94@gmail.com",
     url="https://github.com/WikiToLearn/texla",

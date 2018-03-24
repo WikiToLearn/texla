@@ -18,7 +18,7 @@ class ThebibliographyBlock(Block):
         blocks are reappended under items blocks and
         added as children nodes.
         '''
-        options, left_tex = CommandParser.parse_options(tex, [('opt',' {','}')])
+        options, left_tex = CommandParser.parse_options(tex, [('opt','{','}')])
         block = ThebibliographyBlock(options["opt"], tex, parent_block)
         #parsing children blocks
         ch_blocks = parser.parse_instructions(left_tex, parent_block,{})

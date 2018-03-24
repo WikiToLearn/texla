@@ -3,23 +3,28 @@ from ..utils import *
 import logging
 
 cit_order = []
-bibliography_items = {}
+bib_block = None
 
 def save_cite(block):
-    cit_order.append(block.attributes["label"])
+    global cit_order
+    cit_order += block.attributes["labels"]
 
 def save_biblio(block):
-    global bibliography_items
-    bibliography_items = block.items
-    print(bibliography_items)
+    global bib_block
+    bib_block = block
 
 def print_biblio():
+    print(len(cit_order))
     with open(configs["output_path"], "w") as f:
+        opts = bib_block.attributes["options"]
+        f.write(f"\\begin{{thebibliography}}{{{opts}}}\n")
         written_items = []
         for c in cit_order:
             if c not in written_items:
-                f.write(f'\\bibitem{{{c}}}\n{bibliography_items[c].get_content_children()}\n\n')
+                logging.info(f"Printing bibitem {c}")
+                f.write(f'\\bibitem{{{c}}}\n{bib_block.items[c].get_content_children()}\n\n')
                 written_items.append(c)
+        f.write("\\end{thebibliography}")
 
 plugin_render_hooks = {
     'cite' : { "pre": save_cite },
