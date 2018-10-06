@@ -37,7 +37,7 @@ The execution of texla is controlled by the **configs.yaml** file.
 
 There are a few parameters to set:
 
-* __renderer__ : The output format of the conversion. __mediawiki__ is the only avaiable one for now
+* __renderer__ : The output format of the conversion. __mediawiki__ is the only available one for now
 
 * __input_path__ : the path of the main tex file to convert. Texla is able to convert complex documents with many included subfiles: in "input_path" you have to put the main tex file that includes all the subfiles.
 
@@ -47,13 +47,13 @@ There are a few parameters to set:
 
 * __base_path__: texla exports pages in an hierarchical way, organizing pages with unique urls. __base_path__ is used as a root for the urls of the pages. It can be void.
 
-* __collapse_content_level__ : The sectioning of a latex file is a tree. Every part of the tex doc has a level. The level of the root page, that contains the index of the document is -1. The first level of sectioning in the document has level 0. Texla converts the sections into pages and the page gets the level of the seciton. The content of the pages with level greater than __collapse_content_level__ is inserted in the text of the parent page as a paragraph.
+* __collapse_content_level__ : The sectioning of a latex file is a tree. Every part of the tex doc has a level. The level of the root page, that contains the index of the document is -1. The first level of sectioning in the document has level 0. Texla converts the sections into pages and the page gets the level of the section. The content of the pages with level greater than __collapse_content_level__ is inserted in the text of the parent page as a paragraph.
 
-* __collapse_pages_level__: If a page has a level greater than __collape_pages_level__ and is not collapsed, it is moved to the level given by __collapse_pages_level__ going up in the page tree.
+* __collapse_pages_level__: If a page has a level greater than __collapse_pages_level__ and is not collapsed, it is moved to the level given by __collapse_pages_level__ going up in the page tree.
 
 * __create_index__: if True a index is create in the root page.
 
-* __export_format__ : for now _text_ is the only avaiable
+* __export_format__ : for now _text_ is the only available
 
 * __export_single_pages__: if True a file for every page is created and saved in a directory called __"output_path"_pages__
 
@@ -63,7 +63,7 @@ There are a few parameters to set:
 
 * __print_preparsed_tex__: if True a debug file called _preparsed.tex_ is saved with preparsed tex.
 
-* __lang__: localization for keywords. The avaiable languages are those inside __i18n.yaml__ file. Contributions appreciated :)
+* __lang__: localization for keywords. The available languages are those inside __i18n.yaml__ file. Contributions appreciated :)
 
 * __plugins__: [...]  List of the enabled plugins. The order of this list is the order of executing: Be Careful.
 
