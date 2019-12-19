@@ -232,7 +232,7 @@ def preparse_par(tex):
     '''This function replace \n\n with a \\par to
     show that there's a change of par, understendable by the parser.
     It replaces even occurrences of \n\n'''
-    return re.sub(r'(\n\n)+','\\par ',tex)
+    return re.sub(r'(\n\n)+',r'\\par ',tex)
 
 def preparse_include(tex,input_path):
     ''' This function replace \input{} and \include commands
